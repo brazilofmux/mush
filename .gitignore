@@ -1,3 +1,6 @@
+# Reference source trees
+src/
+
 # Build artifacts
 mdfix
 mdfix.c
