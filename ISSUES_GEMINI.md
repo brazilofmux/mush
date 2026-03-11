@@ -93,6 +93,13 @@ This file tracks discrepancies between *The MUSH Standard* (Volume 1), *The MUSH
   - **Observation:** The standard marks `%i<n>` as Level 2. In TinyMUX, this is handled directly in the evaluator via `mudstate.itext`.
   - **Recommendation:** Move this to Level 1 as it is a core feature for modern MUSH coding and widely supported.
 
+### Cross-Cutting Issues (Surveys vs. Source)
+
+- **[BUG] Version Discrepancy:**
+  - **Observation:** The current `src` directory contains TinyMUX 2.13.0.10. However, the `./surveys` documents (dated March 2026) refer to "MUX 2.14" as having already implemented many "High Priority" features like JSON, WebSockets, and an AST-based evaluator.
+  - **Impact:** The documentation (Volume 1 and 2) appears to be in a transitional state—some parts describe 2.13 behavior while others may be aspirational or targeting the 2.14 features described in the surveys.
+  - **Recommendation:** Clarify the target version of the Standard. If it's intended to be a "living standard" for 2.14, the source code in `./src` needs to be updated to 2.14 to allow for accurate verification.
+
 ### Chapter 9: Command Parsing and Dispatch
 
 - **[BUG] Command Matching Order (Exits vs Built-ins):**
