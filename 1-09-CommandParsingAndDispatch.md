@@ -53,6 +53,13 @@ successful match determines the command that is executed.
 
 A conforming implementation shall use the following matching order:
 
+### Step 0: Connection-Level Commands
+
+Before the general command matching pipeline, certain connection-level
+commands are checked. `QUIT`, `WHO`, `LOGOUT`, and `SESSION` are handled
+very early in input processing and bypass the normal matching order. These
+commands operate at the connection level rather than the game-object level.
+
 ### Step 1: Prefix Commands
 
 Single-character prefix commands are checked first. These are:
@@ -162,17 +169,19 @@ input. $-commands are user-defined commands stored in object attributes (see
 Chapter 6, "Attributes"). An attribute whose value begins with `$pattern:`
 defines a $-command that triggers when user input matches the pattern.
 
-The search order for $-commands is:
+The search order for $-commands is implementation-defined but generally
+follows this pattern:
 
 1. **The player itself:** Attributes on the player object.
-2. **The player's inventory:** Attributes on objects carried by the player.
+2. **Objects in the current room:** Attributes on things present in the room
+   (the player's neighbors).
 3. **The current room:** Attributes on the room the player occupies.
-4. **Objects in the current room:** Attributes on things present in the room.
+4. **The player's inventory:** Attributes on objects carried by the player.
 5. **Zone master:** If the player or room is zoned, attributes on objects in
    the zone master's contents (if ZONE_CONTENTS is set on the zone master),
    then attributes on the zone master itself.
-6. **The master room (`#0`):** Attributes on objects in the master room,
-   providing global commands.
+6. **The master room:** Attributes on objects in the master room, providing
+   global commands.
 
 Within each location, objects are searched in contents-list order.
 Within each object, attributes are searched in implementation-defined order.
@@ -182,11 +191,11 @@ If multiple $-commands match, all matching commands are executed (not just
 the first one).
 
 **Implementation Note:** The exact $-command search order varies across
-implementations. TinyMUSH and TinyMUX search the player, contents of the
-player's location, the location, the player's inventory, then zones and the
-master room. PennMUSH uses a similar but not identical order. This standard
-specifies the general principle; the detailed order is implementation-defined
-within the categories listed above.
+implementations. TinyMUSH and TinyMUX search the player, then objects in the
+room, then the room itself, then inventory, then zones and the master room.
+PennMUSH uses a similar but not identical order. The order listed above
+reflects TinyMUX/TinyMUSH behavior; other implementations may reorder these
+categories.
 
 ### Step 6: No Match
 

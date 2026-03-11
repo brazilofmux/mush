@@ -39,8 +39,11 @@ The object's drop lock (LDROP) is evaluated. If it fails, the DFAIL, ODFAIL,
 and ADFAIL attributes are triggered. On success, the DROP, ODROP, and ADROP
 attributes are triggered.
 
-If the object has the STICKY flag and the room has a dropto, the object is
-sent to the dropto location instead of the room.
+If the object has the STICKY flag set, the object is sent to its HOME
+location regardless of the room's dropto setting. If the room has a dropto
+set and neither the object nor the room is STICKY, the object is sent to
+the dropto location instead of remaining in the room. See Chapter 5,
+"Object Types," for the complete dropto behavior rules.
 
 ### give
 
@@ -230,8 +233,13 @@ Many MUSHes disable it entirely.
 ### @verb
 
 ```
-@verb <object> = <verb>, <message>, <others-message>, <action>
+@verb <object> = <actor>, <succ-attr>, <osucc-attr>, <asucc-attr>,
+      <fail-attr>, <ofail-attr>, <afail-attr>[, <lock-attr>]
 ```
 
 The `@verb` command triggers the did_it pipeline on an object using arbitrary
-attributes. Level 2.
+attribute names. The arguments are the names of the attributes to use for
+the success message, others-success message, action-on-success, failure
+message, others-failure message, action-on-failure, and optionally a lock
+attribute. The `<actor>` argument specifies who is considered the actor for
+the purpose of lock evaluation and message display. Level 2.

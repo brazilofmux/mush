@@ -6,26 +6,30 @@ MUSHcode provides several ways to make decisions and repeat actions. Since
 MUSHcode is functional (no statements, only expressions), control flow is
 handled through functions.
 
-## if() and ifelse()
+## ifelse() and if()
 
-The `if()` function evaluates a condition and returns one of two values:
+The `ifelse()` function evaluates a condition and returns one of two values:
 
 ```
-> think if(gt(10, 5), Big, Small)
+> think ifelse(gt(10, 5), Big, Small)
 Big
-> think if(gt(3, 5), Big, Small)
+> think ifelse(gt(3, 5), Big, Small)
 Small
 ```
 
-The syntax is `if(<condition>, <true-value>, <false-value>)`. Only the
+The syntax is `ifelse(<condition>, <true-value>, <false-value>)`. Only the
 selected branch is evaluated -- the other is completely skipped.
 
-`ifelse()` is a synonym that makes the two-branch intent explicit:
+`if()` is a shorter synonym available in PennMUSH and TinyMUX:
 
 ```
-> think ifelse(eq(%#, #1), You are God, You are not God)
+> think if(eq(%#, #1), You are God, You are not God)
 You are not God
 ```
+
+**Compatibility Note:** `ifelse()` is available across all four reference
+implementations. `if()` is available in PennMUSH and TinyMUX but not in
+TinyMUSH or RhostMUSH. For maximum portability, use `ifelse()`.
 
 ### Practical Example: A Guard
 
@@ -88,7 +92,8 @@ cases instead of just the first:
 
 ## @if / @ifelse
 
-The command version of `if()`:
+The command version of conditional evaluation (available in PennMUSH and
+TinyMUX; not available in TinyMUSH or RhostMUSH):
 
 ```
 > @if gt(%0, 10) = {say Big number!}, {say Small number.}
@@ -106,7 +111,7 @@ You say, "I like cherry!"
 ```
 
 Within the action, `##` is replaced by the current item and `#@` by the
-position (starting at 0).
+position (starting at 1).
 
 ### Practical Example: Greet Everyone
 

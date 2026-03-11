@@ -69,9 +69,9 @@ it moves to your inventory.
 
 Flags modify how objects behave. Some common flags for things:
 
-**STICKY** -- When dropped in a room with a dropto, the object goes to the
-dropto instead of staying in the room. Also useful for making objects return
-home:
+**STICKY** -- When dropped, the object is sent to its HOME location instead
+of remaining in the room. Useful for making objects automatically return to
+a specific place:
 
 ```
 > @set Magic Sword = STICKY

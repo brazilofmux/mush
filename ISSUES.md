@@ -105,58 +105,58 @@ reference implementations.
 
 ## Volume 1: High-Impact Factual Errors
 
-- [ ] **1-05: Dropto behavior description is wrong.** STICKY on an
+- [x] **1-05: Dropto behavior description is wrong.** STICKY on an
   object sends it HOME, not to the dropto. Room sweep behavior
   (objects to dropto when all players leave) requires the room itself
   to have STICKY -- omitted. (MUX `move.cpp:255-308`) [Claude]
 
-- [ ] **1-05: `type()` return for GARBAGE is not universal.** Book
+- [x] **1-05: `type()` return for GARBAGE is not universal.** Book
   claims all four return `GARBAGE`. TinyMUX/TinyMUSH return
   `#-1 ILLEGAL TYPE`; RhostMUSH returns `#-1 NOT FOUND`. Only
   PennMUSH returns `GARBAGE`. [Gemini]
 
-- [ ] **1-06: `get()` inheritance claim is wrong.** Book says `get()`
+- [x] **1-06: `get()` inheritance claim is wrong.** Book says `get()`
   retrieves without inheritance. All four implementations walk the
   parent chain: MUX `functions.cpp:2066` calls `atr_pget_LEN`;
   PennMUSH `attrib.c:1184` calls `atr_get_with_parent()`. [Claude]
 
-- [ ] **1-06: Attribute flag `AF_LOCKED` should be `AF_LOCK`.** All
+- [x] **1-06: Attribute flag `AF_LOCKED` should be `AF_LOCK`.** All
   four implementations use `AF_LOCK` internally and in user-visible
   displays, not `AF_LOCKED`. [Gemini]
 
-- [ ] **1-09: $-command search order is internally inconsistent.** The
+- [x] **1-09: $-command search order is internally inconsistent.** The
   numbered list says Player > Inventory > Room > Objects-in-room. MUX
   source (`command.cpp:2645-2673`) shows Player > Objects-in-room >
   Room > Inventory. The implementation note at the bottom contradicts
   the list. [Claude]
 
-- [ ] **1-09, 1-11: `@force` described as immediate execution.** Both
+- [x] **1-09, 1-11: `@force` described as immediate execution.** Both
   TinyMUSH and TinyMUX queue `@force` by default; only `@force/now`
   is immediate. (MUX `wiz.cpp:328-339`) [Claude]
 
-- [ ] **1-15: Movement message sequence is wrong.** LEAVE/OLEAVE/ALEAVE
+- [x] **1-15: Movement message sequence is wrong.** LEAVE/OLEAVE/ALEAVE
   fire BEFORE `move_object`, not after. Steps 3-7 are misordered.
   Actual: SUCC/OSUCC/ASUCC on exit -> LEAVE/OLEAVE/ALEAVE + OXENTER
   -> move -> DROP/ODROP/ADROP -> MOVE/OMOVE/AMOVE on player ->
   ENTER/OENTER/AENTER + OXLEAVE. (MUX `move.cpp:358-367`) [Claude]
 
-- [ ] **1-15: MOVE/OMOVE/AMOVE attributes omitted entirely.** After
+- [x] **1-15: MOVE/OMOVE/AMOVE attributes omitted entirely.** After
   DROP/ODROP/ADROP, the player's own MOVE, OMOVE, AMOVE fire. Not
   mentioned in the book. [Claude]
 
-- [ ] **1-15: Teleport message sequence is reversed.** OXTPORT fires
+- [x] **1-15: Teleport message sequence is reversed.** OXTPORT fires
   BEFORE the move; TPORT/OTPORT/ATPORT fires AFTER. Book has it
   backwards. (MUX `move.cpp:432-441`) [Claude]
 
-- [ ] **1-16: HAVEN blocking @pemit is incorrect.** HAVEN blocks pages,
+- [x] **1-16: HAVEN blocking @pemit is incorrect.** HAVEN blocks pages,
   not @pemit. No implementation checks HAVEN in the pemit path.
   PEMIT_ALL power is PennMUSH-only. [Claude]
 
-- [ ] **1-16: Nospoof format is reversed.** Book shows
+- [x] **1-16: Nospoof format is reversed.** Book shows
   `[#42(Bob)] ...` but actual format is `[Bob(#42)]` -- name first,
   then dbref. (MUX `game.cpp:723-727`) [Claude]
 
-- [ ] **1-18: @verb syntax is significantly oversimplified.** The
+- [x] **1-18: @verb syntax is significantly oversimplified.** The
   actual arguments are attribute names for the did_it pipeline, not
   direct text messages. Argument count and meaning are wrong.
   (TinyMUSH `predicates.c:3068-3194`) [Claude]
@@ -166,22 +166,23 @@ reference implementations.
   lock on the ZMO; TinyMUSH uses the control lock + requires
   CONTROL_OK. These are fundamentally different. [Claude, Codex]
 
-- [ ] **1-09: Exit matching vs built-in command order is wrong.** Book
-  says Step 2 is built-ins, Step 3 is exits. In MUX/TinyMUSH, exits
-  are generally matched before built-in commands in many configs (so
-  "north" as an exit wins over a hypothetical "north" command). The
-  `process_command` logic is more complex than described. [Gemini]
+- [ ] **1-09: Exit matching vs built-in command order may vary.** Book
+  says Step 2 is built-ins, Step 3 is exits. In some configurations
+  exits may take priority over certain built-in commands. The
+  `process_command` logic is more nuanced than the simple ordering
+  suggests. Needs further investigation. [Gemini]
 
-- [ ] **1-09: QUIT/WHO/LOGOUT/SESSION are connection-level commands,
+- [x] **1-09: QUIT/WHO/LOGOUT/SESSION are connection-level commands,
   checked before most other matching.** Book implies they are checked
   after built-in commands (Step 2/Step 4). They are actually checked
   very early in `process_command`. [Gemini]
 
-- [ ] **1-11: `@trigger` execution model is wrong.** Book says
-  `@trigger` places action list in the command queue by default.
-  In MUX/TinyMUSH, `@trigger` (without `/now`) executes synchronously
-  via the `did_it()` pipeline -- it does NOT create a new queue entry.
-  This is a fundamental difference in execution order. [Gemini]
+- [ ] **1-11: `@trigger` execution model -- disputed.** Gemini claims
+  `@trigger` executes synchronously via `did_it()`. However, TinyMUSH
+  source (`set.c:1902`) calls `did_it()` with `key & TRIG_NOW` -- when
+  `/now` is not set, the flag is 0, meaning the action list IS queued.
+  The book's claim that `@trigger` queues by default appears correct.
+  Needs further cross-engine verification. [Gemini, under review]
 
 - [ ] **1-12: Function identification mechanism not described.** The
   evaluator identifies functions by looking backwards from a `(`
@@ -268,13 +269,12 @@ reference implementations.
   blurred.** MUX has `AF_ODARK` (owner only) which the standard
   doesn't account for. [Gemini]
 
-- [ ] **1-06: `AF_NOPROG` flag omitted.** Present in both TinyMUX and
-  TinyMUSH (prevents $-command search). Should be in the standard
-  attribute flags table. [Gemini]
+- [x] **1-06: `AF_NOPROG` flag omitted.** Already present in the
+  attribute flags table (line 328). No fix needed. [Gemini]
 
 ### Commands (Ch 15-19)
 
-- [ ] **1-15: Fallback home described as "#0" is inaccurate.** MUX
+- [x] **1-15: Fallback home described as "#0" is inaccurate.** MUX
   falls back to `default_home`, then `start_home`, then `start_room`.
   (`object.cpp:371-382`) [Claude]
 
@@ -284,7 +284,7 @@ reference implementations.
 - [ ] **1-16: @femit does not exist in PennMUSH.** Should be marked
   Level 2 or noted. [Claude]
 
-- [ ] **1-16: LSPEECH lock requires Auditorium flag in MUX/TinyMUSH.**
+- [x] **1-16: LSPEECH lock requires Auditorium flag in MUX/TinyMUSH.**
   Without the flag, the lock is ignored. (`speech.cpp:75-82`) [Claude]
 
 - [ ] **1-17: @name does not require password for player renaming.**
@@ -409,30 +409,30 @@ reference implementations.
 - [ ] **2-01: "Every player can build" is incorrect.** Building is
   gated behind permissions in all four implementations. [Codex]
 
-- [ ] **2-06: STICKY flag description is incorrect.** Same dropto issue
+- [x] **2-06: STICKY flag description is incorrect.** Same dropto issue
   as 1-05. STICKY sends object HOME, not to dropto. [Claude]
 
 - [ ] **2-07: CONFORMAT and EXITFORMAT presented as universal but are
   PennMUSH-specific.** [Claude]
 
-- [ ] **2-10: `first()` example with 3 arguments is incorrect.**
+- [x] **2-10: `first()` example with 3 arguments is incorrect.**
   `first()` accepts at most 2 arguments (list, delimiter). [Claude]
 
-- [ ] **2-12: `#@` position counter described as starting at 0;
+- [x] **2-12: `#@` position counter described as starting at 0;
   starts at 1.** Same issue as 1-19. [Claude]
 
-- [ ] **2-12: `if()` function not universal.** PennMUSH and MUX have
+- [x] **2-12: `if()` function not universal.** PennMUSH and MUX have
   `if()`; TinyMUSH and RhostMUSH only have `ifelse()`. The chapter
   should present `ifelse()` as the more universal function and note
   that `if()` is available on PennMUSH and MUX. [Claude, Surveys]
 
-- [ ] **2-12: `@if`/`@ifelse` command does not exist on TinyMUSH or
+- [x] **2-12: `@if`/`@ifelse` command does not exist on TinyMUSH or
   RhostMUSH.** [Claude]
 
-- [ ] **2-13: `repeat()` example output has wrong character count.**
+- [x] **2-13: `repeat()` example output has wrong character count.**
   `repeat(=-, 20)` should produce 40 characters, not 44. [Claude]
 
-- [ ] **2-14: Sort type `i` described as "integer" but means
+- [x] **2-14: Sort type `i` described as "integer" but means
   "case-insensitive."** Correct type for numeric sort is `n`.
   (`funlist.c:168`) [Claude]
 

@@ -87,12 +87,15 @@ When a player successfully traverses an exit, the following sequence occurs:
    and AFAIL attributes are triggered, and movement does not occur.
 2. The exit's SUCC and OSUCC are displayed in the departure room. ASUCC is
    triggered.
-3. The player is moved to the exit's destination.
-4. The departure room's OLEAVE and OXLEAVE are displayed. ALEAVE is triggered.
-5. The player automatically looks at the new room.
-6. The exit's DROP and ODROP are displayed in the arrival room. ADROP is
+3. The departure room's LEAVE, OLEAVE, and ALEAVE attributes are triggered.
+   The arrival room's OXENTER is displayed in the departure room.
+4. The player is moved to the exit's destination.
+5. The exit's DROP and ODROP are displayed in the arrival room. ADROP is
    triggered.
-7. The arrival room's OENTER and OXENTER are displayed. AENTER is triggered.
+6. The player's MOVE, OMOVE, and AMOVE attributes are triggered.
+7. The arrival room's ENTER, OENTER, and AENTER attributes are triggered.
+   The departure room's OXLEAVE is displayed in the arrival room.
+8. The player automatically looks at the new room.
 
 ### Switches
 
@@ -115,7 +118,9 @@ stored in their home/link field). The player's departure and arrival messages
 are triggered normally.
 
 If the player's home location is invalid (destroyed or otherwise
-inaccessible), the player is moved to the master room (`#0`).
+inaccessible), the player is moved to the player starting room (commonly
+`#0`, but the actual room is an implementation-defined configuration
+parameter).
 
 ## enter
 
@@ -183,9 +188,10 @@ themselves.
 
 ### Message Sequence
 
-1. TPORT and OTPORT are triggered in the departure room.
+1. OXTPORT is triggered in the departure room (announcing the impending
+   departure to others).
 2. The object is moved to the destination.
-3. OXTPORT is triggered in the arrival room.
+3. TPORT, OTPORT, and ATPORT are triggered in the arrival room.
 4. The object sees the new room (if a player).
 
 ## inventory

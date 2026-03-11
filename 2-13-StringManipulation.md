@@ -110,7 +110,7 @@ These are essential for building tables and formatted output.
 > think A[space(5)]B
 A     B
 > think repeat(=-,20)
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ```
 
 ## Trimming and Squishing

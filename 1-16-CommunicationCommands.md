@@ -90,8 +90,10 @@ The `@pemit` command sends a message to one or more specific players. The
 message is seen only by the named recipients. The \<target-list\> is a
 space-separated list of player names or dbrefs.
 
-Players with the HAVEN flag set will not receive @pemit messages unless the
-sender has the PEMIT_ALL power.
+The HAVEN flag does not block @pemit messages. HAVEN blocks `page` messages
+and, in some implementations, the `kill` command. The PEMIT_ALL power
+(PennMUSH-specific, Level 2) allows a player to @pemit to any target
+regardless of other restrictions.
 
 ### @oemit
 
@@ -221,8 +223,8 @@ Several attributes affect communication behavior:
 | AWAY      | Displayed to players who page this player while they are away. |
 | IDLE      | Displayed to players who page this player while they are idle. |
 | REJECT    | Displayed to players whose page is rejected by the LPAGE lock. |
-| HAVEN     | When the HAVEN flag is set, `@pemit` messages are blocked. |
-| LSPEECH   | Lock on a room controlling who may speak in it. |
+| HAVEN     | When the HAVEN flag is set, `page` messages are blocked. |
+| LSPEECH   | Lock on a room controlling who may speak in it. Requires the AUDITORIUM flag on the room in TinyMUX and TinyMUSH. |
 
 ## Speech Locks
 
@@ -231,13 +233,18 @@ player attempting to use `say`, `pose`, `semipose`, or `@emit` in that room.
 If the lock fails, the player's speech is blocked and they receive an error
 message.
 
+**Implementation Note:** In TinyMUX and TinyMUSH, the LSPEECH lock is only
+evaluated if the room has the AUDITORIUM flag set. Without the flag, the
+lock is ignored. PennMUSH evaluates LSPEECH without requiring an additional
+flag.
+
 ## Nospoof
 
 When a player has the NOSPOOF flag set, all messages they receive are
 prefixed with the source of the message in brackets:
 
 ```
-[#42(Bob)] Hello, everyone!
+[Bob(#42)] Hello, everyone!
 ```
 
 This allows the player to verify the origin of messages and detect spoofing

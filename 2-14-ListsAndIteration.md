@@ -78,7 +78,8 @@ apple banana cherry
 ```
 
 The second argument specifies sort type: `a` for alphabetic (default),
-`i` for integer, `f` for floating-point, `d` for dbref.
+`n` for numeric, `i` for case-insensitive alphabetic, `f` for
+floating-point, `d` for dbref.
 
 ## Set Operations
 

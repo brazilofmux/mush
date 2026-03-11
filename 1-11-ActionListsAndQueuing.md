@@ -114,9 +114,14 @@ through the queue.
 
 The following commands and mechanisms also execute immediately:
 
-- `@force`: The forced command executes immediately in the current context.
 - Function calls within expressions: Functions are evaluated inline.
-- `@trigger` with the `/now` switch (Level 2): Immediate trigger execution.
+- `@force/now` (Level 2): Immediate execution of the forced command in the
+  current context.
+- `@trigger/now` (Level 2): Immediate trigger execution.
+
+Note that `@force` without the `/now` switch queues the forced command for
+execution rather than executing it immediately. This is the default behavior
+in TinyMUSH and TinyMUX.
 
 ## Delayed Execution: @wait
 

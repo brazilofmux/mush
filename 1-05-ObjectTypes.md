@@ -61,7 +61,7 @@ Linked exit #44 to <current room>.
 
 | Property   | Applicable | Description |
 |------------|-----------|-------------|
-| Location   | Yes       | The dropto destination. When a player drops a STICKY thing in this room, the thing is sent to the dropto location instead of remaining in the room. If NOTHING, dropped things remain in the room. |
+| Location   | Yes       | The dropto destination. When a room has a dropto set, it affects how dropped objects are handled (see "Dropto Behavior" below). If NOTHING, dropped things remain in the room. |
 | Contents   | Yes       | The players and things currently present in this room. |
 | Exits      | Yes       | The exits leading from this room to other locations. |
 | Home       | No        | Not applicable to rooms. |
@@ -79,12 +79,19 @@ unique. Room names may contain spaces and most printable characters.
 When a room has a dropto set (i.e., its location field is not NOTHING), the
 following behavior applies:
 
-1. When a player drops an object in the room, and the object has the STICKY
-   flag set, the object is sent to the dropto location instead of remaining
+1. When a player drops an object that has the STICKY flag set, the object is
+   sent to its HOME location, not to the dropto and not to the room.
+2. When a player drops a non-STICKY object in a non-STICKY room with a
+   dropto, the object is sent to the dropto location instead of remaining
    in the room.
-2. When all players leave the room, any non-STICKY objects in the room are
-   sent to the dropto location.
-3. If the dropto is HOME, objects are sent to their individual home locations.
+3. When a room has the STICKY flag set and has a dropto, and all players
+   leave the room, any remaining non-STICKY objects are swept to the dropto
+   location.
+4. If the dropto is HOME, objects are sent to their individual home locations.
+
+**Implementation Note:** The STICKY flag on an object and the STICKY flag on
+a room serve different purposes. A STICKY object goes HOME when dropped. A
+STICKY room enables the sweep-on-empty behavior for its dropto.
 
 ### Room Flags
 
@@ -152,8 +159,8 @@ Every thing has a home location. The home is set at creation to the creating
 player's current room and can be changed with `@link`. When one of the
 following occurs, the thing is sent to its home:
 
-1. A player drops the thing in a room with STICKY set, and the thing also has
-   STICKY set.
+1. The thing has the STICKY flag set and is dropped by a player (the thing
+   is sent HOME regardless of the room's dropto setting).
 2. The room containing the thing is destroyed.
 3. The thing's location becomes invalid for any reason.
 
@@ -380,14 +387,16 @@ an object's type:
 
 | Function       | Returns |
 |----------------|---------|
-| `type(<obj>)`  | The type name as a string: `ROOM`, `THING`, `EXIT`, `PLAYER`, or `GARBAGE`. |
+| `type(<obj>)`  | The type name as a string: `ROOM`, `THING`, `EXIT`, or `PLAYER`. The return value for destroyed or invalid objects is implementation-defined. |
 | `hastype(<obj>, <type>)` | `1` if the object is of the named type, `0` otherwise. |
 | `isdbref(<string>)` | `1` if the string is a syntactically valid dbref, `0` otherwise. Level 2. |
 
 **Compatibility Note:** The `type()` function is universal across all four
-implementations. The `hastype()` function is available in TinyMUSH, TinyMUX,
-and PennMUSH. RhostMUSH provides equivalent functionality. The `isdbref()`
-function is not available in all implementations and is therefore Level 2.
+implementations. For destroyed objects, PennMUSH returns `GARBAGE`, TinyMUX
+and TinyMUSH return `#-1 ILLEGAL TYPE`, and RhostMUSH returns `#-1 NOT FOUND`.
+The `hastype()` function is available in TinyMUSH, TinyMUX, and PennMUSH.
+RhostMUSH provides equivalent functionality. The `isdbref()` function is not
+available in all implementations and is therefore Level 2.
 
 ## Type Comparison Table
 

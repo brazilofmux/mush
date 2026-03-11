@@ -218,7 +218,7 @@ disconnections.
 
 | Attribute  | Description |
 |------------|-------------|
-| SEMAPHORE  | Semaphore counter for `@wait`/`@notify`. Default flags: AF_LOCKED, AF_NOCLONE. |
+| SEMAPHORE  | Semaphore counter for `@wait`/`@notify`. Default flags: AF_LOCK, AF_NOCLONE. |
 | QUEUEMAX   | Maximum number of queue entries for this object. |
 
 ### Player Attributes
@@ -324,7 +324,7 @@ A conforming implementation shall support the following attribute flags:
 | AF_ODARK    | Only the owner can see this attribute. |
 | AF_WIZARD   | Only wizards can modify this attribute. |
 | AF_GOD      | Only God (`#1`) can modify this attribute. |
-| AF_LOCKED   | Only the attribute's creator can modify it. |
+| AF_LOCK   | Only the attribute's creator can modify it. |
 | AF_NOPROG   | This attribute is not searched for $-commands. |
 | AF_PRIVATE  | This attribute is not inherited by child objects. |
 | AF_NOCLONE  | This attribute is not copied by `@clone`. |
@@ -394,7 +394,7 @@ attribute name globally:
 ### Attribute Ownership
 
 Each attribute on an object has an implicit creator. The creator is the player
-who first set the attribute. When an attribute has the AF_LOCKED flag set,
+who first set the attribute. When an attribute has the AF_LOCK flag set,
 only the creator (or a wizard) can modify it.
 
 ## Attribute Inheritance
@@ -413,14 +413,15 @@ least 10 levels.
 Attributes with the AF_PRIVATE flag are not inherited -- the search stops at
 the object on which AF_PRIVATE is set.
 
-The `get()` function retrieves attributes without inheritance (only from the
-specified object). The `v()` function and `u()` function retrieve attributes
-with inheritance.
+The `get()`, `v()`, and `u()` functions all retrieve attributes with
+inheritance -- they walk the parent chain as described above. All four
+reference implementations use parent-aware retrieval in `get()` (e.g.,
+TinyMUX calls `atr_pget`, PennMUSH calls `atr_get_with_parent`).
 
-**Compatibility Note:** The exact behavior of `get()` versus inheritance-aware
-retrieval varies slightly across implementations. Some implementations provide
-separate functions (e.g., `get()` for non-inheriting, `default()` for
-inheriting with a fallback).
+**Compatibility Note:** Some implementations provide functions that explicitly
+bypass inheritance (e.g., `xget()` in some configurations) or retrieve with
+a fallback (e.g., `default()`), but `get()` itself is inheritance-aware in
+all four reference implementations.
 
 ## Attribute Actions
 

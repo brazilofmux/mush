@@ -144,20 +144,25 @@ This computes `(3 * 4) + (10 - 5) = 12 + 5 = 17`.
 ## Braces: Grouping
 
 Curly braces `{}` group text that contains commas or other special
-characters. Without braces, commas separate function arguments:
+characters. Without braces, commas separate function arguments. The
+`first()` function takes a list as its first argument and returns the
+first element:
 
 ```
-> think first(apple, banana, cherry)
+> think first(apple banana cherry)
 apple
 ```
 
-With braces, the entire string is treated as one argument:
+With braces, commas are protected from being treated as argument
+separators:
 
 ```
 > think first({apple, banana, cherry})
-apple, banana, cherry
+apple,
 ```
 
+Without braces, `first(apple, banana, cherry)` passes three separate
+arguments to a function that expects at most two (list and delimiter).
 Braces are essential when passing complex text to functions. You will use
 them constantly.
 
