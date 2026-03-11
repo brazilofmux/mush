@@ -1,195 +1,199 @@
-# Running a MUSH Server
+# Player Management
 
 ## Overview
 
-This chapter is for people who want to run their own MUSH -- whether for
-a private group of friends or a public game open to the internet. It
-covers choosing a server, compiling it, basic configuration, and the
-day-to-day tasks of keeping the game running.
+Running a MUSH means managing a community. This chapter covers the
+administrative commands and practices for creating, monitoring, and
+disciplining player accounts.
 
-## Choosing a Server
+## Creating Players
 
-Four major MUSH server implementations are available. All are free and
-open source:
-
-| Server | Strengths |
-|--------|-----------|
-| PennMUSH | Most popular. Excellent documentation, active development. |
-| TinyMUX | Fast, stable. Strong codebase for large games. |
-| RhostMUSH | Feature-rich. Many built-in hardcode extensions. |
-| TinyMUSH | The original lineage. Mature and well-understood. |
-
-All four support the core MUSH feature set described in this book. The
-differences are in extensions, configuration options, and internal
-architecture. For a first game, PennMUSH or TinyMUX are the most
-common recommendations.
-
-## Compiling and Installing
-
-Most MUSH servers are written in C and compile on Linux, macOS, and BSD.
-The general process:
+Players can create their own characters from the login screen using
+`create <name> <password>`. As an administrator, you can also create
+characters directly:
 
 ```
-$ tar xzf pennmush-X.Y.Z.tar.gz
-$ cd pennmush-X.Y.Z
-$ ./configure
-$ make
-$ make install
+> @pcreate Morgan = temporarypassword
+Player Morgan created as #42.
 ```
 
-Some servers use a configuration script before building:
+This is useful for reserving names, creating staff characters, or
+setting up accounts for people who cannot connect to the login screen.
+
+### Registration
+
+Many games require new players to register before they can play. Enable
+registration in the configuration:
 
 ```
-$ cd game
-$ ./setup.sh
+register_create on
 ```
 
-Follow the `INSTALL` or `README` file included with your server for
-exact instructions. You will need a C compiler (gcc or clang) and
-standard development libraries.
+When enabled, new players must email or otherwise contact staff to get
+an account. This reduces abuse but adds overhead.
 
-## Configuration Files
+## Player Privileges
 
-Every server has a configuration file (usually `mush.conf` or
-`netmush.conf`) that controls its behavior. Key settings include:
+MUSH servers have a hierarchy of privilege levels:
 
-```
-# Network settings
-port 4201
-ip_address 0.0.0.0
+| Level | Description |
+|-------|-------------|
+| Player | Standard user. Can build and code within quotas. |
+| Builder | Extended building privileges. May have higher quotas. |
+| Staff | Trusted helpers. Varies by game. |
+| Royalty | Full administrative access except for a few God-only commands. |
+| Wizard | Nearly unlimited access. Can modify any object. |
+| God | Player #1. Unrestricted. Cannot be modified by others. |
 
-# Game identity
-mud_name MyMUSH
-mud_url http://example.com
-
-# Database file
-input_database data/netmush.db
-output_database data/netmush.db.new
-
-# Limits
-max_players 100
-idle_timeout 3600
-```
-
-Read through the configuration file carefully. Most settings have
-sensible defaults, but you should at least set the game name, port, and
-any network-specific options.
-
-## Starting and Stopping
-
-Start the server:
+Grant privileges with the `@set` or `@power` commands:
 
 ```
-$ ./startmush
+> @set Morgan = ROYALTY
+> @power Morgan = announce
 ```
 
-Or manually:
+**Be conservative with privileges.** Every Wizard-level character is a
+potential security risk. Most staff functions can be handled with
+Royalty or targeted powers.
+
+## Monitoring Players
+
+### Who Is Online
 
 ```
-$ ./netmush -c mush.conf &
+> WHO
+Player     Idle  Doing
+Morgan     0s    Building the market
+River      5m    AFK
+Sparrow    0s
 ```
 
-The first time you start, the server creates a minimal database with
-Room #0 and Player #1 (God). Connect as God with the password set in
-your configuration.
-
-Stop the server cleanly from inside the game:
+The administrative version shows more detail:
 
 ```
-> @shutdown
+> @doing/header
+> SESSION
 ```
 
-Or from the command line, send a signal:
+`SESSION` (or `@doing/header` depending on the server) shows IP
+addresses, connection times, and other diagnostic information.
+
+### Watching for Problems
+
+Set up listen patterns or automated logging for:
+
+- Abusive language on public channels.
+- Rapid-fire commands that might indicate a bot or script.
+- Players attempting to access objects they do not own.
 
 ```
-$ kill -TERM <pid>
+> @log player = connects
 ```
 
-Always shut down cleanly when possible. A clean shutdown saves the
-database properly.
+## Discipline
 
-## The Startup Script
+### Warnings and Communication
 
-Most servers include a `startmush` script that handles:
+Most issues are best handled by talking to the player first. Page them
+or send mail explaining the concern. Keep records of conversations.
 
-- Starting the server process.
-- Restarting automatically if the server crashes.
-- Rotating log files.
-- Writing the process ID (PID) to a file for management.
-
-Customize the startup script for your environment. Consider adding it to
-your system's init scripts or a cron job to start on boot.
-
-## Logging
-
-The server writes logs to a file (usually `game/log` or `game/logs/`).
-Logs record:
-
-- Player connections and disconnections.
-- Commands flagged for logging.
-- Errors and warnings.
-- Database save operations.
-- Wizard actions.
-
-Review logs regularly. They are your primary tool for understanding what
-is happening on the game when you are not watching.
-
-## Regular Maintenance Tasks
-
-### Database Saves
-
-The server periodically saves a snapshot of the database to disk. The
-default interval varies by server (typically every 30-60 minutes). You
-can trigger a manual save:
+### @boot: Disconnecting a Player
 
 ```
-> @dump
+> @boot Morgan
+Morgan has been booted.
 ```
 
-### Backups
+This disconnects the player immediately. Use it for disruptive behavior
+that needs an immediate response.
 
-Back up your database regularly. At minimum, copy the database file
-after each clean shutdown. A better approach:
-
-```
-$ cp data/netmush.db data/backups/netmush-$(date +%Y%m%d).db
-```
-
-Automate this with a cron job. Keep at least a week of backups.
-
-### Monitoring
-
-Check on the game periodically:
+### @newpassword: Resetting Passwords
 
 ```
-> @stats
+> @newpassword Morgan = temporarypassword
 ```
 
-This shows object counts, memory usage, and queue depth. Watch for:
+Useful when a player forgets their password or when you need to secure
+a compromised account. Tell the player to change it after logging in
+with `@password`.
 
-- Runaway queue entries (use `@ps` to check, `@halt` to stop).
-- Database growth that seems abnormal.
-- Players reporting lag or connection issues.
+### @toad: Disabling an Account
 
-## Going Public
+The nuclear option. `@toad` converts a player into a thing, effectively
+destroying the character:
 
-When your game is ready for players:
+```
+> @toad Morgan
+Morgan has been turned into a slimy toad!
+```
 
-1. **Open your firewall** on the game port (default 4201).
-2. **Register a domain name** or use a static IP so players can find you.
-3. **List your game** on MUSH directories and community sites.
-4. **Write a connect screen** that welcomes new players and explains
-   how to create a character.
-5. **Set up staff.** Appoint trusted players as Wizards or Royalty to
-   help manage the game.
+This is irreversible. The player's objects are either destroyed or
+chowned to a designated recipient. Use only for the most severe cases
+(harassment, cheating, persistent abuse after warnings).
+
+### Softer Alternatives
+
+Before reaching for `@toad`, consider:
+
+- **Site locks.** Block the player's IP from connecting.
+- **Channel bans.** Remove the player from communication channels.
+- **Quota reduction.** Set their building quota to zero.
+- **Flag removal.** Remove the BUILDER or APPROVED flag.
+
+```
+> @set Morgan = !APPROVED
+> @quota Morgan = 0
+```
+
+## Quotas
+
+Quotas limit how many objects a player can create:
+
+```
+> @quota Morgan
+Morgan has 5 objects (quota: 50).
+> @quota/set Morgan = 100
+Morgan's quota set to 100.
+```
+
+Set reasonable quotas. New players might start with 10-20. Builders and
+staff typically need more. Infinite quotas (`@quota/set Morgan = 999`)
+are fine for trusted builders.
+
+## Site Management
+
+### Site Locks
+
+Block connections from specific IP addresses or ranges:
+
+```
+> @sitelock 192.168.1.0/24
+```
+
+Use this against persistent abusers who create new characters after
+being disciplined.
+
+### Registration by Site
+
+Some servers let you require registration from specific sites while
+allowing open creation from others:
+
+```
+> @sitelock/register 10.0.0.0/8
+```
+
+This forces anyone connecting from the 10.x.x.x range to register
+but lets everyone else create normally.
 
 ## Tips
 
-- **Start small.** Build the core areas and test with friends before
-  opening to the public.
-- **Keep the configuration file commented.** Future-you will thank
-  present-you for documenting why each setting was changed.
-- **Test after every config change.** Restart the server and verify
-  the change took effect.
-- **Have a recovery plan.** Know how to restore from a backup before
-  you need to do it under pressure.
+- **Document your policies.** Write clear rules and post them where
+  players can find them (connect screen, bulletin board, help files).
+- **Be consistent.** Apply the same standards to everyone. Favoritism
+  erodes trust.
+- **Keep records.** Log disciplinary actions and the reasons for them.
+  Memory fades and staff changes happen.
+- **Delegate.** Appoint trusted staff so the burden does not fall on
+  one person. Define clear roles for each staff member.
+- **Assume good faith first.** Most problems are misunderstandings, not
+  malice.

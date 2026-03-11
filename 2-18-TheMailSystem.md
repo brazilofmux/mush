@@ -1,161 +1,178 @@
-# Channels
+# The Mail System
 
-## What Are Channels?
+## Overview
 
-Channels are global communication lines that work across rooms. Unlike
-`say` and `pose`, which are limited to the people in your current
-location, a channel message reaches every connected player who has joined
-that channel -- no matter where they are on the grid.
+The built-in mail system lets players send messages to each other even
+when the recipient is offline. It works like a simple email system inside
+the MUSH: you compose a message, address it to one or more players, and
+send it. They read it the next time they connect.
 
-Most MUSHes have several channels: a public chat channel, a staff
-channel, a newbie help channel, and often game-specific ones like an
-out-of-character (OOC) channel or a trade channel.
+## Reading Mail
 
-## Joining and Leaving Channels
-
-The exact syntax varies by server, but the most common commands are:
+When you connect, you may see a message like:
 
 ```
-> @channel/join Public
-You have joined channel Public.
-> @channel/leave Public
-You have left channel Public.
+MAIL: You have 3 new messages.
 ```
 
-Some servers use `addcom` and `delcom` instead:
+To read your mail:
 
 ```
-> addcom pub = Public
-Channel alias 'pub' set to channel Public.
-> delcom pub
-Channel alias 'pub' removed.
+> @mail
+--- Mail Box (3 messages) ---
+ 1  New   From: Morgan    Subject: Welcome!
+ 2  New   From: River     Subject: Meeting tonight
+ 3  Read  From: Morgan    Subject: Re: Question
 ```
 
-The alias lets you talk on the channel with a short prefix instead of
-typing the full name every time.
-
-## Talking on a Channel
-
-With an alias set, prefix your message with the alias:
+To read a specific message:
 
 ```
-> pub Hello everyone!
-<Public> Sparrow says, "Hello everyone!"
+> @mail 1
+From: Morgan
+Date: Mon Mar 09 14:22:31 2026
+Subject: Welcome!
+
+Hey Sparrow! Welcome to the MUSH. Let me know if you have questions.
 ```
 
-You can also pose on a channel:
+## Sending Mail
+
+To send a message:
 
 ```
-> pub :waves.
-<Public> Sparrow waves.
+> @mail Morgan = Welcome back!/It's good to see you again.
 ```
 
-Without an alias, use the full command:
+The format is `@mail <recipients> = <subject>/<body>`. The slash
+separates the subject line from the message body.
+
+For longer messages, some servers support a multi-line composition mode:
 
 ```
-> @channel/emit Public = Hello everyone!
+> @mail Morgan
+Subject: Weekend event
+> -
+I wanted to let you know about the event this weekend.
+It starts Saturday at 8pm.
+Hope to see you there!
+> .
+Message sent.
 ```
 
-## Listing Channels
+The `-` starts the message body and the `.` sends it.
 
-To see what channels are available:
+### Multiple Recipients
 
-```
-> @channel/list
-Name         Owner    Description
-Public       #1       General chat for everyone
-Staff        #1       Staff-only discussion
-Newbie       #1       Help for new players
-```
-
-To see who is on a channel:
+Send to several players at once by separating names with spaces:
 
 ```
-> @channel/who Public
-Players on channel Public:
-  Sparrow    Morgan    River
+> @mail Morgan River = Reminder/Meeting at 8pm tonight.
 ```
 
-## Channel Etiquette
+## Replying and Forwarding
 
-- **Stay on topic.** If a channel has a stated purpose, respect it.
-- **Keep it friendly.** Channels reach many people at once. Heated
-  arguments are better taken to pages.
-- **Use the right channel.** Do not ask staff questions on the public
-  channel when a help channel exists.
-- **Mute when away.** If you are going idle for a long time, consider
-  temporarily muting busy channels so you do not flood your scroll
-  when you return.
-
-## Muting and Gagging
-
-If a channel is too busy, you can mute it without leaving:
+Reply to a message by number:
 
 ```
-> @channel/mute Public
-You have muted channel Public.
-> @channel/unmute Public
-You have unmuted channel Public.
+> @mail/reply 1 = Thanks for the welcome!
 ```
 
-When muted, messages still go to the channel but you do not see them.
-You remain a member and can unmute at any time.
+This automatically addresses the reply to the original sender and
+prefixes the subject with "Re:".
 
-## Creating Your Own Channel
-
-If you have permission (usually builders or staff), you can create
-channels:
+Forward a message to someone else:
 
 ```
-> @channel/add Trading
-Channel Trading created.
-> @channel/desc Trading = Buy, sell, and trade items.
+> @mail/forward 2 = Sparrow
 ```
 
-### Channel Locks
+## Managing Your Mailbox
 
-Control who can join, speak, or see a channel:
-
-```
-> @clock/join Trading = FLAG^APPROVED
-> @clock/speak Trading = FLAG^APPROVED
-```
-
-This restricts the Trading channel to approved players only. Lock syntax
-follows the same patterns described in the Locks and Security chapter.
-
-### Channel Settings
-
-Common configuration options:
+### Deleting Messages
 
 ```
-> @channel/priv Trading = no_titles
-> @channel/priv Trading = quiet
+> @mail/delete 1
+Message 1 deleted.
 ```
 
-`no_titles` suppresses player titles in channel output. `quiet` hides
-join and leave messages.
-
-## Practical Example: Setting Up Communication
-
-A typical new player setup looks like this:
+Delete a range:
 
 ```
-> addcom pub = Public
-> addcom ooc = OOC
-> addcom help = Newbie
-> pub Hey, just joined! Any tips for getting started?
-<Public> Sparrow says, "Hey, just joined! Any tips for getting started?"
+> @mail/delete 1-3
+Messages 1-3 deleted.
 ```
 
-Now you have three channels available with short, easy aliases.
+### Clearing Deleted Messages
+
+On some servers, deleted messages are only marked for deletion. To
+permanently remove them:
+
+```
+> @mail/purge
+```
+
+### Folders
+
+Organize messages into folders:
+
+```
+> @mail/folder Important
+Folder "Important" created.
+> @mail/file 2 = Important
+Message 2 filed to Important.
+> @mail/folder Important
+--- Important (1 message) ---
+ 2  Read  From: River     Subject: Meeting tonight
+```
+
+## Mail Aliases
+
+Create shortcuts for groups of recipients you mail frequently:
+
+```
+> @malias staff = Morgan River Ash
+> @mail staff = Update/New policy starting Monday.
+```
+
+This sends the message to all three players.
+
+## Checking Mail Status
+
+See whether a player has unread mail from you:
+
+```
+> @mail/status Morgan
+Morgan has read your last message.
+```
+
+This is useful to know if someone has seen your note before following up.
+
+## Practical Example: Coordinating an Event
+
+```
+> @mail Morgan River Ash = Saturday Event/
+  Hey everyone! I'm hosting an RP event this Saturday at 8pm.
+  Meet at the Town Square. Bring your characters ready for
+  adventure. Reply if you can make it!
+```
+
+Then check responses:
+
+```
+> @mail
+--- Mail Box (5 messages) ---
+ 4  New   From: Morgan    Subject: Re: Saturday Event
+ 5  New   From: River     Subject: Re: Saturday Event
+```
 
 ## Tips
 
-- **Check available channels early.** One of the first things to do on a
-  new MUSH is list channels and join the public ones.
-- **Keep aliases short.** Single letters or short abbreviations save
-  typing: `p` for Public, `o` for OOC.
-- **Channels are OOC by default.** Most channels are out-of-character
-  communication. In-character interaction usually happens through room
-  commands.
+- **Check your mail regularly.** People send important information
+  through mail since it works even when you are offline.
+- **Keep your mailbox tidy.** Delete old messages and use folders for
+  things you want to keep. Some servers have mailbox quotas.
+- **Use descriptive subjects.** "Hi" tells the recipient nothing. "RP
+  event Saturday 8pm" tells them everything.
+- **Do not spam.** Mass mailing every player on the game is poor
+  etiquette. Use channels or bulletin boards for announcements.

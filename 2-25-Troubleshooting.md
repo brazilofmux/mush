@@ -1,161 +1,158 @@
-# Quick Reference Card
+# Troubleshooting
 
-## Movement
+## My Command Does Not Work
 
-| Command | Action |
-|---------|--------|
-| `north` (or `n`) | Move north. |
-| `south`, `east`, `west` | Move in that direction. |
-| `home` | Return to your home location. |
-| `enter <object>` | Enter an object. |
-| `leave` | Leave the object you are inside. |
+**Symptom:** You type a command and nothing happens, or you get
+"Huh? (Type 'help' for help)".
 
-## Communication
+**Causes and fixes:**
 
-| Command | Action |
-|---------|--------|
-| `say <message>` | Speak to the room. |
-| `"<message>` | Shortcut for say. |
-| `pose <message>` | Describe an action. |
-| `:<message>` | Shortcut for pose. |
-| `;<message>` | Semipose (no space after name). |
-| `page <player> = <msg>` | Private message to a player. |
-| `whisper <player> = <msg>` | Whisper in the same room. |
-| `@emit <message>` | Emit text to the room with no name prefix. |
+- **Typo in the command pattern.** Check the `$` pattern on the object.
+  Use `examine` to see the exact attribute value.
+- **Object not in scope.** $-commands only work if the object is in your
+  inventory, in the room, or on you. Check with `look` and `inventory`.
+- **Command conflict.** Another object matches first. Rename your
+  command to something more distinctive (use a `+` prefix).
+- **Missing INHERIT flag.** If the command is on a parent object and the
+  child needs to use it, make sure the parent has the INHERIT flag
+  where required by your server.
 
-## Looking and Information
+## My Code Returns Nothing
 
-| Command | Action |
-|---------|--------|
-| `look` | See the current room. |
-| `look <object>` | See an object's description. |
-| `examine <object>` | Detailed object information (owner only). |
-| `inventory` (or `i`) | List what you are carrying. |
-| `WHO` | List connected players. |
-| `@stats` | Database statistics (admin). |
+**Symptom:** `think [expression]` produces a blank line.
 
-## Building
+**Causes and fixes:**
 
-| Command | Action |
-|---------|--------|
-| `@dig <name>` | Create a new room. |
-| `@create <name>` | Create a new thing. |
-| `@open <exit> = <dest>` | Create an exit to a destination. |
-| `@link <exit> = <dest>` | Link an exit to a destination. |
-| `@desc <obj> = <text>` | Set an object's description. |
-| `@name <obj> = <name>` | Rename an object. |
-| `@destroy <obj>` | Destroy an object. |
-| `@clone <obj>` | Create a copy of an object. |
+- **Function name misspelled.** MUSHcode silently returns empty for
+  unknown functions. Check spelling carefully.
+- **Missing arguments.** Some functions return empty when given wrong
+  argument counts.
+- **Attribute does not exist.** `v(NONEXISTENT)` returns empty. Use
+  `default()` to catch this: `default(me/ATTR, fallback)`.
+- **Permissions.** You may not have permission to read the attribute or
+  object. Check with `examine`.
 
-## Attributes and Properties
+## Numbers Are Not Working
 
-| Command | Action |
-|---------|--------|
-| `&<attr> <obj> = <val>` | Set a user attribute. |
-| `@set <obj> = <flag>` | Set a flag on an object. |
-| `@set <obj> = !<flag>` | Clear a flag. |
-| `@lock <obj> = <key>` | Lock an object. |
-| `@unlock <obj>` | Remove a lock. |
-| `@parent <obj> = <parent>` | Set an object's parent. |
-| `@chown <obj> = <player>` | Change ownership. |
+**Symptom:** `add(2, 3)` returns something unexpected, or math
+operations produce errors.
 
-## MUSHcode Essentials
+**Causes and fixes:**
 
-| Syntax | Meaning |
-|--------|---------|
-| `think <expr>` | Evaluate and display to yourself. |
-| `[function()]` | Evaluate a function inline. |
-| `%#` | Dbref of the executor. |
-| `%n` | Name of the executor. |
-| `%0` - `%9` | Positional arguments. |
-| `%r` | Newline. |
-| `%b` | Space. |
-| `%t` | Tab. |
+- **Extra spaces.** `add( 2, 3)` has a space before the 2. Some servers
+  are strict about this. Remove spaces inside function arguments.
+- **Non-numeric input.** If a variable holds text instead of a number,
+  math functions fail. Test with `isnum()`.
+- **Integer vs. floating point.** `div(7, 2)` returns `3` (integer
+  division). Use `fdiv(7, 2)` for `3.5`.
 
-## Common Functions
+## Permissions Errors
 
-| Function | Purpose |
-|----------|---------|
-| `name(obj)` | Object's name. |
-| `loc(obj)` | Object's location. |
-| `get(obj/attr)` | Read an attribute. |
-| `v(attr)` | Read own attribute. |
-| `u(obj/attr, args)` | Call a user function. |
-| `add(a, b)` | Addition. |
-| `sub(a, b)` | Subtraction. |
-| `mul(a, b)` | Multiplication. |
-| `div(a, b)` | Integer division. |
-| `eq(a, b)` | Equal? |
-| `gt(a, b)` | Greater than? |
-| `lt(a, b)` | Less than? |
-| `if(cond, true, false)` | Conditional. |
-| `switch(val, pat, res, ...)` | Multi-way branch. |
-| `iter(list, pattern)` | Iterate over a list. |
-| `cat(a, b, ...)` | Join with spaces. |
-| `strlen(str)` | String length. |
-| `mid(str, pos, len)` | Substring. |
-| `ucstr(str)` | Uppercase. |
-| `lcstr(str)` | Lowercase. |
-| `ljust(str, width)` | Left-justify. |
-| `rjust(str, width)` | Right-justify. |
-| `ansi(code, str)` | Apply color. |
-| `secure(str)` | Sanitize input. |
-| `words(list)` | Count list elements. |
-| `first(list)` | First element. |
-| `rest(list)` | All but first. |
-| `sort(list)` | Sort a list. |
-| `setq(name, val)` | Set a register. |
-| `r(name)` | Read a register. |
+**Symptom:** "Permission denied" when trying to modify an object.
 
-## $-Commands
+**Causes and fixes:**
 
-```
-&CMD_NAME object = $pattern:action
-```
+- **You do not own the object.** Check ownership with `examine`. Only
+  the owner (or a Wizard) can modify an object.
+- **Object is SAFE.** The SAFE flag prevents destruction. Use
+  `@set obj = !SAFE` first if you own it.
+- **Attribute is locked.** Some attributes have flags that prevent
+  modification. Check attribute flags with `examine`.
+- **Zone restrictions.** The object may be in a zone you do not control.
 
-The `$` prefix defines a custom command. `*` in the pattern captures
-input as `%0`, `%1`, etc.
+## iter() Produces Extra Spaces
 
-## ANSI Color Codes
+**Symptom:** Output from `iter()` has unwanted spaces between elements
+or blank entries.
 
-| Code | Color |
-|------|-------|
-| `r` | Red |
-| `g` | Green |
-| `y` | Yellow |
-| `b` | Blue |
-| `m` | Magenta |
-| `c` | Cyan |
-| `w` | White |
-| `h` | Highlight (bold) |
+**Causes and fixes:**
 
-Use with `ansi()`: `ansi(hr, text)` produces bold red text.
+- **Empty results.** `iter()` includes empty strings as elements. Use
+  a conditional to skip them: `iter(list, if(check, ##))`.
+- **Whitespace in the pattern.** Newlines and spaces in your `iter()`
+  pattern become part of the output. Keep the pattern on one line or
+  use `trim()` on the result.
+- **Output delimiter.** By default, `iter()` joins results with spaces.
+  Specify a different output delimiter as the fourth argument.
 
-## Mail
+## @wait Actions Never Fire
 
-| Command | Action |
-|---------|--------|
-| `@mail` | List messages. |
-| `@mail <num>` | Read message. |
-| `@mail <player> = <subj>/<body>` | Send mail. |
-| `@mail/reply <num> = <body>` | Reply. |
-| `@mail/delete <num>` | Delete message. |
+**Symptom:** You use `@wait` but the delayed action never executes.
 
-## Channels
+**Causes and fixes:**
 
-| Command | Action |
-|---------|--------|
-| `@channel/list` | List channels. |
-| `@channel/join <chan>` | Join a channel. |
-| `@channel/leave <chan>` | Leave a channel. |
-| `addcom <alias> = <chan>` | Add channel alias. |
-| `<alias> <message>` | Talk on channel. |
+- **Halted queue.** Someone ran `@halt` on the object. Queued actions
+  were cleared.
+- **Object destroyed.** If the object is destroyed before the wait
+  expires, the action is lost.
+- **Semaphore never notified.** If using `@wait obj`, the semaphore
+  must be released with `@notify obj`. Without it, subsequent actions
+  queue forever.
 
-## Debugging
+## ANSI Colors Not Showing
 
-| Command | Action |
-|---------|--------|
-| `@set me = TRACE` | Enable function tracing. |
-| `@set me = !TRACE` | Disable tracing. |
-| `@ps` | View the command queue. |
-| `@halt me` | Stop all queued commands. |
+**Symptom:** `ansi(hr, text)` produces plain text with no color.
+
+**Causes and fixes:**
+
+- **Client does not support ANSI.** Make sure your client has ANSI
+  color enabled in its settings.
+- **ANSI flag not set.** Some servers require the ANSI flag on your
+  character: `@set me = ANSI`.
+- **Nested ansi() calls.** Inner `ansi()` may reset the outer color.
+  Structure your calls so they do not overlap.
+
+## Mail Not Arriving
+
+**Symptom:** You send mail but the recipient says they never got it.
+
+**Causes and fixes:**
+
+- **Player name misspelled.** Check with `@mail/status <player>`.
+- **Mailbox full.** The recipient may have hit their quota. They need
+  to delete old messages.
+- **Player does not exist.** Verify the player exists and is not a
+  thing or room with a similar name.
+
+## Database or Server Issues
+
+### Server Will Not Start
+
+- Check the log file for error messages. Common causes: corrupted
+  database, configuration syntax error, port already in use.
+- Try loading a backup database.
+- Verify file permissions on the database and log directories.
+
+### Lag or Slow Performance
+
+- Check `@ps` for runaway queued commands. Use `@halt` on the
+  offending object.
+- Check `@stats` for unusual object counts.
+- Look for infinite loops in code (recursive `u()` calls without a
+  base case).
+- Check system resources: CPU, memory, disk space.
+
+### Lost Objects After Crash
+
+- Restore from the most recent backup.
+- If the crash happened between dumps, work since the last dump is
+  lost. Decrease the `dump_interval` to reduce exposure.
+
+## General Debugging Techniques
+
+1. **Use think.** Test expressions with `think` before putting them on
+   objects. This isolates the expression from command matching issues.
+
+2. **Use TRACE.** Set the TRACE flag on an object to see every function
+   evaluation: `@set obj = TRACE`. Remove it when done.
+
+3. **Examine everything.** Use `examine` to see the actual attribute
+   values, flags, and ownership of objects involved.
+
+4. **Check @ps.** View the command queue to see what is pending.
+
+5. **Simplify.** If a complex expression fails, break it into smaller
+   pieces and test each one with `think`.
+
+6. **Read the help.** Most servers have extensive built-in help: `help
+   <topic>`.
