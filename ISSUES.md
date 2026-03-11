@@ -95,6 +95,12 @@ reference implementations.
   lock chapters focus on naming differences but miss the scale of the
   divergence. [Surveys]
 
+- [ ] **Clarify target MUX version.** The `src/` directory contains
+  TinyMUX 2.13.0.10, but `./surveys/` reference MUX 2.14 features
+  (JSON, WebSockets, AST-based evaluator). The standard should
+  explicitly state it targets 2.13 behavior; 2.14 features belong in
+  future directions. [Gemini]
+
 ---
 
 ## Volume 1: High-Impact Factual Errors
@@ -159,6 +165,59 @@ reference implementations.
   is described.** PennMUSH uses `@lock/zone`; TinyMUX uses the enter
   lock on the ZMO; TinyMUSH uses the control lock + requires
   CONTROL_OK. These are fundamentally different. [Claude, Codex]
+
+- [ ] **1-09: Exit matching vs built-in command order is wrong.** Book
+  says Step 2 is built-ins, Step 3 is exits. In MUX/TinyMUSH, exits
+  are generally matched before built-in commands in many configs (so
+  "north" as an exit wins over a hypothetical "north" command). The
+  `process_command` logic is more complex than described. [Gemini]
+
+- [ ] **1-09: QUIT/WHO/LOGOUT/SESSION are connection-level commands,
+  checked before most other matching.** Book implies they are checked
+  after built-in commands (Step 2/Step 4). They are actually checked
+  very early in `process_command`. [Gemini]
+
+- [ ] **1-11: `@trigger` execution model is wrong.** Book says
+  `@trigger` places action list in the command queue by default.
+  In MUX/TinyMUSH, `@trigger` (without `/now`) executes synchronously
+  via the `did_it()` pipeline -- it does NOT create a new queue entry.
+  This is a fundamental difference in execution order. [Gemini]
+
+- [ ] **1-12: Function identification mechanism not described.** The
+  evaluator identifies functions by looking backwards from a `(`
+  character. A word is only treated as a function if immediately
+  followed by `(`. The standard's description of a simple left-to-right
+  scanner doesn't capture this lookback dependency. [Gemini]
+
+- [ ] **1-12: Space compression described as always-on default.** In
+  practice, `mudconf.space_compress` is configurable and `EV_NO_COMPRESS`
+  evaluation flags exist. Many modern setups disable space compression.
+  [Gemini]
+
+- [ ] **1-13: Uppercase `%R`/`%T`/`%B` are NOT equivalent to lowercase
+  in MUX.** They trigger capitalization of the first character of the
+  next substitution result (via `cType_L2 & 0x80` logic). They produce
+  the same whitespace but affect evaluator state. [Gemini]
+
+- [ ] **1-13: Several common percent-code substitutions missing.** `%|`
+  (piped command output), `%k`/`%K` (moniker/ANSI-colored name),
+  `%=<attr>` (variable attribute substitution), `%+` (number of
+  arguments), `%:` (enactor ObjID with creation time). All present in
+  MUX/TinyMUSH. [Gemini]
+
+- [ ] **1-28: INHERIT flag behavior description is wrong.** Book says
+  objects need INHERIT to get wizard privileges from their owner. In
+  MUX, objects owned by wizards inherit by default if they own
+  themselves (`(x) == Owner(x)` in `Inherits(x)` macro). INHERIT is
+  an additional mechanism, not the sole one. [Gemini]
+
+- [ ] **1-28: `control_all` power not architecturally God-only.** Book
+  says only God can grant it. It's a standard power bit; restriction is
+  by convention or access tables, not hardcoded. [Gemini]
+
+- [ ] **1-28: MISTRUST/TRUST flags described as Level 2 but don't exist
+  in MUX/TinyMUSH/PennMUSH.** Appear to be RhostMUSH-specific or
+  aspirational. [Gemini]
 
 ---
 
@@ -309,6 +368,24 @@ reference implementations.
 
 - [ ] **1-32: IDLE power name varies.** MUX: `idle`.
   PennMUSH: `Idle`. [Claude]
+
+- [ ] **1-09: `&` prefix behavior more flexible than described.** `&`
+  with spaces (`& attr object=value`) works in implementations; the
+  standard implies stricter parsing. [Gemini]
+
+- [ ] **1-09: Command piping (`%|`) not mentioned.** Core feature in
+  MUX/TinyMUSH for chaining commands and passing output. Should be
+  documented in Ch 9 or 11. [Gemini]
+
+- [ ] **1-12: Evaluation limits are multiple separate limits, not one.**
+  MUX/TinyMUSH have `func_nest_lim` (function nesting),
+  `func_invk_lim` (total invocations), and `nStackLimit` (stack
+  depth). The standard mentions only a nesting depth of at least 50.
+  [Gemini]
+
+- [ ] **1-13: `%i<n>` (itext) marked Level 2 but is core in MUX.**
+  Handled directly in the evaluator via `mudstate.itext`. Should
+  arguably be Level 1. [Gemini]
 
 ---
 
