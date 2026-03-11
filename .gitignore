@@ -1,0 +1,12 @@
+# Build artifacts
+mdfix
+mdfix.c
+book_output/
+
+# Editor/OS
+*.swp
+*.swo
+*~
+.DS_Store
+__pycache__/
+*.pyc
