@@ -1,2 +1,253 @@
 # Zones and Control
 
+## Overview
+
+The zone system extends the basic ownership model to support collaborative
+building and administration. Zones allow a group of players to share control
+over a set of objects without requiring wizard privileges. A zone defines a
+logical grouping of objects and a lock that determines who may administer
+them.
+
+## Zone Concepts
+
+### Zone Master Object
+
+A **Zone Master Object** (ZMO) is any object designated as the administrative
+hub of a zone. The ZMO is typically a thing with the ZONE_MASTER flag set,
+though implementations may allow rooms or players to serve as zone masters.
+
+The ZMO has a zone lock (`@lock/zone`) that determines which players are
+zone controllers -- players authorized to modify objects within the zone.
+
+### Zone Membership
+
+An object belongs to a zone when its zone field is set to a ZMO's dbref.
+The zone field is set with the `@chzone` command:
+
+```
+@chzone <object> = <zone-master>
+```
+
+Objects may belong to at most one zone at a time. Setting the zone to nothing
+removes the object from its zone:
+
+```
+@chzone <object> =
+```
+
+### Zone Controllers
+
+A **zone controller** is any player who passes the ZMO's zone lock. Zone
+controllers can modify objects within the zone as though they owned them,
+subject to the control rules in Chapter 28. This enables collaborative
+building: multiple builders can share control of a zone's rooms, exits, and
+objects without needing to own every individual object.
+
+### Shared Players
+
+A player with the SHARED flag operates as a shared account whose objects are
+collectively controlled by zone controllers. When a SHARED player is
+@chzoned to a ZMO, any player passing the ZMO's zone lock can control objects
+owned by the shared player. Level 2.
+
+## Zone Control
+
+### How Zone Control Works
+
+When the control predicate (Chapter 28) is evaluated, zone control is
+checked after ownership and before the default denial:
+
+1. The object's zone is retrieved.
+2. If the zone is a valid ZMO, the ZMO's zone lock is evaluated with the
+   acting player as the test subject.
+3. If the lock passes, the player is granted control of the object.
+
+This means zone controllers can:
+
+- Set and modify attributes on zoned objects.
+- Set flags on zoned objects.
+- @destroy zoned objects.
+- @teleport zoned objects.
+- @chown zoned objects (implementation-dependent).
+
+Zone controllers cannot:
+
+- Grant themselves wizard flags or powers through zoned objects.
+- Modify the ZMO itself (unless they also pass its control requirements).
+- Override God-level protections.
+
+### Zone Lock
+
+The zone lock is set on the ZMO:
+
+```
+@lock/zone <zone-master> = <key-expression>
+```
+
+Common patterns include:
+
+```
+@lock/zone ZMO = =Builder1 | =Builder2 | =Builder3
+@lock/zone ZMO = FACTION:Builders
+@lock/zone ZMO = +Zone Badge
+```
+
+The zone lock uses the standard lock key expression grammar (Chapter 27).
+
+## Automatic Zone Assignment
+
+When a player has a zone set, newly created objects may automatically inherit
+the player's zone. This behavior is implementation-defined. The automatic
+assignment simplifies building within a zone, as builders do not need to
+manually @chzone every object they create.
+
+## Zone Events
+
+When an object moves between zones (entering a room in a different zone from
+its previous room), zone transition events are triggered:
+
+| Attribute | Triggered When |
+|-----------|----------------|
+| ZENTER    | The object enters a room in this zone. |
+| OZENTER   | Others see the object enter this zone. |
+| AZENTER   | Action list triggered on zone entry. |
+| ZLEAVE    | The object leaves this zone. |
+| OZLEAVE   | Others see the object leave this zone. |
+| AZLEAVE   | Action list triggered on zone departure. |
+
+Zone transition events are triggered on the ZMO. They fire before the
+destination room's OENTER/AENTER events. Level 2.
+
+## Zone Communication
+
+### @zemit
+
+```
+@zemit <zone> = <message>
+```
+
+The `@zemit` command sends a message to all players in rooms belonging to the
+specified zone. The sender must control the zone or be a zone controller.
+Level 2.
+
+### zemit()
+
+```
+zemit(<zone>, <message>)
+```
+
+The functional equivalent of `@zemit`. Level 2.
+
+## Zone Information Functions
+
+### zone()
+
+```
+zone(<object>)
+```
+
+Returns the dbref of \<object\>'s ZMO, or `#-1` if the object has no zone.
+
+### zwho()
+
+```
+zwho(<zone>)
+```
+
+Returns a space-separated list of dbrefs of connected players who are in
+rooms belonging to \<zone\>. Level 2.
+
+### zfun()
+
+```
+zfun(<attribute> [, <arg0>, ...])
+```
+
+Evaluates \<attribute\> on the executor's ZMO, passing optional arguments.
+This enables zone-wide utility functions stored on the ZMO. Level 2.
+
+## Zone Restrictions
+
+### Z_TEL
+
+When a room or ZMO has the Z_TEL flag set (Level 2), objects within the zone
+cannot be teleported to destinations outside the zone. The `home` command is
+exempt from this restriction. This flag enables physically enclosed zones
+such as puzzle areas or restricted regions.
+
+### Flag and Power Stripping
+
+When a non-player object is @chzoned, privileged flags and powers may be
+stripped to prevent privilege escalation through zone reassignment. The
+`/preserve` switch on `@chzone` retains the object's flags and powers,
+but its use is restricted to wizards.
+
+## Commands
+
+### @chzone
+
+```
+@chzone [/preserve] <object> = <zone-master>
+@chzone <object> =
+```
+
+Changes the zone of \<object\>. The executor must control \<object\> and
+either control the zone master or pass the zone master's chzone lock.
+
+The `/preserve` switch retains the object's privileged flags and powers.
+Without it, privileged settings may be stripped. The switch requires wizard
+privileges.
+
+Setting the zone to nothing (empty right side) removes the object from its
+zone.
+
+### @chzoneall
+
+```
+@chzoneall [/preserve] <player> = <zone-master>
+```
+
+Changes the zone of all objects owned by \<player\> to \<zone-master\>.
+Requires wizard privileges. Level 2.
+
+## Design Patterns
+
+### Building Team Zone
+
+A common zone pattern for collaborative building:
+
+1. Create a ZMO: `@create Building Zone`
+2. Set the ZONE_MASTER flag: `@set Building Zone = ZONE_MASTER`
+3. Set the zone lock: `@lock/zone Building Zone = =Alice | =Bob | =Carol`
+4. Zone the build area: `@chzone <room> = Building Zone` (for each room)
+
+Alice, Bob, and Carol can now all modify rooms, exits, and objects in the
+zone.
+
+### Quest Zone with Shared Objects
+
+For interactive systems where objects need shared programmability:
+
+1. Create a shared player: `@pcreate QuestBot`
+2. Set SHARED: `@set QuestBot = SHARED`
+3. Create a ZMO and zone QuestBot to it.
+4. Set the zone lock to the quest builders.
+5. Create quest objects owned by QuestBot.
+
+All zone controllers can now program QuestBot's objects.
+
+## Implementation Notes
+
+Zone control represents a delegation of authority. Conforming implementations
+shall ensure that zone control cannot be used to escalate privileges beyond
+what the zone controllers already possess. Specifically:
+
+- Zone controllers shall not be able to grant themselves wizard flags or
+  powers through zoned objects.
+- Zone controllers shall not be able to modify the ZMO itself through zone
+  control alone (additional ownership or control is required).
+- The @chzone command shall strip privileged flags from non-player objects
+  by default to prevent privilege transfer.
+
+The exact set of flags stripped during @chzone is implementation-defined
+but shall include at minimum the WIZARD and ROYALTY flags.
