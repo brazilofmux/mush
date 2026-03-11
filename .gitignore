@@ -1,6 +1,9 @@
 # Reference source trees
 src/
 
+# Reference source surveys
+surveys/
+
 # Build artifacts
 mdfix
 mdfix.c
