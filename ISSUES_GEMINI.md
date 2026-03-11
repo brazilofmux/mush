@@ -120,3 +120,32 @@ This file tracks discrepancies between *The MUSH Standard* (Volume 1), *The MUSH
 - **[BUG] Prefix Command '&' (Attribute Set):**
   - **Standard Claim:** Lists `&` as a Step 1 prefix command.
   - **Actual Behavior (TinyMUX):** `&` is often handled as a special case within the attribute system rather than a top-level prefix command in the same way as `"` or `:`. Its behavior with respect to spaces (`& attr object=value`) is more flexible in implementations than the standard implies.
+
+### Chapter 11: Action Lists and Queuing
+
+- **[BUG] @trigger Execution Model (Queued vs Synchronous):**
+  - **Standard Claim:** "@trigger places the action list in the command queue by default. It does not execute immediately within the calling command's context."
+  - **Actual Behavior (TinyMUX/TinyMUSH):** `@trigger` (without `/now`) executes **synchronously** via the `did_it()` pipeline. It does not create a new queue entry unless specifically configured or unless `@wait 0` is used. This is a fundamental difference in how side effects are ordered.
+  - **Impact:** Significant for MUSHcoders who rely on execution order; code written for a "queued" `@trigger` will behave differently on MUX.
+
+- **[OPPORTUNITY] Queue Limits and QUEUEMAX:**
+  - **Observation:** The standard mentions `QUEUEMAX` attribute.
+  - **Actual Behavior:** While supported, modern implementations (especially MUX) also have many more granular controls (e.g., `mudconf.wait_limit`, `mudconf.queuemax`) and powers that affect these.
+  - **Recommendation:** Expand Chapter 11 to reflect more modern queue management practices.
+
+### Chapter 28: The Permission Model
+
+- **[BUG] INHERIT Flag Behavior:**
+  - **Standard Claim:** "An object with the INHERIT flag set inherits wizard or royalty privileges from its owner. Without INHERIT, an object owned by a wizard operates at normal (mortal) privilege levels."
+  - **Actual Behavior (TinyMUX):** Objects owned by wizards inherit by default if they own themselves (`(x) == Owner(x)` in `Inherits(x)` macro). The `INHERIT` flag is an *additional* way to grant inheritance to objects NOT owned by the player, or to force it if the default is changed.
+  - **Impact:** Technical inaccuracy in describing how wizard privileges propagate.
+
+- **[BUG] Power Granting Permissions (control_all):**
+  - **Standard Claim:** "Is the only player who can grant the `control_all` power." (referring to God/#1).
+  - **Actual Behavior (TinyMUX):** `POW_CONTROL_ALL` is a standard power bit. While usually restricted to God by convention or specific access tables, it is not architecturally hardcoded as God-only in the way the standard implies.
+  - **Impact:** Misleading regarding the hard limits of the power system.
+
+- **[BUG] Missing Standard Flags (MISTRUST/TRUST):**
+  - **Standard Claim:** Describes `MISTRUST` and `TRUST` as "Level 2" standard flags for restricting or expanding object control.
+  - **Actual Behavior:** These flags are missing from TinyMUX (and largely from TinyMUSH/PennMUSH in this specific form). They appear to be RhostMUSH-specific or aspirational.
+  - **Impact:** The standard describes features that don't exist in its primary target implementations.
