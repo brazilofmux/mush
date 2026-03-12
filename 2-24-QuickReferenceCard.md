@@ -107,7 +107,7 @@
 | `setq(name, val)` | Set a register. |
 | `r(name)` | Read a register. |
 
-## $-Commands
+## \$-Commands
 
 ```
 &CMD_NAME object = $pattern:action

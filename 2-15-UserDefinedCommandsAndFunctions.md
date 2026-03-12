@@ -1,8 +1,8 @@
 # User-Defined Commands and Functions
 
-## $-Commands: Custom Commands
+## \$-Commands: Custom Commands
 
-A $-command is an attribute that defines a new command players can type. It
+A \$-command is an attribute that defines a new command players can type. It
 is the most common way to add interactivity to objects.
 
 ### Basic Syntax
@@ -38,9 +38,9 @@ The first `*` becomes `%0`, the second becomes `%1`, and so on up to `%9`:
 You give sword to Morgan.
 ```
 
-### Where $-Commands Live
+### Where \$-Commands Live
 
-$-commands work on any object in the same room as the player, or on the
+\$-commands work on any object in the same room as the player, or on the
 player's own inventory, or on the player themselves. The server searches:
 
 1. The player object.

@@ -137,7 +137,7 @@ standard, provided that:
   object's attributes and properties, subject to the permission model.
 
 - **parent** -- An object from which another object inherits attributes and
-  $-commands. Attribute lookup traverses the parent chain when an attribute
+  \$-commands. Attribute lookup traverses the parent chain when an attribute
   is not found on the object itself.
 
 - **zone** -- A grouping mechanism that associates objects with a zone master
@@ -166,8 +166,8 @@ standard, provided that:
   in response to an event (e.g., an object being looked at triggers the ADESC
   action list).
 
-- **$-command** -- A user-defined command stored in an attribute. An attribute
-  whose value begins with `$pattern:` defines a command that is triggered when
+- **\$-command** -- A user-defined command stored in an attribute. An attribute
+  whose value begins with `\$pattern:` defines a command that is triggered when
   a player types text matching the pattern.
 
 - **^-listen** -- A user-defined listener stored in an attribute. An attribute

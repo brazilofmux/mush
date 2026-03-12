@@ -275,7 +275,7 @@ Linked.
 
 ### Exit Matching Priority
 
-When a player types a command, exits are matched before $-commands but after
+When a player types a command, exits are matched before \$-commands but after
 built-in commands. If multiple exits match the typed text, the behavior is
 implementation-defined; implementations should select one at random or present
 a disambiguation message.
@@ -424,5 +424,5 @@ Notes:
    object.
 2. A player always owns itself.
 3. Things with ENTER_OK set can be entered by players.
-4. Things can execute action lists and $-commands, but cannot directly receive
+4. Things can execute action lists and \$-commands, but cannot directly receive
    user input from the network.

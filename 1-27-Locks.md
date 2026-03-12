@@ -36,7 +36,7 @@ The following lock types shall be supported by all conforming implementations:
 | Teleport  | `/teleport` | Teleporting to a location. |
 | Mail      | `/mail` | Receiving @mail from other players. |
 | Speech    | `/speech` | Speaking in a location. |
-| Command   | `/command` | Using $-commands on an object. |
+| Command   | `/command` | Using \$-commands on an object. |
 | Parent    | `/parent` | Parenting objects to this one. |
 | Link      | `/link` | Linking exits to this location. |
 | Control   | `/control` | Controlling this object (when CONTROL_OK is set). |
@@ -122,7 +122,7 @@ Unlike bare object references, identity locks do not check inventory.
 Evaluates to true only if the test subject **carries** the specified object.
 Unlike bare object references, carry locks do not match the subject itself.
 
-#### Owner Lock ($)
+#### Owner Lock (\$)
 
 ```
 @lock building = $Bob

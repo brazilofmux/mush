@@ -127,7 +127,7 @@ For example, `#42/DESC` refers to the DESC attribute on object `#42`.
 
 When describing the content of attributes, the following conventions apply:
 
-- **$-command format:** `$<pattern>:<action-list>`
+- **\$-command format:** `$<pattern>:<action-list>`
 - **^-listen format:** `^<pattern>:<action-list>`
 - **Message attributes:** Plain text, possibly containing substitutions.
 - **Action list attributes:** A semicolon-separated list of commands.

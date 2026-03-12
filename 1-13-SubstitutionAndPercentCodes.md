@@ -107,7 +107,7 @@ Output: enactor=#42 executor=#200 caller=#100
 
 ## Positional Parameters
 
-Positional parameters provide access to arguments passed by $-command pattern
+Positional parameters provide access to arguments passed by \$-command pattern
 matching, `@trigger`, or function calls:
 
 | Code      | Value | Description |
@@ -125,11 +125,11 @@ A conforming implementation shall support at least 10 positional parameters
 
 The source of positional parameter values depends on context:
 
-- **$-commands:** Each `*` wildcard in the pattern captures a value. The
+- **\$-commands:** Each `*` wildcard in the pattern captures a value. The
   first `*` capture is `%0`, the second is `%1`, and so on.
 
   ```
-  &CMD me = $give * to *: @pemit %#=You give %0 to %1.
+  &CMD me = \$give * to *: @pemit %#=You give %0 to %1.
   > give sword to Bob
   You give sword to Bob.
   ```

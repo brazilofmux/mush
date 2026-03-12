@@ -28,7 +28,7 @@ A Level 1 conforming implementation shall support the following:
   AFAIL, DROP, ODROP, ADROP).
 - Attribute flags: at minimum AF_WIZARD, AF_LOCKED, AF_VISUAL.
 - Attribute inheritance via the parent chain.
-- $-commands and ^-listeners.
+- \$-commands and ^-listeners.
 
 ### Flags
 

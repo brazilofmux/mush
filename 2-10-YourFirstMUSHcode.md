@@ -189,7 +189,7 @@ Each command in the action list is a separate game command (`@pemit`,
 
 All MUSHcode lives in attributes on objects. There are several patterns:
 
-**$-commands** respond to player input:
+**\$-commands** respond to player input:
 
 ```
 > &CMD_TIME me = $time:@pemit %# = The time is [time()].
@@ -228,7 +228,7 @@ You say, "It is 2 o'clock."
 > @pemit %# = {Hello, how are you?}  <-- Braces protect the comma
 ```
 
-**Missing the $ in commands:**
+**Missing the \$ in commands:**
 
 ```
 > &CMD me = greet:say Hi           <-- Missing $

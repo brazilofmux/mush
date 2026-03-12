@@ -328,5 +328,5 @@ behavior is guaranteed by the lazy evaluation semantics of conditional
 functions.
 
 **Security Note:** Side-effect functions in user-accessible attributes
-(especially $-commands) must be carefully controlled. Unrestricted access
+(especially \$-commands) must be carefully controlled. Unrestricted access
 to `force()`, `tel()`, or `set()` can be used to escalate privileges.

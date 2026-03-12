@@ -236,7 +236,7 @@ Experienced coders follow naming conventions:
 
 | Prefix | Purpose |
 |--------|---------|
-| `CMD_` | $-command attributes. |
+| `CMD_` | \$-command attributes. |
 | `FN_` | User-defined functions (called with u()). |
 | `DO_` | Action lists (called with @trigger). |
 | `DATA_` | Data storage attributes. |

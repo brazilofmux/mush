@@ -133,7 +133,7 @@ Attributes themselves can have flags that control their behavior:
 **LOCKED** -- Only the attribute's owner can change it (useful when the
 object has been @chowned).
 
-**NO_COMMAND** -- The attribute is not checked for $-commands.
+**NO_COMMAND** -- The attribute is not checked for \$-commands.
 
 **NO_INHERIT** -- The attribute is not inherited by children.
 

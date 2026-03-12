@@ -71,7 +71,7 @@ dedicated manipulation functions and type-safe operations.
 
 ### Event-Driven Programming
 
-Current MUSHcode programming relies on $-commands, ^-listeners, and
+Current MUSHcode programming relies on \$-commands, ^-listeners, and
 attribute triggers. Future revisions may define a formal event system
 with event registration, event propagation, and event handlers.
 

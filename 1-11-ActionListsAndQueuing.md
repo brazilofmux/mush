@@ -21,7 +21,7 @@ to events.
 ```
 
 Each command in the list is a complete MUSH command (built-in command,
-$-command trigger, or expression). Commands are executed in left-to-right
+\$-command trigger, or expression). Commands are executed in left-to-right
 order.
 
 ### Evaluation
@@ -37,7 +37,7 @@ evaluation context includes:
 - **%@** -- The dbref of the caller (the object that directly invoked the
   current function or trigger).
 - **%0** through **%9** -- Positional parameters, if the action was triggered
-  by a $-command pattern or `@trigger` with arguments.
+  by a \$-command pattern or `@trigger` with arguments.
 - **%q0** through **%q9** and **%qa** through **%qz** -- Registers, which
   persist across commands within the same action list.
 

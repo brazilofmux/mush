@@ -5,7 +5,7 @@
 The expression evaluator is the core of the MUSHcode programming language. It
 transforms a string containing literal text, function calls, and substitution
 codes into a result string. Every attribute value that is "executed" -- action
-lists, $-command responses, function arguments -- passes through the expression
+lists, \$-command responses, function arguments -- passes through the expression
 evaluator.
 
 Understanding the evaluator is essential for writing correct MUSHcode. This

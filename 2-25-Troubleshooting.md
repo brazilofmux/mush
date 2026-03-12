@@ -9,7 +9,7 @@
 
 - **Typo in the command pattern.** Check the `$` pattern on the object.
   Use `examine` to see the exact attribute value.
-- **Object not in scope.** $-commands only work if the object is in your
+- **Object not in scope.** \$-commands only work if the object is in your
   inventory, in the room, or on you. Check with `look` and `inventory`.
 - **Command conflict.** Another object matches first. Rename your
   command to something more distinctive (use a `+` prefix).

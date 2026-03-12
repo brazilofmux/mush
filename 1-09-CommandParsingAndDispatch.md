@@ -162,14 +162,14 @@ an object).
 
 If a match is found, the corresponding `enter` or `leave` action is performed.
 
-### Step 5: $-Commands
+### Step 5: \$-Commands
 
-If no match has been found, the server searches for $-commands that match the
-input. $-commands are user-defined commands stored in object attributes (see
+If no match has been found, the server searches for \$-commands that match the
+input. \$-commands are user-defined commands stored in object attributes (see
 Chapter 6, "Attributes"). An attribute whose value begins with `$pattern:`
-defines a $-command that triggers when user input matches the pattern.
+defines a \$-command that triggers when user input matches the pattern.
 
-The search order for $-commands is implementation-defined but generally
+The search order for \$-commands is implementation-defined but generally
 follows this pattern:
 
 1. **The player itself:** Attributes on the player object.
@@ -186,11 +186,11 @@ follows this pattern:
 Within each location, objects are searched in contents-list order.
 Within each object, attributes are searched in implementation-defined order.
 
-If a $-command pattern matches, the corresponding action list is executed.
-If multiple $-commands match, all matching commands are executed (not just
+If a \$-command pattern matches, the corresponding action list is executed.
+If multiple \$-commands match, all matching commands are executed (not just
 the first one).
 
-**Implementation Note:** The exact $-command search order varies across
+**Implementation Note:** The exact \$-command search order varies across
 implementations. TinyMUSH and TinyMUX search the player, then objects in the
 room, then the room itself, then inventory, then zones and the master room.
 PennMUSH uses a similar but not identical order. The order listed above
@@ -220,7 +220,7 @@ following rules apply:
   decides whether to evaluate its arguments. Commands that explicitly evaluate
   their arguments (e.g., `@switch`, `@if`) are documented as doing so.
 
-- **$-commands:** The action list portion of a $-command (after the `:`) is
+- **\$-commands:** The action list portion of a \$-command (after the `:`) is
   evaluated when the command is executed. The wildcard captures from the
   pattern match are available as `%0`, `%1`, etc.
 
@@ -292,6 +292,6 @@ A conforming implementation should support logging of commands executed by
 players with the SUSPECT flag. The implementation may also support broader
 command logging for administrative purposes.
 
-Commands executed by objects (via action lists, $-commands, or `@trigger`)
+Commands executed by objects (via action lists, \$-commands, or `@trigger`)
 should not be logged by default but may be logged when the VERBOSE flag is
 set on the object.

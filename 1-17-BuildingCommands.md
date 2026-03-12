@@ -197,7 +197,7 @@ The `@parent` command sets or clears the parent of an object. The parent
 object must have the PARENT_OK flag set, or be owned by the executor, or the
 executor must be a wizard.
 
-When a parent is set, the object inherits attributes, $-commands, and
+When a parent is set, the object inherits attributes, \$-commands, and
 ^-listeners from the parent (see Chapter 6, "Attributes," Attribute
 Inheritance).
 

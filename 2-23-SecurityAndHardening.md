@@ -92,7 +92,7 @@ Room #0 (the master room) is special: commands on objects in this room
 are available to everyone everywhere. Guard it carefully:
 
 - Only Wizards should be able to build in Room #0.
-- Review every object placed there. A malicious $-command in Room #0
+- Review every object placed there. A malicious \$-command in Room #0
   affects every player.
 - Audit Room #0 periodically for unexpected objects.
 

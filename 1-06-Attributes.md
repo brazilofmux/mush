@@ -16,7 +16,7 @@ two categories:
 
 2. **User-defined attributes** -- Created by users to store arbitrary data.
    User-defined attributes have no inherent server behavior but may contain
-   $-commands, ^-listen patterns, or data accessed by softcode.
+   \$-commands, ^-listen patterns, or data accessed by softcode.
 
 ## Attribute Names
 
@@ -325,11 +325,11 @@ A conforming implementation shall support the following attribute flags:
 | AF_WIZARD   | Only wizards can modify this attribute. |
 | AF_GOD      | Only God (`#1`) can modify this attribute. |
 | AF_LOCK   | Only the attribute's creator can modify it. |
-| AF_NOPROG   | This attribute is not searched for $-commands. |
+| AF_NOPROG   | This attribute is not searched for \$-commands. |
 | AF_PRIVATE  | This attribute is not inherited by child objects. |
 | AF_NOCLONE  | This attribute is not copied by `@clone`. |
-| AF_NOPARSE  | $-command patterns in this attribute are not evaluated. |
-| AF_REGEXP   | $-command and ^-listen patterns use regular expressions instead of wildcards. |
+| AF_NOPARSE  | \$-command patterns in this attribute are not evaluated. |
+| AF_REGEXP   | \$-command and ^-listen patterns use regular expressions instead of wildcards. |
 | AF_CASE     | Regular expression matching is case-sensitive (used with AF_REGEXP). |
 | AF_SAFE     | This attribute cannot be modified (server-enforced). |
 | AF_IS_LOCK  | This attribute contains a lock expression. |
@@ -427,7 +427,7 @@ all four reference implementations.
 
 Attributes participate in two action mechanisms:
 
-### $-Commands
+### \$-Commands
 
 An attribute whose value begins with `$<pattern>:` defines a user command.
 When a player types text matching \<pattern\>, the action list following the

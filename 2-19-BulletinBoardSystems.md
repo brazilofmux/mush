@@ -154,7 +154,7 @@ Most MUSHes set up boards for specific purposes:
 ## How BBSes Work (Under the Hood)
 
 Since bulletin boards are softcoded, they are built from the same tools
-covered in earlier chapters: $-commands, attributes, and user-defined
+covered in earlier chapters: \$-commands, attributes, and user-defined
 functions. A typical BBS object stores posts as numbered attributes:
 
 ```

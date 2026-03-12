@@ -163,7 +163,7 @@ organized by functional category.
 | Flag          | Char | Types     | Permission | Description |
 |---------------|------|----------|------------|-------------|
 | ZONE_MASTER   | --   | All      | Any        | Marks this object as a zone master. See Chapter 29 for zone behavior. |
-| ZONE_CONTENTS | --   | All      | Any        | When set on a zone master, objects in the zone master's contents list are searched for $-commands. |
+| ZONE_CONTENTS | --   | All      | Any        | When set on a zone master, objects in the zone master's contents list are searched for \$-commands. |
 | ZONE_PARENT   | --   | Things   | Any        | When set, this zone master also acts as a parent for objects in the zone. |
 
 **Compatibility Note:** Zone flag names and behaviors vary across
