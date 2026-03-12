@@ -310,6 +310,14 @@ toc-depth: 3
         print(f"Assembling {'volume ' + str(volume_number) if volume_number else 'book'}...")
 
         files = self.get_files_to_include(include_files, exclude_files)
+
+        # Filter out introduction files already handled by create_introduction()
+        if volume_number:
+            intro_name = f"{volume_number}-00-00-Volume{volume_number}Introduction.md"
+        else:
+            intro_name = "00-00-Introduction.md"
+        files = [f for f in files if f.name != intro_name]
+
         print(f"Including {len(files)} files")
 
         # Determine cover image
