@@ -1,0 +1,288 @@
+# Glossary Terms — MUSH Book Series
+# Curated list of key terms for glossary and index generation.
+#
+# Usage:
+#   - Run glossary_build.py to generate per-volume glossary and index files
+#   - book_assembler.py auto-includes glossary/index as back matter if present
+#
+# Fields:
+#   term:       Canonical display name (alphabetized)
+#   aliases:    Alternative forms to match when scanning chapters (optional)
+#   definition: 1-3 sentence definition for the glossary
+
+terms:
+
+  # === A ===
+
+  - term: "Action List"
+    aliases: ["action list", "action lists"]
+    definition: >
+      A sequence of one or more commands separated by semicolons, stored in
+      an attribute and executed by the server. Action lists are the primary
+      mechanism for triggering behavior in response to events.
+
+  - term: "Attribute"
+    aliases: ["attributes"]
+    definition: >
+      A named property of an object that holds a string value. Attributes
+      store descriptions, messages, MUSHcode programs, lock expressions,
+      and arbitrary user data.
+
+  - term: "Attribute Flag"
+    aliases: ["attribute flags"]
+    definition: >
+      A flag set on an individual attribute (as opposed to an object flag)
+      that controls the attribute's visibility, modifiability, or behavior.
+      Examples include AF_VISUAL, AF_DARK, AF_LOCK, and AF_REGEXP.
+
+  # === B ===
+
+  - term: "Builder"
+    aliases: ["builders"]
+    definition: >
+      A player who has permission to create rooms, exits, and things.
+      Building access is controlled by server configuration and may
+      require a Builder power or flag.
+
+  # === C ===
+
+  - term: "Channel"
+    aliases: ["channels"]
+    definition: >
+      A named communication conduit that allows players to send messages
+      to all other players who have joined the same channel, regardless
+      of location. Also called a comsys or communication channel.
+
+  - term: "Comsys"
+    aliases: ["comsystem", "communication system"]
+    definition: >
+      The communication channel subsystem. Implementation varies widely:
+      some servers have a hardcoded comsys, others use a loadable module,
+      and some rely entirely on softcode.
+
+  # === D ===
+
+  - term: "DARK"
+    definition: >
+      A flag that hides an object from content lists, or hides an attribute
+      from examination. On rooms, DARK hides all contents. On players,
+      DARK makes the player invisible and hidden from WHO lists.
+
+  - term: "Dbref"
+    aliases: ["dbrefs", "database reference", "database references"]
+    definition: >
+      A unique numeric identifier for every object in the database, written
+      as a number sign followed by an integer (e.g., #42). Dbrefs are
+      permanent and never reused while an object exists.
+
+  - term: "did_it"
+    aliases: ["did_it pipeline", "did_it()"]
+    definition: >
+      The server's standard message-and-action pipeline for command
+      results. Evaluates a lock, then triggers the appropriate success
+      or failure messages (to actor, to others) and an action list.
+
+  - term: "Dropto"
+    aliases: ["droptos"]
+    definition: >
+      A room property that specifies where objects go when dropped, or
+      where non-STICKY objects are swept when all players leave a STICKY
+      room. Set with @link on a room.
+
+  # === E ===
+
+  - term: "Enactor"
+    aliases: ["enactors"]
+    definition: >
+      The player or object that caused a command or action to execute.
+      Referred to as %# in MUSHcode. Distinguished from the executor,
+      which is the object actually running the code.
+
+  - term: "Evaluator"
+    aliases: ["evaluation engine", "expression evaluator"]
+    definition: >
+      The component of the server that processes MUSHcode expressions,
+      performing function calls, substitutions, and percent-code
+      replacement to produce output text.
+
+  - term: "Exit"
+    aliases: ["exits"]
+    definition: >
+      One of the four fundamental object types. Exits connect rooms and
+      allow movement between locations. An exit has a source (where it
+      is) and a destination (where it leads).
+
+  # === F ===
+
+  - term: "Flag"
+    aliases: ["flags"]
+    definition: >
+      A boolean property of an object that modifies its behavior or
+      visibility. Common flags include DARK, STICKY, WIZARD, HAVEN,
+      and INHERIT. Flags are set with the @set command.
+
+  # === G ===
+
+  - term: "God"
+    definition: >
+      The player object #1, which has absolute control over the server
+      and cannot be restricted by locks, permissions, or other access
+      controls. Some operations are reserved for God alone.
+
+  # === H ===
+
+  - term: "HAVEN"
+    definition: >
+      A flag that, when set on a player, blocks page messages. When set
+      on a room, disables the kill command in that room.
+
+  - term: "HOME"
+    definition: >
+      A virtual destination representing an object's home location. Every
+      object has a home; players can type 'home' to return to theirs.
+      Objects with the STICKY flag are sent HOME when dropped.
+
+  # === I ===
+
+  - term: "INHERIT"
+    definition: >
+      A flag that grants an object the privileges of its owner for the
+      purposes of MUSHcode execution. Without INHERIT, objects owned by
+      wizards do not automatically have wizard powers.
+
+  # === L ===
+
+  - term: "Lock"
+    aliases: ["locks"]
+    definition: >
+      A boolean expression evaluated against an object (typically a
+      player) to determine whether an action is permitted. Locks
+      control passage through exits, use of commands, picking up
+      objects, and many other interactions.
+
+  # === M ===
+
+  - term: "Master Room"
+    aliases: ["master room"]
+    definition: >
+      A designated room (commonly #0) whose contents provide global
+      commands available to all players everywhere. Objects in the
+      master room with $-commands are searched as a last resort during
+      command matching.
+
+  - term: "MUSH"
+    definition: >
+      Multi-User Shared Hallucination. A text-based online virtual world
+      server that combines a programmable object database with a
+      multi-user networking layer, allowing players to build, interact,
+      and program collaboratively.
+
+  - term: "MUSHcode"
+    aliases: ["mushcode", "softcode"]
+    definition: >
+      The programming language embedded in MUSH servers, based on
+      function evaluation and percent-code substitution. MUSHcode is
+      stored in object attributes and executed by the evaluation engine.
+
+  # === O ===
+
+  - term: "Object"
+    aliases: ["objects"]
+    definition: >
+      The fundamental unit of the MUSH database. Every entity in the
+      virtual world is an object of one of four types: room, thing,
+      exit, or player. Objects are identified by dbrefs and have
+      attributes, flags, and a location.
+
+  # === P ===
+
+  - term: "Parent"
+    aliases: ["parents", "parent chain", "parent object"]
+    definition: >
+      An object from which another object inherits attributes. When an
+      attribute is not found on an object, the server searches up the
+      parent chain. Set with the @parent command.
+
+  - term: "Percent-Code"
+    aliases: ["percent-codes", "percent code", "percent codes", "%-code", "%-codes"]
+    definition: >
+      A substitution token in MUSHcode beginning with % that is replaced
+      with a value during expression evaluation. Common percent-codes
+      include %# (enactor), %! (executor), %0-%9 (arguments), %r
+      (newline), and %t (tab).
+
+  - term: "Player"
+    aliases: ["players"]
+    definition: >
+      One of the four fundamental object types, representing a human
+      user's presence in the virtual world. Players can connect to the
+      server, move between rooms, execute commands, and own other objects.
+
+  - term: "Power"
+    aliases: ["powers"]
+    definition: >
+      A fine-grained permission granted to a player that allows specific
+      privileged operations without full wizard access. Examples include
+      Builder, Announce, and Tel_Anywhere. Power names and models vary
+      significantly across implementations.
+
+  # === Q ===
+
+  - term: "Queue"
+    aliases: ["queue entry", "command queue"]
+    definition: >
+      The mechanism by which MUSHcode commands are scheduled for
+      execution. Commands from @trigger, @wait, and @force (without
+      /now) are placed in the queue rather than executing immediately.
+
+  # === R ===
+
+  - term: "Room"
+    aliases: ["rooms"]
+    definition: >
+      One of the four fundamental object types. Rooms represent locations
+      in the virtual world and can contain players, things, and exits.
+      Rooms have no location of their own.
+
+  # === S ===
+
+  - term: "STICKY"
+    definition: >
+      A flag with different effects depending on object type. On things,
+      STICKY causes the object to be sent HOME when dropped. On rooms,
+      STICKY causes objects to be swept to the dropto when all players leave.
+
+  - term: "$-Command"
+    aliases: ["$-commands", "$-command", "$-Commands"]
+    definition: >
+      A user-defined command stored in an object attribute whose value
+      begins with $pattern:action. When a player types text matching
+      the pattern, the action list is executed.
+
+  # === T ===
+
+  - term: "Thing"
+    aliases: ["things"]
+    definition: >
+      One of the four fundamental object types, representing a generic
+      manipulable entity. Things can be picked up, dropped, and carried
+      by players. Also called an "object" informally, though technically
+      all four types are objects.
+
+  # === W ===
+
+  - term: "Wizard"
+    aliases: ["wizards"]
+    definition: >
+      A player with the WIZARD flag set, granting broad administrative
+      powers including the ability to examine, modify, and teleport any
+      object, bypass most locks, and execute privileged commands.
+
+  # === Z ===
+
+  - term: "Zone"
+    aliases: ["zones", "zone master", "Zone Master Object", "ZMO"]
+    definition: >
+      A grouping mechanism that associates objects or rooms with a
+      controlling master object for shared administration and command
+      access. Zone implementation varies significantly across servers.
