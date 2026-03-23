@@ -8,8 +8,7 @@ Target output: EPUB and PDF for Amazon KDP.
 ### Volume 1: The MUSH Standard
 A formal language and server specification, analogous to ANS Forth or ANS C.
 Defines the object model, command language, evaluation engine, functions, flags,
-permissions, and networking behavior. TinyMUSH and TinyMUX have agreed to
-implement this standard.
+permissions, and networking behavior.
 
 ### Volume 2: The MUSH User's Manual
 A comprehensive user's guide covering connecting, building, MUSHcode programming,
