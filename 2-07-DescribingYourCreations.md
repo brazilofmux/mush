@@ -186,8 +186,9 @@ interior of an enterable object:
 
 ## Custom Formatting
 
-Advanced builders can use the CONFORMAT and EXITFORMAT attributes on rooms
-to customize how contents and exits are displayed:
+On servers that support it (TinyMUX and PennMUSH), builders can use the
+CONFORMAT and EXITFORMAT attributes on rooms to customize how contents and
+exits are displayed:
 
 ```
 > &EXITFORMAT here = Exits: [iter(lexits(me),name(##),%b,|)]

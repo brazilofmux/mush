@@ -21,7 +21,7 @@ The database stores the following information for each object:
 | Owner | The dbref of the owning player. |
 | Location | The dbref of the containing object. |
 | Contents | The head of the contents linked list. |
-| Exits | The head of the exits linked list (rooms only). |
+| Exits | The head of the exits linked list. Exits may be attached to rooms, things, and players. |
 | Next | The next object in the contents/exits list. |
 | Home/Link | The home location or exit destination. |
 | Parent | The parent object dbref. |

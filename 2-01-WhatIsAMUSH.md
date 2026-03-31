@@ -33,10 +33,11 @@ detailed settings based on books, movies, television shows, or original
 worlds. The pose command lets you describe your character's actions in
 third person, and the result reads like a collaboratively written novel.
 
-**Building.** Every player on a MUSH can create rooms, objects, and exits.
-You can build a house, a dungeon, a space station, or an entire city. The
-building tools are simple but flexible, and the results are limited only
-by your imagination and your ability to describe them.
+**Building.** On most MUSHes, players can create rooms, objects, and exits
+(subject to server permissions and quotas). You can build a house, a
+dungeon, a space station, or an entire city. The building tools are simple
+but flexible, and the results are limited only by your imagination and your
+ability to describe them.
 
 **Programming.** MUSHes include a built-in programming language called
 MUSHcode (or softcode). With it, you can create interactive objects,
@@ -85,8 +86,9 @@ The terms are often confused. MUD (Multi-User Dungeon) is the broader
 category that includes all text-based multi-user virtual worlds. A MUSH is
 a specific type of MUD, distinguished by:
 
-- **Player building.** On a MUSH, every player can create rooms, objects,
-  and exits. On many MUDs, only administrators can build.
+- **Player building.** On a MUSH, players can typically create rooms,
+  objects, and exits (subject to permissions). On many MUDs, only
+  administrators can build.
 - **Softcode.** MUSHes have a built-in interpreted language that runs inside
   the game. Most MUDs rely on compiled code (C, C++, or similar) for game
   mechanics.

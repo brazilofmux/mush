@@ -89,8 +89,8 @@ organized by functional category.
 | Flag        | Char | Types        | Permission | Description |
 |-------------|------|-------------|------------|-------------|
 | DARK        | `D`  | All         | Any        | Hides the object. On rooms, suppresses the contents list. On things and players, hides them from the room's contents display. On exits, hides them from the exits list. |
-| OPAQUE      | --   | All         | Any        | Prevents players from seeing the contents of the object. On rooms, contents of objects in the room are hidden. |
-| LIGHT       | --   | All         | Any        | The object is visible even in a DARK room. Overrides DARK on the room for this specific object. |
+| OPAQUE      | `O`  | All         | Any        | Prevents players from seeing the contents of the object. On rooms, contents of objects in the room are hidden. |
+| LIGHT       | `l`  | All         | Any        | The object is visible even in a DARK room. Overrides DARK on the room for this specific object. |
 | VISUAL      | `V`  | All         | Any        | All attributes on this object are visible to everyone, as if every attribute had AF_VISUAL set. |
 | TRANSPARENT | `t`  | All         | Any        | Alias for SEETHRU. Allows looking through the object to see the other side. |
 | TERSE       | `q`  | Players     | Any        | The player sees only room names, not full descriptions, when moving. |
@@ -114,13 +114,13 @@ organized by functional category.
 | Flag        | Char | Types        | Permission | Description |
 |-------------|------|-------------|------------|-------------|
 | WIZARD      | `W`  | Players     | God        | Grants full administrative privileges. See Chapter 28 for the complete list of wizard capabilities. |
-| ROYALTY     | --   | Players     | Wizard     | Grants elevated read access and limited administrative capabilities. |
+| ROYALTY     | `Z`  | Players     | Wizard     | Grants elevated read access and limited administrative capabilities. |
 | INHERIT     | `I`  | All         | Any        | The object inherits its owner's permission level when executing commands. Without this flag, objects execute at basic permission level regardless of their owner's privileges. |
 | CHOWN_OK    | `C`  | Things      | Any        | Any wizard may `@chown` this object without the owner's intervention. |
 | DESTROY_OK  | `d`  | All         | Any        | Any player who controls the object may destroy it without the SAFE flag check. |
 | SAFE        | `s`  | All         | Any        | The object cannot be destroyed by `@destroy` unless the `/override` switch is used. |
-| CONTROL_OK  | --   | All         | Any        | The object's LCONTROL lock determines who has control, in addition to the owner and wizards. |
-| PARENT_OK   | --   | All         | Any        | Any player may `@parent` other objects to this one. |
+| CONTROL_OK  | `z`  | All         | Any        | The object's LCONTROL lock determines who has control, in addition to the owner and wizards. TinyMUSH only. Level 2. |
+| PARENT_OK   | `Y`  | All         | Any        | Any player may `@parent` other objects to this one. |
 
 ### Communication Flags
 
@@ -131,7 +131,7 @@ organized by functional category.
 | NOSPOOF     | `N`  | Players     | Any        | The server prefixes messages with the originator's identity, preventing spoofed communication. |
 | QUIET       | `Q`  | All         | Any        | Suppresses routine success messages (e.g., "Set." after `@set`). |
 | VERBOSE     | `v`  | All         | Any        | The object reports every command it executes to its owner. Used for debugging. |
-| AUDIBLE     | --   | All         | Any        | Messages from inside the object are relayed to the object's location. Works with FORWARDLIST. |
+| AUDIBLE     | `a`  | All         | Any        | Messages from inside the object are relayed to the object's location. Works with FORWARDLIST. |
 
 ### Execution and Debugging Flags
 
@@ -148,28 +148,32 @@ organized by functional category.
 | CONNECTED   | `c`  | Players     | Internal   | The player has at least one active network connection. Set and cleared by the server. This flag shall not be directly settable by users. |
 | SUSPECT     | `u`  | Players     | Wizard     | The player is under administrative monitoring. Commands executed by SUSPECT players may be logged. |
 | SLAVE       | `x`  | Players     | Wizard     | The player is restricted to a minimal command set. Used for newly created or restricted accounts. |
-| GUEST       | --   | Players     | Wizard     | The player is a guest account with reduced privileges. |
+| GUEST       | --   | Players     | Wizard     | The player is a guest account with reduced privileges. PennMUSH implements this as a flag; TinyMUX implements it as a power. |
 | ROBOT       | `r`  | Players     | Any        | The player is a program-controlled account, not a human user. |
-| IMMORTAL    | `i`  | Players     | God        | The player cannot be killed. |
+| IMMORTAL    | `i`  | Players     | Wizard     | The player cannot be killed. |
 
 ### Building Flags
 
 | Flag        | Char | Types        | Permission | Description |
 |-------------|------|-------------|------------|-------------|
-| OPEN_OK     | --   | Rooms       | Any        | Any player may `@open` exits from this room, subject to the LOPEN lock. |
+| OPEN_OK     | `z`  | Rooms       | Any        | Any player may `@open` exits from this room, subject to the LOPEN lock. |
 
 ### Zone Flags
 
-| Flag          | Char | Types     | Permission | Description |
-|---------------|------|----------|------------|-------------|
-| ZONE_MASTER   | --   | All      | Any        | Marks this object as a zone master. See Chapter 29 for zone behavior. |
-| ZONE_CONTENTS | --   | All      | Any        | When set on a zone master, objects in the zone master's contents list are searched for \$-commands. |
-| ZONE_PARENT   | --   | Things   | Any        | When set, this zone master also acts as a parent for objects in the zone. |
+Zone flag names and semantics vary significantly across implementations:
 
-**Compatibility Note:** Zone flag names and behaviors vary across
-implementations. Some implementations use ZONE as an object type rather than a
-flag. This standard specifies zone behavior through flags to accommodate all
-implementations.
+- **TinyMUSH:** Has a `ZONE` flag (`o`) that combines the zone-parent
+  concept with zone marking.
+- **PennMUSH:** Has a `SHARED` flag (`Z`, aliased as `ZONE`) for players
+  only, designating shared-control players.
+- **TinyMUX:** Uses the zone field (`@chzone`) without a dedicated zone
+  flag; zone behavior is controlled by the enter lock on the zone master
+  object.
+
+A conforming implementation shall provide a mechanism for designating zone
+master objects and controlling zone membership. The specific flags or
+mechanisms used are implementation-defined. See Chapter 29 for zone
+behavior.
 
 ## Implementation-Defined Flags
 
@@ -185,7 +189,7 @@ above. Common implementation-specific flags include:
 | VACATION    | TinyMUSH            | Indicates the player is on extended absence. |
 | CLOAK       | RhostMUSH           | Hides the player from WHO but more thoroughly than DARK. |
 | FUBAR       | RhostMUSH           | Severely restricts the player's capabilities. |
-| INDESTRUCTIBLE | RhostMUSH        | The object cannot be destroyed under any circumstances. |
+| INDESTRUCTIBLE | RhostMUSH, TinyMUX | The object cannot be destroyed under any circumstances. |
 | MARKER0-MARKER9 | TinyMUSH, TinyMUX | Ten general-purpose marker flags for administrative use. |
 
 Implementation-defined flags shall not conflict with the names of standard

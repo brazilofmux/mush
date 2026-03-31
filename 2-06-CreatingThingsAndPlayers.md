@@ -154,10 +154,10 @@ To rename an object:
 > @name Magic Sword = Flamebrand
 ```
 
-To rename yourself (requires your password):
+To rename yourself:
 
 ```
-> @name me = NewName mypassword
+> @name me = NewName
 ```
 
 ## Object Ownership and Quotas

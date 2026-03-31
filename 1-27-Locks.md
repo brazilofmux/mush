@@ -54,6 +54,14 @@ The following lock types are Level 2:
 | Forward   | `/forward` | Forwarding messages through this object. |
 | Filter    | `/filter` | Filtering messages through this location. |
 | Examine   | `/examine` | Examining a VISUAL object. |
+| Interact  | `/interact` | Interacting with this object (PennMUSH). |
+| Listen    | `/listen` | Listening to messages (PennMUSH). |
+| From      | `/from` | Receiving messages from this object (PennMUSH). |
+| Pay       | `/pay` | Paying this player (PennMUSH). |
+| MailForward | `/mailforward` | Forwarding mail (PennMUSH). |
+| Take      | `/take` | Taking objects from this container (PennMUSH). |
+| Dropto    | `/dropto` | Activating dropto on this room (PennMUSH). |
+| InFilter  | `/infilter` | Filtering incoming messages (PennMUSH). |
 
 ## Lock Key Expressions
 

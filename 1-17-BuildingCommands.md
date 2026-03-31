@@ -90,12 +90,8 @@ clone. Without it, the clone is owned by the executor.
 @name <object> = <new-name>
 ```
 
-The `@name` command changes an object's name. For players, `@name` also
-requires the current password:
-
-```
-@name me = NewName <password>
-```
+The `@name` command changes an object's name. The executor must control the
+target object (see Chapter 28).
 
 Player names must satisfy the naming rules in Chapter 5. Exit names may
 include aliases separated by semicolons.

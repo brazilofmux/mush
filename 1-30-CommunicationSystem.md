@@ -35,7 +35,8 @@ Each channel has the following properties:
 ```
 
 The `/add` switch creates a new channel with the specified name and optional
-privilege flags. The `/delete` switch removes a channel. Only the channel
+privilege flags. PennMUSH uses `@channel/add`; TinyMUX uses
+`@channel/create`. The `/delete` switch removes a channel. Only the channel
 owner or a wizard may delete a channel.
 
 ### Joining and Leaving

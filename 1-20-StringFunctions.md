@@ -306,11 +306,12 @@ to trim (default: space).
 ### squish()
 
 ```
-squish(<string>)
+squish(<string>[, <character>])
 ```
 
-Returns \<string\> with all runs of multiple spaces collapsed to a single
-space, and leading/trailing spaces removed.
+Returns \<string\> with all runs of the specified \<character\> collapsed to
+a single instance. If \<character\> is omitted, spaces are collapsed. Leading
+and trailing instances of the character are also removed.
 
 ## Escaping and Security
 

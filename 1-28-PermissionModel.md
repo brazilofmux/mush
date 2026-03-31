@@ -42,12 +42,17 @@ control, the action is denied.
 
 Objects (things and exits) may inherit their owner's privilege level. An
 object with the INHERIT flag set inherits wizard or royalty privileges from
-its owner. Without INHERIT, an object owned by a wizard operates at normal
-(mortal) privilege levels.
+its owner. Without INHERIT, an object owned by a wizard normally operates
+at mortal privilege levels.
+
+In TinyMUX, inheritance is also granted automatically when an object owns
+itself (`Owner(x) == x`), or when the owner has the INHERIT flag set. This
+means self-owned objects (e.g., those created by `@create` and then
+`@chowned` to themselves) inherit their owner's privileges without needing
+the INHERIT flag explicitly set.
 
 This separation prevents arbitrary softcode on wizard-owned objects from
-automatically having wizard powers. The INHERIT flag must be explicitly
-set on objects that need elevated privileges.
+automatically having wizard powers.
 
 The control predicate includes an inheritance check: a player controls an
 owned object only if the player inherits **or** the target object does not
@@ -165,23 +170,21 @@ table summarizes common permission requirements:
 | Examine any object | Wizard or `see_all` power. |
 | @search all | Wizard or `search` power. |
 
-## The MISTRUST Flag
+## The MISTRUST and TRUST Flags
 
-The MISTRUST flag (Level 2) restricts an object's ability to exercise
-control beyond its direct ownership:
+PennMUSH provides a MISTRUST flag that restricts an object's ability to
+exercise control beyond its direct ownership:
 
-- A MISTRUST object cannot control other objects via control locks.
-- A MISTRUST object cannot control objects through zone locks.
-- A MISTRUST object cannot inherit powers from its owner.
+- A MISTRUST object cannot control other objects via zone control.
+- The MISTRUST flag is available on things, exits, and rooms.
 
-This flag is used to create objects that function at reduced privilege levels
-even when owned by powerful players.
+PennMUSH also provides a TRUST flag (which is an alias for INHERIT). A
+TRUST object prevents other objects from controlling it (except wizards,
+the owner, or other TRUST objects owned by the same player) and allows
+the object to control its owner.
 
-## The TRUST Flag
-
-Conversely, the TRUST flag (Level 2) enables an object to be treated as
-its owner for permission purposes, similar to INHERIT but potentially
-broader in scope. The exact semantics are implementation-defined.
+These flags are PennMUSH-specific. TinyMUX and TinyMUSH do not provide
+them. Level 2.
 
 ## Remote Object Access
 

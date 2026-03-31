@@ -181,8 +181,8 @@ themselves.
 - A player with the TEL_ANYWHERE power may teleport themselves anywhere.
 - A player with the TEL_OTHER power may teleport other objects.
 - Wizards may teleport any object anywhere.
-- The destination's LTPORT lock is checked. If it fails, teleportation is
-  denied.
+- The destination's LTPORT lock is checked. If it fails, TOFAIL, OTOFAIL,
+  and ATOFAIL are triggered on the destination and teleportation is denied.
 - The origin's LTELOUT lock is checked. If it fails, teleportation from that
   location is denied.
 

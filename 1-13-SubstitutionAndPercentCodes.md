@@ -74,6 +74,11 @@ These codes provide information about the execution context:
 | `%+`    | number | The number of positional arguments passed to the current function. Level 2. |
 | `%c`    | text  | The last command executed. Implementation-defined. |
 | `%m`    | text  | The last command executed. Implementation-defined. |
+| `%:`    | objid | The enactor's object identifier (dbref:creation-time). Level 2. |
+| `%k`    | text  | The enactor's moniker (ANSI-colored name). Level 2. |
+| `%K`    | text  | The enactor's moniker, capitalized. Level 2. |
+| `%\|`   | text  | The output of the previous command in a piped command list. Level 2. |
+| `%=<attr>` | text | The value of \<attr\> on the executor, equivalent to `v(<attr>)`. Level 2. |
 
 ### Understanding %!, %#, and %@
 
@@ -233,10 +238,12 @@ Example:
 Hello World
 ```
 
-## Iteration Substitutions (Level 2)
+## Iteration Substitutions
 
 These codes provide access to iteration context in `iter()`, `@dolist`, and
-similar constructs:
+similar constructs. The `itext()` function is available in all four
+reference implementations; the `%i<n>` percent-code form is the TinyMUX
+shorthand for `itext(n)`.
 
 | Code      | Value | Description |
 |-----------|-------|-------------|

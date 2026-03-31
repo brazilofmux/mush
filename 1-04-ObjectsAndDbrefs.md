@@ -35,9 +35,9 @@ standard:
 
 A conforming implementation shall recognize these three special values. An
 implementation may define additional negative dbref values for
-implementation-specific purposes (for example, TinyMUX defines `#-4` as
-NOPERM, indicating a permission failure), but shall not redefine the meaning
-of `#-1`, `#-2`, or `#-3`.
+implementation-specific purposes (for example, TinyMUX and RhostMUSH define
+`#-4` as NOPERM, indicating a permission failure), but shall not redefine
+the meaning of `#-1`, `#-2`, or `#-3`.
 
 ### Valid Object Test
 
@@ -211,19 +211,21 @@ that need frequent count operations may wish to cache the count.
 
 ### Object #0: The Master Room
 
-The first object in the database (`#0`) shall be a room. It serves two
-purposes:
+The first object in the database (`#0`) shall be a room. By convention, it
+serves as the **master room** -- the container for global commands and exits
+that are accessible from any location. When command matching fails to find a
+match in the player's current location, the master room is searched as a
+fallback (see Chapter 9).
 
-1. **Starting location:** Newly created players are placed in the master room
-   unless the implementation's configuration specifies a different starting
-   room.
+The master room, the player starting room, and the default home location
+are distinct concepts that may be configured independently. TinyMUX provides
+`master_room`, `player_starting_room`, and `default_home` as separate
+configuration parameters. PennMUSH has `player_start` and
+`master_room` as separate options. While `#0` commonly serves all three
+roles, a conforming implementation should allow each to be configured
+independently.
 
-2. **Global commands and exits:** Objects placed in the master room may provide
-   commands and exits that are accessible from any location. When command
-   matching fails to find a match in the player's current location, the master
-   room is searched as a fallback (see Chapter 9).
-
-The master room shall not be destroyed. An attempt to destroy `#0` shall fail
+Object `#0` shall not be destroyed. An attempt to destroy `#0` shall fail
 with an error message.
 
 ### Object #1: God

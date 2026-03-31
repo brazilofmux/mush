@@ -47,7 +47,7 @@ player's own inventory, or on the player themselves. The server searches:
 2. Objects in the player's inventory.
 3. Objects in the current room.
 4. The current room itself.
-5. The master room (#0) and zone objects.
+5. The master room (configurable; commonly `#0`) and zone objects.
 
 ### Command Conflicts
 

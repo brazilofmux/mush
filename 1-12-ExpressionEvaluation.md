@@ -86,15 +86,22 @@ further evaluation. For example:
 The inner `mul(2, 3)` and `sub(10, 5)` are evaluated first, producing `6`
 and `5`, which become the arguments to `add(6, 5)`, producing `11`.
 
-The maximum recursion depth is limited to prevent infinite loops (see Chapter
-11, "Execution Limits"). A conforming implementation shall support a function
-nesting depth of at least 50.
+The maximum recursion depth is limited to prevent infinite loops.
+Implementations typically enforce multiple separate limits: a function
+nesting depth limit (`func_nest_lim`), a total function invocation count
+(`func_invk_lim`), and possibly a stack depth limit. See Chapter 14 for the
+complete specification of function invocation limits. A conforming
+implementation shall support a function nesting depth of at least 50 and
+a total invocation count of at least 2,500.
 
 ### Space Compression
 
-By default, the evaluator compresses consecutive spaces in the output to a
-single space. This behavior can be suppressed by the calling context (some
-functions preserve spaces in their arguments).
+Whether the evaluator compresses consecutive spaces in the output to a
+single space is controlled by a server configuration option
+(`space_compress` in TinyMUX/TinyMUSH) and by per-context evaluation flags
+(`EV_NO_COMPRESS`). Many modern configurations disable space compression.
+When enabled, the behavior can be suppressed by specific calling contexts
+(some functions preserve spaces in their arguments).
 
 **Compatibility Note:** Space compression behavior varies across
 implementations and contexts. TinyMUSH compresses spaces by default in most

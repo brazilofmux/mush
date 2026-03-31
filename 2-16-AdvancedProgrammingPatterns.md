@@ -127,10 +127,12 @@ When anyone in the room says something containing "knock", the emit fires.
 Run code when a player connects or disconnects:
 
 ```
-> &ACONNECT me = @pemit me = Welcome back! You have
-  [mail(me)] mail messages.
+> &ACONNECT me = @pemit me = Welcome back!
 > &ADISCONNECT me = &LAST_SEEN me = [secs()]
 ```
+
+Note: The mail system's softcode API varies by implementation. Check your
+server's help for the correct function to query mail counts.
 
 ### Zone-Based Events
 

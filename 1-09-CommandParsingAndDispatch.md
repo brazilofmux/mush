@@ -70,8 +70,8 @@ Single-character prefix commands are checked first. These are:
 | `:`    | `pose`     | `:text` is equivalent to `pose text` |
 | `;`    | `semipose` | `;text` is equivalent to `pose's text` (no space after name) |
 | `\`    | `@emit`    | (Implementation-defined; some implementations use `\\`) |
-| `#`    | `@force`   | `#<dbref> command` forces the object (wizard only) |
-| `&`    | `@set`     | `&attr object=value` sets an attribute |
+| `#`    | `@force`   | `#<dbref> command` forces the object (requires control; PennMUSH also requires the executor to be a player or thing) |
+| `&`    | `@set`     | `&attr object=value` sets an attribute (spaces between `&` and the attribute name are permitted) |
 
 If the first character of the input matches a prefix command, the remainder
 of the input is passed as the argument to the corresponding command. No
@@ -137,6 +137,10 @@ is equivalent to:
 
 If the input does not match a built-in command, the server checks whether it
 matches the name or alias of an exit in the player's current room.
+
+**Compatibility Note:** The relative priority of exit matching versus
+built-in commands may vary by implementation or configuration. Some
+implementations allow exits to override certain built-in commands.
 
 Exit matching considers:
 
@@ -279,6 +283,13 @@ be recognized regardless of the player's state. `QUIT` terminates the network
 connection. `WHO` displays the list of connected players.
 
 These commands shall be matched case-insensitively.
+
+### Command Piping
+
+Some implementations (TinyMUX and TinyMUSH) support **command piping**,
+where the output of one command is captured and made available to the next
+command in a semicolon-separated list via the `%|` substitution code. This
+allows commands to pass data forward in a pipeline-like fashion. Level 2.
 
 ### Command Prefix Characters
 

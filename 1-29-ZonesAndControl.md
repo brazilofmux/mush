@@ -78,13 +78,16 @@ Zone controllers cannot:
 
 ### Zone Lock
 
-The zone lock is set on the ZMO:
+The zone lock determines who may act as a zone controller. The mechanism
+for setting this lock varies across implementations:
 
-```
-@lock/zone <zone-master> = <key-expression>
-```
+- **PennMUSH:** Uses `@lock/zone <ZMO> = <key-expression>`.
+- **TinyMUX:** Uses the enter lock (`@lock <ZMO> = <key-expression>`) on
+  the ZMO. The ZMO must have the ZONE flag set.
+- **TinyMUSH:** Uses the control lock on the ZMO. The ZMO must have
+  CONTROL_OK set to allow zone-based control delegation.
 
-Common patterns include:
+Common lock patterns (PennMUSH syntax):
 
 ```
 @lock/zone ZMO = =Builder1 | =Builder2 | =Builder3
@@ -116,7 +119,9 @@ its previous room), zone transition events are triggered:
 | AZLEAVE   | Action list triggered on zone departure. |
 
 Zone transition events are triggered on the ZMO. They fire before the
-destination room's OENTER/AENTER events. Level 2.
+destination room's OENTER/AENTER events. These attributes are
+PennMUSH-specific; TinyMUX and TinyMUSH do not support zone transition
+events. Level 2.
 
 ## Zone Communication
 

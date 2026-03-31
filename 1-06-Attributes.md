@@ -243,7 +243,9 @@ passwords in a hashed or encrypted form.
 
 ### Format Attributes (Level 2)
 
-Format attributes allow objects to customize the display of standard output:
+Format attributes allow objects to customize the display of standard output.
+These attributes are available in TinyMUX and PennMUSH. TinyMUSH and
+RhostMUSH do not support them. Level 2.
 
 | Attribute    | Description |
 |--------------|-------------|
@@ -257,8 +259,12 @@ the result in place of the default display format.
 
 ### Lock Attributes
 
-Lock expressions are stored as attributes. The following lock attributes are
-standard:
+Lock expressions are stored as attributes. The attribute names shown below
+are the internal constant names used in source code. User-visible names vary
+by implementation: TinyMUX and TinyMUSH use names like `EnterLock`,
+`LeaveLock`, `OpenLock`; PennMUSH uses a named lock system (`@lock/enter`,
+`@lock/leave`) where locks are not separate attributes but entries in a
+lock table. The following lock attributes are standard:
 
 | Attribute  | Lock Type | Controls |
 |------------|-----------|----------|
@@ -271,7 +277,7 @@ standard:
 | LRECEIVE   | Receive   | Receiving objects |
 | LDROP      | Drop      | Dropping the object |
 | LTPORT     | Teleport  | Teleporting to the object |
-| LTELOUT    | Teleport-out | Teleporting from the location |
+| LTELOUT    | Teleport-out | Teleporting from the location. TinyMUX and TinyMUSH only. |
 | LLINK      | Link      | Linking exits to the object |
 | LPARENT    | Parent    | Parenting to the object |
 | LCONTROL   | Control   | Controlling the object |

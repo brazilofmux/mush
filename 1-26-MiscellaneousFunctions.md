@@ -123,48 +123,8 @@ parameters is implementation-defined. Level 2.
 
 ## Type Validation
 
-### isnum()
-
-```
-isnum(<string>)
-```
-
-Returns 1 if \<string\> represents a valid number (integer or floating-point),
-and 0 otherwise.
-
-### isint()
-
-```
-isint(<string>)
-```
-
-Returns 1 if \<string\> represents a valid integer, and 0 otherwise. Level 2.
-
-### isdbref()
-
-```
-isdbref(<string>)
-```
-
-Returns 1 if \<string\> is a valid dbref referring to an existing object, and
-0 otherwise.
-
-### isobjid()
-
-```
-isobjid(<string>)
-```
-
-Returns 1 if \<string\> is a valid object identifier, and 0 otherwise.
-Level 2.
-
-### isword()
-
-```
-isword(<string>)
-```
-
-Returns 1 if \<string\> contains only alphabetic characters, and 0 otherwise.
+The type testing functions (`isnum()`, `isint()`, `isdbref()`, `isobjid()`,
+`isword()`) are specified in Chapter 24, "Boolean and Comparison Functions."
 
 ### valid()
 
@@ -173,7 +133,8 @@ valid(<category>, <string>)
 ```
 
 Returns 1 if \<string\> is valid for the specified \<category\>, and 0
-otherwise. See Chapter 20 for details.
+otherwise. Common categories include `attrname`, `objectname`, `playername`,
+and `password`. The set of categories is implementation-defined.
 
 ## Control Flow
 
@@ -214,7 +175,9 @@ while(<condition-function>, <body-function>, <initial-value> [, <limit>])
 Repeatedly evaluates \<body-function\> as long as \<condition-function\>
 returns true. The result of each iteration is passed to the next as `%0`.
 The optional \<limit\> caps the number of iterations (default is
-implementation-defined, typically 100-10000). Level 2.
+implementation-defined, typically 100-10000). Available in TinyMUSH and
+RhostMUSH only; TinyMUX and PennMUSH do not provide this function.
+Level 2.
 
 ### foreach()
 

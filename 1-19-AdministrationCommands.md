@@ -12,14 +12,15 @@ privileges or specific powers.
 
 ```
 @shutdown
-@shutdown/abort
 ```
 
 The `@shutdown` command shuts down the MUSH server. The database is saved
 before shutdown. This command requires wizard privileges.
 
-The `/abort` switch cancels a pending shutdown, if the implementation supports
-delayed shutdown.
+Available switches are implementation-defined. PennMUSH provides `/reboot`
+and `/panic`; TinyMUSH provides `/abort` (which triggers an abnormal
+termination with core dump, not a cancellation of a pending shutdown).
+TinyMUX provides no switches.
 
 ### @restart
 
@@ -34,15 +35,16 @@ requires wizard privileges. Level 2.
 ### @dump
 
 ```
-@dump [/paranoid]
+@dump
 ```
 
 The `@dump` command forces an immediate database save. This creates a
 checkpoint of the current database state. Normal database dumps occur
 automatically at intervals configured by the server administrator.
 
-The `/paranoid` switch (if supported) performs additional consistency checks
-during the dump.
+PennMUSH provides a `/paranoid` switch that performs additional consistency
+checks during the dump. This switch is not available in TinyMUX or
+TinyMUSH. Level 2.
 
 ## Player Management
 
@@ -115,15 +117,19 @@ Whether quota enforcement is enabled is a server configuration option.
 The `@halt` command removes all pending queue entries for the specified object
 (or the player, if no object is specified). See Chapter 11 for full details.
 
-### @allhalt
+### @halt/all
 
 ```
-@allhalt
+@halt/all
 ```
 
-The `@allhalt` command clears all entries from the command queue for all
+The `@halt/all` command clears all entries from the command queue for all
 objects. Requires wizard privileges or the HALT_ANYTHING power. This is an
 emergency command for stopping runaway softcode.
+
+TinyMUX and TinyMUSH use `@halt/all`. PennMUSH provides both `@halt/all`
+and the alias `@allhalt`. RhostMUSH uses `@halt/all`. Conforming
+implementations shall support the `/all` switch on `@halt`.
 
 ### @ps
 
@@ -168,7 +174,13 @@ Example:
 
 The `@if` command evaluates \<condition\>. If the result is true (non-zero
 and non-empty), the \<true-action\> is executed. Otherwise, the optional
-\<false-action\> is executed.
+\<false-action\> is executed. Level 2.
+
+TinyMUX provides `@if` (which handles both the true and false branches).
+PennMUSH provides `@ifelse` (with `@skip` as an alias) but not `@if`.
+The two commands are functionally identical. TinyMUSH and RhostMUSH do not
+provide either command; equivalent logic must be achieved with `@switch` or
+the `ifelse()` function.
 
 Example:
 
@@ -184,7 +196,7 @@ Example:
 
 The `@dolist` command iterates over a list, executing \<action\> once for
 each element. Within the action, `##` is replaced with the current element
-and `#@` is replaced with the current position (starting from 0).
+and `#@` is replaced with the current position (starting from 1).
 
 The `/delimit` switch specifies a custom list separator (default is space).
 
@@ -255,7 +267,8 @@ The `@list` command displays lists of server-defined items. Common categories:
 ```
 
 The `@uptime` command displays how long the server has been running since
-its last restart. Level 2.
+its last restart. Available in PennMUSH (`@uptime`) and RhostMUSH
+(`+uptime`). TinyMUX and TinyMUSH do not provide this command. Level 2.
 
 ## Object Administration
 
@@ -304,7 +317,9 @@ they connect. Requires wizard privileges.
 ```
 
 The `@doing` command sets the player's DOING message, displayed in the WHO
-list.
+list. TinyMUX and TinyMUSH provide `@doing` as a built-in command.
+PennMUSH does not have `@doing`; players set their DOING message via the
+`DOING` connection-level command or `@poll`. Level 2.
 
 ## Configuration
 
@@ -316,7 +331,13 @@ list.
 ```
 
 The `@function` command registers or removes a global user-defined function.
-See Chapter 14 for details. Requires the GLOBAL_FUNCS power.
+See Chapter 14 for details.
+
+Permission requirements vary by implementation: TinyMUX and TinyMUSH
+restrict `@function` to God (privilege level 1). PennMUSH requires the
+`Global_Funcs` power. RhostMUSH requires wizard privileges. A conforming
+implementation shall restrict `@function` to sufficiently privileged
+administrators; the exact mechanism is implementation-defined.
 
 ### @attribute
 
@@ -360,8 +381,10 @@ The `WHO` command displays a list of currently connected players, including
 their names, idle times, connection times, and DOING messages. The optional
 pattern filters the list.
 
-Players with the DARK flag (and CAN_HIDE power) or the UNFINDABLE flag may
-be hidden from the WHO list, depending on server configuration.
+WHO visibility of privileged players is implementation-defined. Common
+mechanisms include the DARK flag (which may require a `Can_Dark` or
+`Can_Hide` power), the UNFINDABLE flag, and the `Hidden` power. The
+interaction between these flags and powers varies across implementations.
 
 ### DOING
 

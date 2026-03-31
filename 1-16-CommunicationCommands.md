@@ -86,9 +86,9 @@ without any name prefix. The message appears exactly as typed.
 @pemit <target-list> = <message>
 ```
 
-The `@pemit` command sends a message to one or more specific players. The
-message is seen only by the named recipients. The \<target-list\> is a
-space-separated list of player names or dbrefs.
+The `@pemit` command sends a message to one or more specific objects. The
+message is seen only by the named recipients. The \<target-list\> is a list
+of names or dbrefs separated by spaces or commas.
 
 The HAVEN flag does not block @pemit messages. HAVEN blocks `page` messages
 and, in some implementations, the `kill` command. The PEMIT_ALL power
@@ -122,7 +122,9 @@ or have appropriate permissions.
 ```
 
 The `@femit` command is equivalent to `@emit` but causes the message to
-appear as if emitted from the specified object's location. Level 2.
+appear as if emitted from the specified object's location. Available in
+TinyMUX, TinyMUSH, and RhostMUSH. PennMUSH does not provide this command.
+Level 2.
 
 ## Remote Communication
 
@@ -153,7 +155,8 @@ The recipient's LPAGE lock is checked. If it fails, the page is rejected and
 the sender sees the recipient's REJECT attribute (if set) or a default
 rejection message.
 
-Multiple recipients may be specified by separating names with spaces.
+Multiple recipients may be specified by separating names with spaces or
+commas.
 
 ### whisper
 

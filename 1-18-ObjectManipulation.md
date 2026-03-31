@@ -88,7 +88,8 @@ If an attribute name is specified after `/`, only that attribute is displayed.
 | `/brief`   | Show only the object header, not attributes. | 1 |
 | `/full`    | Show all attributes, including internal flags. | 2 |
 | `/parent`  | Show inherited attributes from the parent chain. | 2 |
-| `/owner`   | Show the owner of each attribute. | 2 |
+| `/owner`   | Show the owner of each attribute. TinyMUSH only. | 2 |
+| `/debug`   | Show debug information. TinyMUX only. | 2 |
 
 ### Permissions
 
@@ -192,14 +193,13 @@ Objects with the SAFE flag require the `/override` switch to destroy. Objects
 Some implementations delay destruction by one database cycle, setting the
 GOING flag and allowing the destruction to be canceled by clearing the flag.
 
-### @undestroy
+### Canceling Destruction
 
-```
-@undestroy <object>
-```
-
-If the implementation uses delayed destruction, `@undestroy` cancels the
-pending destruction of an object with the GOING flag. Level 2.
+If the implementation uses delayed destruction, the pending destruction of
+an object with the GOING flag may be canceled. PennMUSH provides an
+`@undestroy` command for this purpose. TinyMUX, TinyMUSH, and RhostMUSH
+cancel pending destruction by clearing the GOING flag with
+`@set <object> = !GOING`. Level 2.
 
 ## Object Movement
 

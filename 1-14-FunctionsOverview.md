@@ -79,8 +79,9 @@ However, many functions strip leading and trailing whitespace from their
 arguments. Whether a specific function strips whitespace is noted in its
 specification.
 
-When space compression is active (the default in most evaluation contexts),
-consecutive spaces within arguments are compressed to a single space.
+When space compression is active, consecutive spaces within arguments are
+compressed to a single space. Whether space compression is enabled by
+default is implementation-defined (see Chapter 12).
 
 ## Return Values
 
@@ -235,7 +236,8 @@ through `%9`. The function behaves identically to calling
 14
 ```
 
-Global functions require the GLOBAL_FUNCS power to register.
+Permission to register global functions is implementation-defined (see
+Chapter 19).
 
 ## Function Invocation Limits
 
