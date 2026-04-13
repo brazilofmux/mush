@@ -286,6 +286,69 @@ The `FLAG^` syntax checks whether the player has a specific flag set.
 > @lock/speech courtroom = ROLE:judge* | ROLE:lawyer*
 ```
 
+## Zones: Shared Ownership
+
+A **zone** is a mechanism for delegating control over a group of
+objects to someone who is not their owner. If you build a tavern and
+you want your co-GM to be able to modify the rooms, set descriptions,
+and open new exits without transferring ownership, zones are the
+tool.
+
+### The Zone Object
+
+A zone is just a regular object (typically a THING or a ROOM) that
+acts as a shared-access marker. Set its ownership to you, then lock
+it so that the people you want to trust pass:
+
+```
+> @create Tavern Zone
+You create Tavern Zone with dbref #412.
+> @lock #412 = *Morgan | *River
+```
+
+### Assigning Objects to the Zone
+
+Each room or object you want to share is then marked as zoned to
+that object:
+
+```
+> @chzone Tavern=#412
+> @chzone #415=#412         (a room you built)
+> @chzone #418=#412         (another room)
+```
+
+Anyone who passes the zone's lock is now treated as a co-controller
+of those objects: they can `@set`, `@describe`, `@dig` new exits from
+zoned rooms, and so on, without being wizards or the original owner.
+
+### Per-Engine Notes
+
+- On PennMUSH, the control check uses `@lock/zone` on the zone
+  object.
+- On TinyMUX, the zone object's `enter` lock controls access.
+- On TinyMUSH, the zone object's default/control lock is used, and
+  the prospective controller must pass the lock and hold the
+  `CONTROL_OK` flag on themselves.
+- RhostMUSH uses its own zone model — check your server's help.
+
+### When to Use Zones
+
+- **Co-GMs on a shared build.** Most common use: give trusted
+  collaborators write access without making them wizards.
+- **Player-owned venues.** A player runs a tavern; their staff can
+  edit the tavern rooms but not the rest of the grid.
+- **Shared faction assets.** A faction leader holds the zone; faction
+  officers pass the zone lock.
+
+### Limits of Zones
+
+- Zones grant **control**, not ownership. The original owner can still
+  destroy or rename the objects.
+- Zones do not grant wizard powers — the zoned user can only do
+  things a normal owner could do.
+- On engines where zones are optional or differently implemented, a
+  shared-ownership plan built on zones may not port cleanly.
+
 ## Tips
 
 - **Always test your locks.** Have another player (or a test character) try

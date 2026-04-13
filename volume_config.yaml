@@ -87,6 +87,8 @@ volumes:
       - 2-14-*.md           # Lists and Iteration
       - 2-15-*.md           # User-Defined Commands and Functions
       - 2-16-*.md           # Advanced Programming Patterns
+      - 2-16a-*.md          # Modern Features (JSON, SQL, WebSockets, GMCP)
+      - 2-16b-*.md          # Scheduled Tasks (@cron)
       # Part IV: Community and Communication
       - 2-17-*.md           # Channels
       - 2-18-*.md           # The Mail System

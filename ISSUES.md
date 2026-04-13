@@ -483,14 +483,17 @@ reference implementations.
 
 ## Volume 2: Coverage Gaps
 
-- [ ] **No coverage of zones.** Mentioned briefly in Ch 15-16
-  references but never introduced or explained. [Claude]
+- [x] **No coverage of zones.** New "Zones: Shared Ownership" section
+  added to 2-09 (Locks and Security) covering zone objects, @chzone,
+  per-engine locking differences, and use cases.
 
-- [ ] **No coverage of @power command.** Ch 23 uses `@power Morgan =
-  announce` but powers are never explained as a concept. [Claude]
+- [x] **No coverage of @power command.** New "Granting Capabilities:
+  @power" section added to 2-16 covering the command, per-engine
+  power-set divergence, and granting guidelines.
 
-- [ ] **No coverage of @force command.** Mentioned in security warnings
-  (Ch 23) but never formally documented. [Claude]
+- [x] **No coverage of @force command.** New "Running Code as Another
+  Object: @force" section added to 2-16 covering queued vs. immediate
+  execution, control requirements, and appropriate/inappropriate use.
 
 - [ ] **No dedicated explanation of how help systems differ across
   servers.** Volume 2 tells users to type `help`, which is reasonable,
@@ -502,19 +505,17 @@ reference implementations.
   "Using the Help System on Real Servers" would make the manual more
   accurate and more useful. [Codex]
 
-- [ ] **Opportunity: Add a "Modern Features" chapter to Volume 2.** This
-  should cover JSON manipulation, SQL queries (using the MUX cursor
-  API as a model), and WebSockets/GMCP for modern client integration.
-  The current repository provides concrete examples for this chapter:
-  TinyMUX 2.14 help includes `@cron`, `gmcp()`, `json()`, `json_query()`,
-  `json_mod()`, `letq()`, `mailsend()`, and `printf()`, and the source
-  contains WebSocket support. Right now Volume 1 often treats these as
-  optional or future-facing while Volume 2 barely mentions them. [Gemini,
-  refreshed against current src]
+- [x] **Opportunity: Add a "Modern Features" chapter to Volume 2.**
+  New chapter `2-16a-ModernFeatures.md` covers JSON
+  (produce/validate/query/mutate), SQL (single-result and cursor-based
+  queries), WebSockets, and GMCP, with portability guidance and
+  security warnings. Added to volume_config.yaml.
 
-- [ ] **Opportunity: Add a "Scheduled Tasks" chapter to Volume 2.**
-  Introduce the `@cron` command system for automated maintenance and
-  game-world events. [Gemini]
+- [x] **Opportunity: Add a "Scheduled Tasks" chapter to Volume 2.**
+  New chapter `2-16b-ScheduledTasks.md` covers `@cron`, cron syntax,
+  `@crontab`/`@crondel`, restart persistence via `@startup`,
+  alternatives on other engines, a worked weather-tick example, and
+  operational tips. Added to volume_config.yaml.
 
 ---
 

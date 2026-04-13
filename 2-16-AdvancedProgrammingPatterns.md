@@ -279,6 +279,112 @@ Shows pending commands in the queue. Useful for finding runaway code.
 Clears all pending queue entries for your character. Use this if code is
 looping out of control.
 
+## Running Code as Another Object: @force
+
+`@force` runs a command as if a different object had typed it. It is
+a wizard-level primitive — you cannot `@force` an object you do not
+control — but it is the foundation for many automated effects.
+
+```
+> @force me = say Hello
+You say, "Hello"
+> @force #412 = @emit The tavern door creaks open.
+```
+
+The first form runs `say Hello` as if you had typed it (useful mainly
+in scripts). The second form makes object #412 emit a message into
+its location.
+
+### Queued vs. Immediate Execution
+
+`@force` is **queued by default** on TinyMUX and TinyMUSH: the forced
+command goes into the command queue and runs on the next cycle, not
+inline with the current command. If you need the forced command to
+run *right now* — for example, because its return value or side
+effect must be visible before the next statement — use the `/now`
+switch:
+
+```
+> @force/now #412 = @emit Tavern opens.
+> think v(STATUS)         (immediate effect of the @emit's attributes)
+```
+
+Without `/now`, the `think` runs before the `@emit`.
+
+### Control Requirements
+
+You may `@force` only objects you control — typically ones you own,
+or ones zoned to you (see Chapter 9). Wizards can force anything.
+`@force` never elevates privilege: the forced command runs with the
+target object's permissions, not yours.
+
+### When to Use @force
+
+- **Announcement objects.** Room furniture that emits ambient messages
+  on a schedule can be driven by `@force <self> = @emit ...` from a
+  timer.
+- **Proxy commands.** A ticket machine forces itself to perform the
+  side-effect of issuing the ticket.
+- **Administrative automation.** Staff bots that cycle rooms,
+  post announcements, or run events.
+
+### When Not to Use @force
+
+- **To impersonate players.** Don't. Every engine logs wizard use of
+  `@force`, and forcing a player to "say" something is a serious
+  breach of trust. Use `@pemit` or `@emit` to narrate *about* a
+  character, not to put words in their mouth.
+- **To bypass locks.** If the target object's lock denies you, forcing
+  a different object through doesn't change the fact that you're
+  going around a deliberate restriction.
+
+## Granting Capabilities: @power
+
+Building staff sometimes needs capabilities that normal players lack
+— the ability to teleport freely, the ability to boot an abusive
+connection, the ability to see any object's queue — without being
+promoted all the way to wizard. Powers (Chapter 8 of the Standard)
+fill that role on engines that implement them.
+
+```
+> @power Morgan = tel_anywhere
+Morgan is granted the 'tel_anywhere' power.
+> @power Morgan = !tel_anywhere
+Morgan has the 'tel_anywhere' power removed.
+```
+
+Use `!` in front of the power name to revoke it.
+
+### Available Powers Vary Sharply by Engine
+
+The exact set of powers and their names differ between PennMUSH,
+TinyMUX, TinyMUSH, and RhostMUSH — sometimes wildly. A partial
+sampling:
+
+| Capability | PennMUSH | TinyMUX |
+|------------|----------|---------|
+| Teleport self anywhere | `Tport_Anywhere` | `tel_anywhere` |
+| Boot connections | `Boot` | `boot` |
+| Bypass build restrictions | `Builder` | `builder` |
+| Broadcast `@wall` | `Announce` | `announce` |
+
+Several capabilities are PennMUSH-only (`Pemit_All`, `Huge_Queue`,
+`Login_Anytime`). RhostMUSH has a completely different permission
+architecture with ~48 powers, revocable "depowers," ~200 toggles, and
+a totem system. Always check `help powers` on your target server for
+the actual available set.
+
+### The Right Mindset
+
+- **Grant the narrowest power that does the job.** Don't give `Builder`
+  if someone only needs to `@describe` rooms in a zone — use zones
+  instead.
+- **Document who has what.** A simple `&STAFF_POWERS #1 = ...` note on
+  God or a staff-manager object keeps the picture legible.
+- **Revoke on departure.** When a staff member steps down, sweep
+  their powers. A dormant character with lingering wizard-adjacent
+  capabilities is a standing security risk.
+
 ## Quick Reference
 
 | Pattern | When To Use |
@@ -290,3 +396,7 @@ looping out of control.
 | Register caching | Avoiding repeated expensive lookups. |
 | Input validation | Every command that accepts player input. |
 | TRACE flag | Debugging complex expressions. |
+| `@force` | Running code as a controlled object. |
+| `@force/now` | When the effect must complete before the next step. |
+| `@power` | Granting narrow capabilities without promoting to wizard. |
+| Zones (Ch 9) | Sharing build/edit access without transferring ownership. |
