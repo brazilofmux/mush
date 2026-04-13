@@ -350,24 +350,59 @@ default flags for user-defined attribute names. See Chapter 6 for details.
 
 ## Help System
 
+A conforming implementation shall provide at least a topic-based help
+lookup command. The `help` command with an optional \<topic\> argument
+is the common entry point.
+
 ### help
 
 ```
 help [<topic>]
 ```
 
-The `help` command displays help text on the specified topic. Without an
-argument, it displays a general help index. The help system reads from text
-files maintained by the server administrator.
+The `help` command displays help text on the specified topic. Without
+an argument, it displays a general index. Matching behavior (exact,
+prefix, wildcard, or substring) is implementation-defined, but all
+four reference engines accept unambiguous prefix matches.
 
-### wizhelp
+### Additional Help Commands
 
-```
-wizhelp [<topic>]
-```
+Most engines ship one or more additional help namespaces for
+restricted audiences or alternative content. The set of commands and
+their scopes is **implementation-defined**. Representative examples:
 
-The `wizhelp` command displays wizard-specific help topics. Requires wizard
-privileges.
+| Command       | Scope                                   | Engines |
+|---------------|-----------------------------------------|---------|
+| `wizhelp`     | Wizard-only topics                      | TinyMUX, TinyMUSH, RhostMUSH |
+| `plushelp`    | Plus-command softcode reference         | TinyMUX, TinyMUSH            |
+| `staffhelp`   | Staff procedures                        | TinyMUX                      |
+| `+help`       | Admin-provided supplementary help       | TinyMUSH (`helpfile` config) |
+
+PennMUSH takes a different approach: instead of a fixed command set,
+it exposes the help subsystem through the `help_command` and
+`ahelp_command` configuration directives, which bind arbitrary
+command names to named help indexes. PennMUSH's built `help`
+command itself is composed at build time from multiple source
+directories (`game/txt/hlp/`) via a composition script.
+
+RhostMUSH's `help` command additionally accepts `/search`, `/query`,
+and `/syntax` switches for wildcard topic search, content search,
+and usage-only display respectively.
+
+### Help File Layout (Implementation-Defined)
+
+This standard does not specify:
+
+- The on-disk file format or directory layout.
+- Whether indexes are precomputed, generated at startup, or composed
+  at build time.
+- The matching algorithm (exact, prefix, wildcard, substring).
+- Whether administrators may add custom help namespaces at runtime or
+  only through server configuration.
+
+Conforming implementations shall document these choices. Portable
+softcode must not assume that, for example, `wizhelp` exists or that
+`help_command` is configurable.
 
 ## WHO and Connection Information
 

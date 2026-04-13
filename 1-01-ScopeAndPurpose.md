@@ -7,23 +7,38 @@ Hallucination) server. It defines the object model, command language, expression
 evaluation engine, built-in functions, flag system, permission model, and
 networking behavior that a conforming implementation shall support.
 
-This standard is derived from the common behavior of four major MUSH
-implementations:
+This standard is derived from cross-implementation analysis of four
+major MUSH engines:
 
 - TinyMUSH (version 4.0)
 - TinyMUX (version 2.14)
 - RhostMUSH
 - PennMUSH
 
-Where all four implementations agree on behavior, this standard prescribes that
-behavior as mandatory. Where implementations diverge, this standard identifies
-one of three dispositions:
+These engines share a common core -- object model, attribute system,
+expression evaluator, percent-code substitution, lock grammar, and
+command-matching pipeline -- that has converged through three decades
+of cross-pollination. Outside that core, divergence is substantial:
+the four engines collectively ship hundreds of softcode functions
+unique to a single engine, and entire subsystems (channels, mail,
+powers, zones, help) have materially different architectures between
+implementations.
+
+Where all four engines agree on behavior, this standard prescribes
+that behavior as mandatory. Where engines diverge, this standard
+identifies one of three dispositions:
 
 1. **Mandatory behavior** that all conforming implementations shall support.
 2. **Optional features** that a conforming implementation may support, but
    shall document whether it does.
 3. **Implementation-defined behavior** where this standard specifies the
    interface but permits implementations to choose among defined alternatives.
+
+The standard also catalogs per-engine divergence directly, in the
+form of cross-reference notes, compatibility matrices, and parallel
+command listings. A softcode author who wants to write portable code
+needs to know which form to use on which engine; pretending the
+divergence does not exist would serve no one.
 
 This standard does not specify:
 

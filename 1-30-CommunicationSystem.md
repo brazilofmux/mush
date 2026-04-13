@@ -9,9 +9,28 @@ of players to communicate regardless of their locations. Channels are used
 for out-of-character conversation, administrative coordination, faction
 communication, and many other purposes.
 
-The channel system is Level 2. Implementations may differ in command syntax
-and administrative features, but the core concepts described here are common
-to all major implementations.
+The channel system is **optional** and **not universally present as a
+core subsystem**. Of the four reference engines:
+
+- **PennMUSH** ships a built-in channel system as part of the core
+  server, exposed through the `@channel` command family.
+- **TinyMUX** ships a built-in channel system with a distinct command
+  surface (the `@c*` family — see below).
+- **TinyMUSH** provides channels through a loadable module
+  (`comsys.c`) rather than the core; installations that do not load
+  the module have no comsys, and softcode access is minimal when
+  loaded.
+- **RhostMUSH** has no hardcoded channel system; games running on
+  RhostMUSH typically supply channel behavior through softcode, which
+  means command syntax and feature set vary per-installation rather
+  than per-engine.
+
+The concepts in this chapter — named channels, membership, speaking,
+locks — are a useful common vocabulary for discussing channel
+behavior, but a softcode author should not assume that any
+standardized channel command set is available on a given server.
+Engine-level feature detection (for example, checking for the
+existence of `addcom` or `@ccreate`) is the only reliable approach.
 
 ## Channel Properties
 

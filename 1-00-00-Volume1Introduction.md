@@ -21,11 +21,23 @@ any conforming server.
 
 This standard draws on four major implementations that have evolved over three
 decades: TinyMUSH, TinyMUX, RhostMUSH, and PennMUSH. Each has its strengths,
-its extensions, its particular community of users and developers. Where they
-agree -- and they agree far more often than they disagree -- this standard
-codifies their shared behavior. Where they diverge, this standard makes
-explicit choices, identifies optional features, and marks implementation-defined
-behavior so that both implementors and users know exactly where they stand.
+its extensions, its particular community of users and developers.
+
+The four engines share a common core: the object model, the dbref system, the
+attribute system, the expression evaluator, percent-code substitution, the
+command-matching pipeline, and the locking and permission machinery are all
+recognizably the same technology across implementations. This standard
+codifies that core.
+
+Outside the core, divergence is the norm rather than the exception. The
+four engines collectively ship hundreds of softcode functions unique to one
+or another; the channel, mail, and power subsystems each have materially
+different architectures between at least two of the engines; and the
+administrative command surface is different everywhere. This standard
+does not paper over that divergence. Where engines disagree, the standard
+identifies optional features, marks implementation-defined behavior, and in
+many chapters presents per-engine command forms side by side so that
+implementors and softcode authors know exactly where they stand.
 
 Two of these implementations, TinyMUSH and TinyMUX, have agreed to implement
 this standard. The goal is not to constrain creativity or freeze the

@@ -7,6 +7,27 @@ Level 2 conformance but are widely implemented and useful. An implementation
 may support any combination of these features. When an optional feature is
 supported, it should conform to the specification given here.
 
+## Unicode Support
+
+Implementations vary in their support for Unicode text. A conforming
+implementation that advertises Unicode support shall:
+
+- Accept UTF-8-encoded input on player connections and from softcode
+  string literals.
+- Emit UTF-8-encoded output to clients that negotiate UTF-8 (via
+  telnet CHARSET, MCCP, or IAC handshake).
+- Preserve Unicode code points through string-manipulation functions
+  without corrupting them.
+- Count characters (not bytes) in positional functions (`strlen()`,
+  `mid()`, `left()`, `right()`), where a character is one Unicode
+  code point or grapheme cluster (implementation-defined).
+- Compare strings using Unicode-aware collation (see `comp()`,
+  `sort()` type codes in Chapters 20 and 22).
+
+TinyMUX 2.14 implements this set. Other engines may be partial; ASCII
+is a valid subset and implementations lacking full Unicode support
+should document the subset they do support.
+
 ## SQL Integration
 
 Some implementations provide functions for querying external SQL databases

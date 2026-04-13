@@ -2,11 +2,11 @@
 
 ## Overview
 
-Powers are named capabilities that may be granted to objects, permitting them
-to perform actions that would otherwise be restricted by the permission model.
-Powers provide a finer-grained permission system than flags: rather than
-granting the broad privileges of WIZARD or ROYALTY, individual powers allow
-targeted elevation of specific capabilities.
+Powers are named capabilities that may be granted to objects, permitting
+them to perform actions that would otherwise be restricted by the permission
+model. Powers provide a finer-grained permission system than flags: rather
+than granting the broad privileges of WIZARD or ROYALTY, individual powers
+allow targeted elevation of specific capabilities.
 
 Powers are distinct from flags in the following ways:
 
@@ -20,8 +20,42 @@ Powers are distinct from flags in the following ways:
 3. **Scope:** Powers affect what an object *can do*, while flags primarily
    affect how an object *behaves* or *appears*.
 
-A conforming implementation shall support a power system. The implementation
-shall provide at least two 32-bit words for power storage (64 powers).
+A conforming implementation shall support a power-like fine-grained
+permission system.
+
+### Implementation Divergence
+
+The four reference engines diverge **substantially** on power
+vocabulary and, in one case, on the underlying architecture. There is
+no single agreed-upon set of standard power names, and the tables in
+this chapter document per-engine availability rather than a shared
+catalog.
+
+- **PennMUSH** implements powers as `FLAG`-style entries with
+  uppercase names (`Tport_Anywhere`, `Builder`, `Pemit_All`) and
+  grants them via `@power` or (for some) `@set`.
+- **TinyMUX** implements powers as a distinct bitfield with lowercase
+  internal names (`tel_anywhere`, `builder`, `announce`) displayed in
+  `@examine` output. The set is substantially smaller than
+  PennMUSH's, and several PennMUSH powers (e.g., `PEMIT_ALL`,
+  `CREATE_PLAYER`, `GLOBAL_FUNCS`, `HUGE_QUEUE`, `LOGIN_ANYTIME`,
+  `OPEN_ANYWHERE`) do not exist in TinyMUX. TinyMUX instead gates
+  the corresponding capability via the WIZARD flag or configuration.
+- **TinyMUSH** largely follows TinyMUX's model and shares most of
+  TinyMUX's power names.
+- **RhostMUSH** has an entirely different permission architecture:
+  three 32-bit *power words* (~48 powers), three *depower words* (a
+  parallel set of capabilities revocable independently of WIZARD),
+  eight *toggle words* (~200 toggles controlling per-object behavior),
+  and a *totem* system (custom named capability groups). RhostMUSH's
+  power names (`FREE_WALL`, `FREE_QUOTA`, `PCREATE`, `TEL_ANYTHING`,
+  `SEARCH_ANY`, etc.) overlap only partially with PennMUSH's and
+  TinyMUX's vocabularies.
+
+Portable softcode that tests for powers should use feature detection
+(`haspower()` on a named power) rather than assuming a shared
+vocabulary. Administrative softcode that grants powers must branch on
+the target engine.
 
 ## Setting and Clearing Powers
 
@@ -43,65 +77,87 @@ Only wizards (or God, depending on the power) may grant or revoke powers. The
 specific permission level required for each power is listed in the power
 catalog below.
 
-## Standard Powers
+## Power Catalog
 
-The following powers are mandatory for a Level 2 conforming implementation. A
-Level 1 implementation may support a subset, but shall document which powers
-are available.
+The following tables catalog representative fine-grained capabilities
+found across the four reference engines. Columns indicate the
+PennMUSH name, the TinyMUX/TinyMUSH name (these two engines largely
+agree), and the RhostMUSH name. A cell showing "—" means that engine
+does not expose a directly equivalent capability through its power
+system (the capability may still be available through a different
+mechanism, or gated only by WIZARD). Names in these tables are
+user-facing forms displayed by `@examine` and accepted by `@power`.
 
-### Building and Creation Powers
+### Building and Creation
 
-| Power           | Set By  | Description |
-|-----------------|---------|-------------|
-| CAN_BUILD       | Wizard  | Permits the object to use building commands (`@dig`, `@create`, `@open`) even if building is restricted by server configuration. |
-| OPEN_ANYWHERE   | Wizard  | Permits the object to `@open` exits from any room, regardless of room ownership or the OPEN_OK flag. |
-| LINK_ANYWHERE   | Wizard  | Permits the object to `@link` exits to any room, regardless of the LINK_OK flag. |
-| CREATE_PLAYER   | God     | Permits the object to use `@pcreate` to create new player objects. |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| Bypass build restriction | `Builder` | `builder` | `BUILDER` |
+| Open exits from any room | `Open_Anywhere` | — (WIZARD) | — |
+| Link exits anywhere | `Link_Anywhere` | `link_variable` | — |
+| Create player objects | `Pcreate` | — (requires WIZARD) | `PCREATE` |
+| Bypass creation quota | `No_Quota` | `no_quota` | `FREE_QUOTA` |
 
-### Movement and Teleportation Powers
+### Movement and Teleportation
 
-| Power           | Set By  | Description |
-|-----------------|---------|-------------|
-| TEL_ANYWHERE    | Wizard  | Permits the object to `@teleport` itself to any room, regardless of the JUMP_OK flag or teleport locks. |
-| TEL_OTHER       | Wizard  | Permits the object to `@teleport` other objects, not just itself. |
-| LONG_FINGERS    | Wizard  | Permits the object to interact with objects in other rooms (e.g., examining, getting, or modifying remote objects). |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| Teleport self anywhere | `Tport_Anywhere` | `tel_anywhere` | `TEL_ANYTHING` |
+| Teleport other objects | `Tport_Anything` | `tel_anything` | `TEL_ANYTHING` (combined) |
+| Interact at a distance | `Long_Fingers` | `long_fingers` | `LONG_FINGERS` |
 
-### Communication Powers
+### Communication
 
-| Power           | Set By  | Description |
-|-----------------|---------|-------------|
-| CAN_WALL        | Wizard  | Permits the object to use `@wall` to broadcast messages to all connected players. |
-| PEMIT_ALL       | Wizard  | Permits the object to use `@pemit` to send messages to players with the HAVEN flag set. |
-| CHAT_PRIVS      | Wizard  | Permits the object to use restricted channel operations (creating, destroying, and modifying channels). |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| Broadcast `@wall` | `Announce` | `announce` | `FREE_WALL` |
+| Pemit to HAVEN targets | `Pemit_All` | — | — |
+| Channel administration | `Chat_Privs` | `cemit` (partial) | per-totem |
 
-### Administrative Powers
+### Administration
 
-| Power            | Set By  | Description |
-|------------------|---------|-------------|
-| CAN_BOOT         | Wizard  | Permits the object to `@boot` players, disconnecting them from the server. |
-| HALT_ANYTHING    | Wizard  | Permits the object to `@halt` other objects and use `@allhalt` to stop all command queues. |
-| SEARCH_EVERYTHING | Wizard | Permits the object to use `@search`, `@stats`, and `@entrances` without ownership restrictions. |
-| CHANGE_QUOTAS    | Wizard  | Permits the object to modify other players' creation quotas. |
-| SET_POLL         | Wizard  | Permits the object to change the server's poll (DOING header) message. |
-| PS_ALL           | Wizard  | Permits the object to use `@ps` to view any player's command queue, not just its own. |
-| GLOBAL_FUNCS     | Wizard  | Permits the object to add global user-defined functions via `@function`. |
-| CAN_HIDE         | Wizard  | Permits the object to use the DARK flag on players to hide from the WHO list. |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| Boot players | `Boot` | `boot` | `BOOT` |
+| Halt any object / queue | `Halt_Anything` | `halt` | `HALT_ANY` |
+| Unrestricted search | `Search` | — (WIZARD) | `SEARCH_ANY` |
+| See any queue | `Ps_All` | `see_queue` | `SEE_QUEUE` |
+| Add global `@function` | `Global_Funcs` | — (requires GOD) | — (requires WIZARD) |
+| Hide from WHO | `Can_Hide` | `hide` | `HIDE` |
 
-### Resource and Quota Powers
+### Resource and Quota
 
-| Power           | Set By  | Description |
-|-----------------|---------|-------------|
-| NO_PAY          | Wizard  | The object does not spend coins when performing actions that normally have a cost. |
-| NO_QUOTA        | Wizard  | The object is not subject to quota restrictions when creating objects. |
-| UNLIMITED_IDLE  | Wizard  | The object is not subject to idle timeout disconnection. |
-| HUGE_QUEUE      | Wizard  | The object's command queue limit is raised to a very large value (implementation-defined, but typically the database size). |
-| LOGIN_ANYTIME   | Wizard  | The object can connect to the server even when logins are restricted. |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| No coin cost | `No_Pay` | `no_pay` | `FREE_MONEY` |
+| No creation quota | `No_Quota` | `no_quota` | `FREE_QUOTA` |
+| Ignore idle timeout | `Unlimited_Idle` | `idle` | `FREE_IDLE` |
+| Raised queue limit | `Huge_Queue` | — (WIZARD via `queue_max`) | — |
+| Bypass login restrictions | `Login_Anytime` | — | — |
 
-### Guest and Special Powers
+### Guest / Special
 
-| Power           | Set By  | Description |
-|-----------------|---------|-------------|
-| IS_GUEST        | Wizard  | Marks the object as a guest with restricted capabilities. Guest objects typically cannot build, modify other objects, or perform administrative actions. |
+| Capability | PennMUSH | TinyMUX / TinyMUSH | RhostMUSH |
+|------------|----------|--------------------|-----------|
+| Marked as guest | `Guest` | `guest` (power) | (GUEST flag) |
+
+### Notes on the Catalog
+
+- The PennMUSH column uses the user-facing names listed in
+  PennMUSH's `help powers` output (these differ from the internal C
+  macro names `CAN_BUILD`, `TEL_ANYWHERE`, etc., which readers may
+  encounter in older documentation).
+- Several capabilities that PennMUSH exposes as fine-grained powers
+  (`Pemit_All`, `Huge_Queue`, `Login_Anytime`, `Open_Anywhere`,
+  `Global_Funcs`) are either unavailable in other engines or gated
+  only by the WIZARD flag. This is a genuine semantic gap, not a
+  naming difference.
+- RhostMUSH's depower words allow revoking a capability from a
+  wizard or other privileged object — there is no direct analog in
+  the other engines.
+- RhostMUSH's toggle words (~200 toggles) and totems are distinct
+  from the power system catalogued here; see RhostMUSH's
+  `POWER_COMPARE.TXT` for the full inventory.
 
 ## Power Functions
 

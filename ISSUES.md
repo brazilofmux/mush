@@ -30,17 +30,12 @@ and the comparative survey documents in `./surveys/`.
 These affect how the standard positions itself relative to the four
 reference implementations.
 
-- [ ] **The standard over-claims cross-engine consensus.** Several
-  chapters present PennMUSH/TinyMUSH-oriented normalization as
-  four-engine agreement. The channels system, power catalog, builder
-  access model, and zone mechanisms all diverge more than the
-  normative prose acknowledges. RhostMUSH has no hardcoded comsys
-  (`POWER_COMPARE.TXT:13-15`); TinyMUSH's comsys is a module
-  (`comsys.c:2100-2112`), not a universal core interface. Survey data
-  deepens this: PennMUSH has 246 functions MUX lacks; RhostMUSH has
-  310 functions MUX lacks; MUX has 106-115 functions each of the
-  others lack. Claiming four-engine agreement on almost anything
-  requires care. [Codex, Surveys]
+- [x] **The standard over-claims cross-engine consensus.** Fixed at
+  the intro level: both 1-00 and 1-01 rewritten to distinguish the
+  shared core (object model, evaluator, locks, percent codes) from
+  the substantially divergent periphery (channels, mail, powers,
+  zones, help, admin surface). Further per-chapter rewrites tracked
+  below under framing items.
 
 - [x] **`#0` conflated as universal master room, start room, and
   global-command room.** MUX separates `player_starting_room` from
@@ -93,31 +88,17 @@ reference implementations.
   shipped help", and "historical help text" when citing implementation
   evidence. [Codex]
 
-- [ ] **Powers catalog (1-08) is PennMUSH vocabulary, not neutral
-  standard.** Book uses PennMUSH C macro names (CAN_BUILD, PEMIT_ALL,
-  TEL_ANYWHERE). MUX uses: builder, announce, tel_anywhere. PennMUSH
-  user-facing: Builder, Announce, Tport_Anywhere. RhostMUSH uses
-  entirely different names (FREE_WALL, FREE_QUOTA, PCREATE,
-  TEL_ANYTHING, SEARCH_ANY). Several powers (PEMIT_ALL, CREATE_PLAYER,
-  GLOBAL_FUNCS, HUGE_QUEUE, LOGIN_ANYTIME, OPEN_ANYWHERE) are
-  PennMUSH-only but not marked as such. Survey data shows the
-  divergence is conceptual, not just naming: RhostMUSH has 3 power
-  words (48 powers), 3 depower words, 8 toggle words (~200 toggles),
-  and a totem system -- an entirely different permission architecture.
-  [Claude, Codex, Gemini, Surveys]
+- [x] **Powers catalog (1-08) is PennMUSH vocabulary, not neutral
+  standard.** Chapter rewritten: Overview now names the four distinct
+  architectures, the catalog is organized as a per-engine name-mapping
+  matrix, PennMUSH-only capabilities are explicitly marked "—" for
+  other engines, and RhostMUSH's depower/toggle/totem systems are
+  described at the conceptual level.
 
-- [ ] **Channel system is not a universal core subsystem.** The issue
-  goes beyond command syntax: 2 of 4 engines do not have a hardcoded
-  channel system at all. RhostMUSH has no hardcoded comsys. TinyMUSH's
-  comsys is a loadable module with minimal softcode access. Even the
-  softcode function API diverges wildly: MUX has `channels()`,
-  `cemit()`, `cwho()`, `comalias()`, `comtitle()`, `chanobj()`;
-  PennMUSH has 10 channel function variants (`cbuffer`, `cdesc`,
-  `cflags`, `cmsgs`...); Rhost has limited softcode access; TinyMUSH
-  module has minimal softcode access. The book presents `@channel/join`
-  and related commands as standard, but the concept of a standard
-  channel command set doesn't apply to half the engines.
-  [Claude, Codex, Surveys]
+- [x] **Channel system is not a universal core subsystem.** Ch 30
+  overview rewritten: channels now marked optional and non-universal
+  with per-engine architecture (built-in vs. module vs. softcode)
+  explicitly called out. Feature-detection guidance added.
 
 ### Suggested Structural Improvements [Codex, Surveys]
 
@@ -369,24 +350,16 @@ reference implementations.
 
 ### Help System / Admin Model (Ch 19)
 
-- [ ] **1-19: Help system description is too generic to guide
-  implementors.** The current text treats help as a plain text-file
-  subsystem, but the implementations in `./src` expose materially
-  different admin models: PennMUSH has configurable `help_command` and
-  `ahelp_command` entries plus build-time composition from source
-  fragments; TinyMUSH documents `helpfile` and `raw_helpfile`; RhostMUSH
-  supports `/search`, `/query`, and `/syntax`; TinyMUX ships multiple
-  parallel help namespaces (`help`, `wizhelp`, `plushelp`, `staffhelp`).
-  The chapter should either standardize only minimal semantics
-  ("topic-based reference system") or explicitly classify file layout,
-  indexing, and search capabilities as implementation-defined. [Codex]
+- [x] **1-19: Help system description is too generic to guide
+  implementors.** Chapter rewritten with a per-engine command
+  matrix, PennMUSH's `help_command` configuration noted, RhostMUSH's
+  switches listed, and a new "Help File Layout
+  (Implementation-Defined)" subsection.
 
-- [ ] **1-19: `wizhelp` as a universal wizard-help command is too
-  strong without a configurability note.** MUX, TinyMUSH, and RhostMUSH
-  all ship `wizhelp`, but PennMUSH models help commands through config
-  (`help_command` / `ahelp_command`) rather than a fixed two-command
-  architecture. The current prose risks implying a more uniform command
-  surface than the Penn sources support. [Codex]
+- [x] **1-19: `wizhelp` as a universal wizard-help command is too
+  strong without a configurability note.** Reframed: `wizhelp` now
+  presented as one of several implementation-defined additional
+  commands, with PennMUSH's configurable model described separately.
 
 ---
 
@@ -395,9 +368,11 @@ reference implementations.
 - [x] **1-04: `#-4` NOPERM described as TinyMUX-only but also exists
   in RhostMUSH.** (`db.h:146`) [Claude]
 
-- [ ] **1-37: Unicode support listed as "Future Direction" but is fully
-  implemented in MUX 2.14.** Move to "Optional Features" or "Level 2"
-  and specify UTF-8 requirements. [Gemini]
+- [x] **1-37: Unicode support listed as "Future Direction" but is fully
+  implemented in MUX 2.14.** Moved from Ch 37 Future Directions to
+  Ch 35 Optional Features with a specified conformance set (UTF-8 I/O,
+  code-point preservation, grapheme-cluster counting, Unicode-aware
+  collation).
 
 - [x] **1-05: TYPE_ZONE (type code 4) reserved by RhostMUSH.** Book
   already has a compatibility note covering this. No change needed.
@@ -584,12 +559,10 @@ not already tracked above.
 
 ### Volume 1: Foundational / Framing
 
-- [ ] **1-00, 1-01: Over-claims cross-engine consensus in the
-  introduction.** The intro asserts the engines "agree far more often
-  than they disagree." Survey data (PennMUSH has 246 functions MUX
-  lacks; RhostMUSH has 310 MUX lacks; MUX has ~110 each of the others
-  lack) contradicts that framing. Should be hedged or scoped to "core
-  object and evaluation mechanics."
+- [x] **1-00, 1-01: Over-claims cross-engine consensus in the
+  introduction.** Both chapters rewritten to scope the agreement
+  claim to core object/evaluation/lock mechanics and explicitly
+  acknowledge substantial periphery divergence.
 
 - [x] **1-01: Still cites "TinyMUX (version 2.13)."** Updated to 2.14.
 

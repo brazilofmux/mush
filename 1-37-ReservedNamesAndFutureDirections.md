@@ -71,12 +71,6 @@ standardization of widely-used custom flags.
 The following areas are under consideration for future revisions of this
 standard:
 
-### Unicode Support
-
-Current MUSH implementations vary in their support for Unicode text.
-Future revisions may specify requirements for UTF-8 input and output,
-Unicode-aware string functions, and internationalized object names.
-
 ### Structured Data Types
 
 MUSHcode currently represents all data as strings. Future revisions may
