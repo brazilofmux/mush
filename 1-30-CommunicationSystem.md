@@ -202,13 +202,40 @@ The specifics of formatting customization are implementation-defined.
 
 ## Channel Functions
 
+The softcode function surface for channels diverges sharply between
+engines. PennMUSH exposes the richest per-channel introspection API;
+TinyMUX has a smaller set; TinyMUSH's module exposes minimal softcode
+access; RhostMUSH has no hardcoded channel functions. The table below
+catalogs representative channel functions across the four engines.
+
+| Operation | TinyMUX | PennMUSH | TinyMUSH | RhostMUSH |
+|-----------|---------|----------|----------|-----------|
+| Channels an object is on | `channels(<obj>)` | `channels(<obj>)` | module | — |
+| List all channels | `channels()` | `channels()` | module | — |
+| Send cemit (no attribution) | `cemit(<ch>,<msg>)` | `cemit(<ch>,<msg>)` | — | — |
+| Channel owner | `cowner(<ch>)` / `chanobj(<ch>)` | `cowner(<ch>)` | — | — |
+| Channel description | — | `cdesc(<ch>)` | — | — |
+| Channel flags | — | `cflags(<ch>)` | — | — |
+| Channel buffer contents | — | `cbuffer(<ch>)` | — | — |
+| Channel message count | — | `cmsgs(<ch>)` | — | — |
+| Channel members | `cwho(<ch>)` | `clock(<ch>,<type>)` | — | — |
+| Player's channel alias | `comalias(<p>,<ch>)` | — | — | — |
+| Player's channel title | `comtitle(<p>,<ch>)` | `ctitle(<ch>,<p>)` | — | — |
+
+Portable softcode that introspects channels should feature-detect by
+function name and branch on the engine, or restrict itself to
+`channels(<obj>)` (which is the only function whose name and
+semantics overlap on multiple engines).
+
 ### channels()
 
 ```
-channels(<object>)
+channels([<object>])
 ```
 
-Returns a space-separated list of channel names that \<object\> is on.
+With an object argument, returns a space-separated list of channels
+that \<object\> is on. Without an argument (TinyMUX and PennMUSH),
+returns all channels visible to the caller.
 
 ### cemit()
 

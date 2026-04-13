@@ -241,6 +241,33 @@ mail subsystem.
 
 ## Mail Functions
 
+The softcode function surface for mail diverges substantially between
+engines. There is no single agreed-upon mail-function API. The
+table below catalogs representative functions across the four
+reference engines; a cell showing "—" means that engine does not
+provide a directly equivalent function.
+
+| Operation | TinyMUX | PennMUSH | RhostMUSH | TinyMUSH |
+|-----------|---------|----------|-----------|----------|
+| Read message count / text | `mail(<p>)` / `mail(<p>,<n>)` | `mail([<p>,]<n>)` | `mailread(<n>)` | module-provided |
+| Message sender | `mailfrom(<n>)` | `mailstats(<p>)` row | `mailstatus(<n>)` | module |
+| Message timestamp | `mailtime(<n>)` | (in `mail()` output) | `mailstatus(<n>)` | module |
+| Message subject | `mailsubject(<n>)` | (in `mail()` output) | — | module |
+| Message size | `mailsize(<n>)` | — | — | module |
+| Message status flags | `mailstatus(<n>)` | — | `mailstatus(<n>)` | module |
+| Review recent/all | `mailreview(<p>)` | `maillist(<p>)` | — | module |
+| Send from softcode | — | `mailsend()` (side-effect) | `mailsend(<p>,<subj>,<body>)` | module |
+| Mailing-list alias | `malias()` | — | `mailalias(<alias>)` | module |
+| Quota query | — | `mailstats(<p>)` | `mailquota(<p>)` | module |
+| Bulk stats | — | `mailstats(<p>)` | — | module |
+| Quick test | — | — | `mailquick(<p>)` | module |
+
+TinyMUSH implements mail as a loadable module; installations that do
+not load the mail module have no softcode mail API at all.
+
+The descriptions below cover the TinyMUX forms, which were the
+reference used by earlier drafts of this chapter.
+
 ### mail()
 
 ```
@@ -248,9 +275,9 @@ mail(<player>)
 mail(<player>, <message-number>)
 ```
 
-With one argument, returns the number of messages in \<player\>'s mailbox.
-With two arguments, returns the text of the specified message. The caller
-must be the specified player or a wizard.
+With one argument, returns the number of messages in \<player\>'s
+mailbox. With two arguments, returns the text of the specified
+message. The caller must be the specified player or a wizard.
 
 ### mailfrom()
 
@@ -283,6 +310,12 @@ mailstatus(<message-number>)
 ```
 
 Returns the status flags of the specified message.
+
+### Portability Note
+
+Portable softcode that consults the mail system must feature-detect
+(e.g., by probing the existence of a specific function name) and
+branch on the engine, or be restricted to a single target engine.
 
 ## Implementation Notes
 

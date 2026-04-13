@@ -63,6 +63,56 @@ The following lock types are Level 2:
 | Dropto    | `/dropto` | Activating dropto on this room (PennMUSH). |
 | InFilter  | `/infilter` | Filtering incoming messages (PennMUSH). |
 
+### Per-Engine Availability Matrix
+
+The extended lock types above are supported by some but not all
+reference engines. PennMUSH implements the most complete set — its
+total lock-type inventory exceeds 30 — while TinyMUX, TinyMUSH, and
+RhostMUSH implement smaller, overlapping subsets. The following
+matrix summarizes availability for the commonly-needed extensions;
+`✓` indicates the lock is implemented, `—` indicates it is not (or
+the equivalent is provided through a different mechanism).
+
+| Lock Type  | TinyMUX | TinyMUSH | PennMUSH | RhostMUSH |
+|------------|---------|----------|----------|-----------|
+| Default    | ✓       | ✓        | ✓        | ✓         |
+| Enter      | ✓       | ✓        | ✓        | ✓         |
+| Leave      | ✓       | ✓        | ✓        | ✓         |
+| Use        | ✓       | ✓        | ✓        | ✓         |
+| Drop       | ✓       | ✓        | ✓        | ✓         |
+| Give       | ✓       | ✓        | ✓        | ✓         |
+| Receive    | ✓       | ✓        | ✓        | ✓         |
+| Page       | ✓       | ✓        | ✓        | ✓         |
+| Teleport   | ✓       | ✓        | ✓        | ✓         |
+| Mail       | ✓ (`maillock`) | ✓ | ✓ (`Mail`) | ✓     |
+| Speech     | ✓ (req. Auditorium) | ✓ (req. Auditorium) | ✓ | ✓ |
+| Command    | ✓       | ✓        | ✓        | ✓         |
+| Parent     | ✓       | ✓        | ✓        | ✓         |
+| Link       | ✓       | ✓        | ✓        | ✓         |
+| Control    | ✓       | ✓ (req. CONTROL_OK) | ✓ | ✓    |
+| Zone       | (enter lock on ZMO) | (control lock + CONTROL_OK) | ✓ (`/zone`) | ✓ |
+| Destroy    | —       | —        | ✓        | —         |
+| Chown      | —       | —        | ✓        | —         |
+| Follow     | —       | —        | ✓        | —         |
+| Forward    | —       | —        | ✓        | —         |
+| Filter     | —       | —        | ✓        | —         |
+| Examine    | —       | —        | ✓        | —         |
+| Interact   | —       | —        | ✓        | —         |
+| Listen     | —       | —        | ✓        | —         |
+| From       | —       | —        | ✓        | —         |
+| Pay        | —       | —        | ✓        | —         |
+| MailForward| —       | —        | ✓        | —         |
+| Take       | —       | —        | ✓        | —         |
+| Dropto     | —       | —        | ✓        | —         |
+| InFilter   | —       | —        | ✓        | —         |
+
+The divergence between PennMUSH and the other three engines on
+extended lock types is substantial: roughly half of PennMUSH's lock
+vocabulary has no direct equivalent elsewhere. Portable softcode that
+needs fine-grained access control on non-Penn engines must typically
+implement the check in softcode itself — on an attribute-matches-lock
+basis — rather than rely on a hardcoded lock type.
+
 ## Lock Key Expressions
 
 A lock key expression is a boolean formula that determines who passes the

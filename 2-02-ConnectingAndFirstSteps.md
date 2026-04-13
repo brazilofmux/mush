@@ -174,8 +174,8 @@ You have 100 Pennies.
 > help
 ```
 
-This displays the MUSH's built-in help system. Most commands have a help
-entry:
+This displays the MUSH's built-in help system. Most commands have a
+help entry:
 
 ```
 > help say
@@ -184,6 +184,37 @@ entry:
 ```
 
 The help system is your most valuable reference. Use it often.
+
+### Help on Real Servers
+
+Different MUSH engines ship different sets of help commands.
+Learning the ones your server provides is a 30-second investment
+that pays off forever:
+
+- **`help`** — always available. The main reference.
+- **`wizhelp`** (TinyMUX, TinyMUSH, RhostMUSH) — wizard-only topics,
+  useful if you have staff privileges.
+- **`plushelp`** (TinyMUX, TinyMUSH) — help for the `+`-prefixed
+  softcoded commands local to a particular game. If your MUSH has
+  game-specific commands like `+roll`, `+bbs`, or `+where`, this is
+  where they are documented.
+- **`staffhelp`** (TinyMUX) — staff procedures, separate from
+  `wizhelp`.
+- **`+help`** (TinyMUSH and many softcode packages) — supplementary
+  help added by the game's administrators.
+- **`help <topic> /search <keyword>`** (RhostMUSH) — wildcard search
+  across all help topics.
+
+PennMUSH takes a different approach: administrators configure which
+help commands exist (via `help_command` settings), so a PennMUSH
+server might expose `help`, `news`, `events`, and `lore` as four
+separate indexes. Type `help help` to see which indexes your server
+provides.
+
+**If you are new to a server**, start with `help newbie` or `news
+newbie`. Most MUSHes maintain a dedicated introduction for new
+arrivals covering local conventions, the IC/OOC distinction, and how
+to contact staff.
 
 ## Customizing Your Character
 

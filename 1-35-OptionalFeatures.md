@@ -94,6 +94,53 @@ Beyond basic 8-color ANSI support, some implementations offer:
 - Named color aliases.
 - Background color specification.
 
+## WebSockets
+
+TinyMUX 2.14 accepts WebSocket connections on the same port as
+telnet, enabling browser-based clients to connect without proxying
+software. At the softcode level, a WebSocket client is
+indistinguishable from a telnet client (`%#`, `@pemit`, commands all
+work identically); the difference is in the I/O channel, which
+supports binary frames and structured out-of-band messages.
+
+## GMCP (Generic Mud Communication Protocol)
+
+GMCP is a telnet subnegotiation for out-of-band structured messages
+between server and client. An implementation that supports GMCP
+provides:
+
+- A softcode function (e.g., `gmcp()`) that sends a named,
+  JSON-formatted message to a specific connection.
+- An incoming-message hook that fires an attribute when a
+  GMCP-speaking client sends a message to the server.
+- Package-name conventions (typically `Category.Subtype`, e.g.,
+  `Char.Vitals`, `Room.Info`, `Comm.Channel.Text`).
+
+TinyMUX 2.14 implements GMCP. PennMUSH has partial support via its
+HTTP/websocket bridge. TinyMUSH and RhostMUSH do not.
+
+## Scheduled Tasks
+
+Implementations may provide a cron-style scheduling facility for
+softcode execution at wall-clock times independent of the command
+queue. TinyMUX 2.14's `@cron` / `@crontab` / `@crondel` is the
+reference; PennMUSH ships a simpler `@daily`. Chained `@wait` loops
+remain the portable fallback where neither is available.
+
+## Extended String Functions
+
+Some implementations provide C-style formatted output and local-scope
+register helpers:
+
+- `printf()` — format a string using C-style format specifiers.
+- `letq()` — bind q-registers in a local scope (like `let` in
+  Lisp-family languages), preventing register pollution.
+- `mailsend()` — side-effect function to send mail from softcode
+  without interactively composing it.
+
+These are present in TinyMUX 2.14; other engines provide their own
+subsets.
+
 ## Pueblo/HTML Support
 
 Some implementations support Pueblo or HTML-enhanced output for clients
@@ -116,10 +163,22 @@ server functionality:
 
 ## Reality Levels
 
-RhostMUSH implements a reality level system that controls which objects
-can perceive and interact with each other. Objects are assigned transmit
-and receive reality levels; only objects with matching levels can
-communicate.
+TinyMUX implements a reality level system that controls which
+objects can perceive and interact with each other. Objects are
+assigned transmit and receive reality levels (`txlevel` and
+`rxlevel`); only objects whose reality levels match can see or
+communicate with each other. The associated softcode surface
+includes:
+
+- `hasrxlevel(<object>, <level>)` — test receive-level membership.
+- `hastxlevel(<object>, <level>)` — test transmit-level membership.
+- `rxlevel(<object>)` / `txlevel(<object>)` — inspect the levels
+  set on an object.
+- `listrlevels()` — enumerate defined reality levels.
+
+RhostMUSH supports a partial equivalent; PennMUSH and TinyMUSH do not
+implement reality levels in the base server. Softcode that uses
+these functions is TinyMUX-specific unless feature-detected.
 
 ## Cluster System
 

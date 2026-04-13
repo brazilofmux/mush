@@ -15,13 +15,10 @@ and the comparative survey documents in `./surveys/`.
   session. Workaround: process files one at a time. Root cause needs
   investigation in `mdfix.rl`.
 
-- [ ] **Repository evidence framing in `ISSUES.md` drifted from the
-  actual `./src` tree.** This file still described the bundled MUX tree
-  as "TinyMUX 2.13", but `src/mux2.14/include/_build.h` identifies it as
-  `2.14.0.7` with release date `2026-APR-03`. PennMUSH is also present in
-  `src/pennmush/` with `Patchlevel` identifying `1.8.8p0`. Future review
-  notes should anchor claims to the versions actually vendored in this
-  repository, not older survey assumptions.
+- [x] **Repository evidence framing in `ISSUES.md` drifted from the
+  actual `./src` tree.** Addressed in the 2026-04-12 review pass
+  (MUX 2.14.0.7, PennMUSH 1.8.8p0 vendored). All subsequent entries
+  anchor claims to the current `./src` tree.
 
 ---
 
@@ -50,43 +47,29 @@ reference implementations.
   (hedged to "subject to permissions") and the architectural framing
   issue. [Codex, Surveys]
 
-- [ ] **Modernization Opportunity: Standardize MUX 2.14 features.** MUX
-  2.14 has implemented many features (JSON, WebSockets, SQL cursors,
-  printf, mailsend, @cron, letq) that are essential for modern MU*
-  development. The standard should move these from "Optional" or
-  "Future" to "Level 2" or provide a "Modern MUSH" conformance level.
-  Source-backed examples now exist in the bundled help and code:
-  `src/mux2.14/game/text/help.txt` has topics for `@cron`,
-  `gmcp()`, `json()`, `json_query()`, `json_mod()`, `letq()`,
-  `mailsend()`, and `printf()`, while `src/mux2.14/src/websocket.cpp`
-  and `src/mux2.14/src/telnet.cpp` implement WebSocket and GMCP support.
-  [Gemini, refreshed against current src]
+- [x] **Modernization Opportunity: Standardize MUX 2.14 features.**
+  Ch 35 Optional Features now catalogs the modern set as discrete
+  subsections: Unicode, WebSockets, GMCP, Scheduled Tasks,
+  Extended String Functions (`printf`/`letq`/`mailsend`), SQL
+  integration (already present), JSON (already present). Unicode was
+  relocated from Ch 37 Future Directions earlier. V2 Ch 2-16a covers
+  these from the user/author perspective. Whether to promote any of
+  this to a Level 3 conformance tier is deferred pending adoption
+  data from other engines.
 
-- [ ] **Help system architecture is more implementation-defined than
-  the books currently signal.** Volume 1 Chapter 19 says help "reads
-  from text files maintained by the server administrator", which is true
-  at a very high level but misses important structural divergence visible
-  in `./src`: PennMUSH composes help from source directories like
-  `game/txt/hlp` via `compose.sh` and configurable `help_command`
-  entries (`src/pennmush/game/txt/README`, `src/pennmush/game/mushcnf.dst`,
-  `src/pennmush/src/help.c`); TinyMUSH exposes configurable
-  `helpfile`/`raw_helpfile` local help in `src/tinymush/src/docs/plushelp.txt`;
-  RhostMUSH adds `/search`, `/query`, and `/syntax` help behaviors in
-  `src/rhostmush/Server/game/txt/help.txt`; TinyMUX ships separate
-  `help.txt`, `wizhelp.txt`, `plushelp.txt`, and `staffhelp.txt`.
-  This deserves either a matrix or an explicit "help subsystem is
-  implementation-defined" callout earlier in the books. [Codex]
+- [x] **Help system architecture is more implementation-defined than
+  the books currently signal.** Ch 19 rewritten with per-engine
+  command matrix and "Help File Layout (Implementation-Defined)"
+  subsection; Ch 2-02 adds a user-facing "Help on Real Servers"
+  section.
 
 - [ ] **The bundled help corpus is not uniformly current across
-  implementations, which weakens it as direct evidence unless labeled.**
-  `src/tinymush/README.md` describes TinyMUSH 4 alpha, but
-  `src/tinymush/src/docs/help.txt` still opens with "This is the TinyMUSH 3
-  online help facility" and says the help is "currently under revision."
-  PennMUSH's repo snapshot includes the help composition machinery and the
-  connect-screen text files, but not a generated `game/txt/help.txt`.
-  The book project should distinguish "current code behavior", "bundled
-  shipped help", and "historical help text" when citing implementation
-  evidence. [Codex]
+  implementations, which weakens it as direct evidence unless
+  labeled.** This is a research-methodology note rather than a book
+  defect: future reviews citing help-file evidence should
+  distinguish "current code behavior," "bundled shipped help," and
+  "historical help text." Left as an open reminder for subsequent
+  review passes.
 
 - [x] **Powers catalog (1-08) is PennMUSH vocabulary, not neutral
   standard.** Chapter rewritten: Overview now names the four distinct
@@ -102,28 +85,38 @@ reference implementations.
 
 ### Suggested Structural Improvements [Codex, Surveys]
 
-- [ ] Add per-engine behavior matrices for chapters that normalize
-  divergent behavior (especially Ch 4, 7, 8, 27, 30).
-- [ ] Separate "common model" from "example command syntax" -- present
-  abstract semantics, then engine-specific examples.
-- [ ] Mark implementation-defined areas earlier and more aggressively,
-  before normative prose rather than after.
+- [~] Add per-engine behavior matrices for chapters that normalize
+  divergent behavior (especially Ch 4, 7, 8, 27, 30). **Partially
+  done**: matrices added to Ch 8 (powers), Ch 27 (locks), Ch 30
+  (channel functions), Ch 31 (mail functions). Ch 4 and Ch 7 still
+  open.
+- [~] Separate "common model" from "example command syntax" -- present
+  abstract semantics, then engine-specific examples. **Partially done**:
+  Ch 30 and Ch 31 restructured along these lines; Ch 2-17 and Ch 2-18
+  rewritten with explicit per-engine examples. Principle applied
+  piecewise but not systematically enforced across every divergent
+  chapter.
+- [~] Mark implementation-defined areas earlier and more aggressively,
+  before normative prose rather than after. **Partially done**: Ch 30
+  now opens with the non-universality callout; Ch 8 Overview now
+  explicitly names the four power architectures up front; Ch 19 help
+  section leads with the "implementation-defined" framing. The same
+  treatment could be extended to more chapters.
 - [ ] Consider a source-backed appendix listing which claims were
-  verified against which source paths.
+  verified against which source paths. Larger project; deferred.
 - [ ] Add a function name equivalence table as a structural element.
   The naming divergence is systemic (e.g., `dice()`/`die()`,
   `if()`/`ifelse()`, `nattr()`/`attrcnt()`, `hasflag()`/`has_flag()`),
-  not isolated incidents. [Surveys]
-- [ ] Lock type availability matrix. PennMUSH has 30+ lock types
-  (Follow, Receive, Examine, Destroy, Interact, MailForward, Chown,
-  Filter, InFilter) with no equivalents in other engines. The current
-  lock chapters focus on naming differences but miss the scale of the
-  divergence. [Surveys]
+  not isolated incidents. Deferred as a distinct research deliverable.
+  [Surveys]
+- [x] Lock type availability matrix. New "Per-Engine Availability
+  Matrix" subsection added to Ch 27 enumerating every documented lock
+  type across TinyMUX / TinyMUSH / PennMUSH / RhostMUSH with notes on
+  engine-specific requirements (Auditorium flag, CONTROL_OK, ZMO
+  enter-lock) and the scale of PennMUSH's divergence.
 
-- [ ] **Clarify target MUX version.** The `src/` directory contains
-  TinyMUX 2.14.0.7 (confirmed via `include/_build.h`), but
-  `./surveys/` and previous notes reference MUX 2.13 features. The
-  standard should target 2.14 behavior as the current reference. [Gemini]
+- [x] **Clarify target MUX version.** Ch 1-01 now cites TinyMUX 2.14
+  (updated in the 2026-04-12 fix pass).
 
 ---
 
@@ -495,15 +488,11 @@ reference implementations.
   Object: @force" section added to 2-16 covering queued vs. immediate
   execution, control requirements, and appropriate/inappropriate use.
 
-- [ ] **No dedicated explanation of how help systems differ across
-  servers.** Volume 2 tells users to type `help`, which is reasonable,
-  but it never explains that "extra help" is server-specific:
-  TinyMUX ships `plushelp` and `staffhelp`; TinyMUSH documents local
-  `+help` via configured helpfiles; RhostMUSH supports wildcard help
-  search/query and `/syntax`; PennMUSH lets administrators add arbitrary
-  help-style commands with `help_command`. A short chapter or appendix on
-  "Using the Help System on Real Servers" would make the manual more
-  accurate and more useful. [Codex]
+- [x] **No dedicated explanation of how help systems differ across
+  servers.** New "Help on Real Servers" subsection added to 2-02
+  (Connecting and First Steps) covering `wizhelp`, `plushelp`,
+  `staffhelp`, `+help`, RhostMUSH's `/search`, and PennMUSH's
+  configurable `help_command` model.
 
 - [x] **Opportunity: Add a "Modern Features" chapter to Volume 2.**
   New chapter `2-16a-ModernFeatures.md` covers JSON
@@ -524,26 +513,21 @@ reference implementations.
 These were identified by cross-referencing the `./surveys/` comparative
 documents against the book and existing issues.
 
-- [ ] **1-31, 2-18: Mail softcode function API diverges across all four
-  engines.** RhostMUSH has `mailread()`, `mailsend()`, `mailquick()`,
-  `mailquota()`, `mailalias()`, `mailstatus()`. PennMUSH has
-  `maillist`, `mailsend`, `mailstats`. MUX has `mail()`, `mailfrom()`,
-  `mailreview()`, `mailsubj()`, `mailsize()`, `malias()`. TinyMUSH
-  mail is a loadable module. If the standard covers mail functions,
-  the sets are completely different. [Surveys]
+- [x] **1-31, 2-18: Mail softcode function API diverges across all
+  four engines.** Ch 31 now opens its Mail Functions section with a
+  per-engine comparison matrix enumerating which engine provides
+  which operation, including a portability note recommending
+  feature detection.
 
-- [ ] **1-30: Comsys softcode function API diverges wildly.** MUX has
-  `channels()`, `cemit()`, `cwho()`, `comalias()`, `comtitle()`,
-  `chanobj()`. PennMUSH has 10 channel function variants. RhostMUSH
-  has limited softcode access. TinyMUSH comsys module has minimal
-  softcode access. ISSUES.md previously addressed channel command
-  syntax but not the function API divergence. [Surveys]
+- [x] **1-30: Comsys softcode function API diverges wildly.** Ch 30
+  Channel Functions section now leads with a per-engine comparison
+  matrix enumerating which engine provides each operation, with
+  feature-detection guidance for portable softcode.
 
-- [ ] **Reality levels are a MUX-specific feature not addressed.** MUX
-  has a full reality level system (`hasrxlevel`, `hastxlevel`,
-  `rxlevel`, `txlevel`, `listrlevels`) that no other engine fully
-  matches. RhostMUSH has optional support. If the book discusses
-  visibility or perception, this needs to be noted. [Surveys]
+- [x] **Reality levels are a MUX-specific feature not addressed.**
+  Ch 35 Reality Levels section rewritten to correctly attribute the
+  feature to TinyMUX (not RhostMUSH), enumerate the softcode
+  surface, and note the lack of equivalents on PennMUSH/TinyMUSH.
 
 - [x] **1-19: `@function` permission model diverges more than
   documented.** The @function section now says the exact mechanism is
