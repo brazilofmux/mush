@@ -2,8 +2,8 @@
 
 Consolidated issues from three independent reviews (Claude, Codex,
 Gemini) cross-referencing the book against source code in `./src/`
-(TinyMUSH 4.0, TinyMUX 2.13, RhostMUSH, PennMUSH) and the comparative
-survey documents in `./surveys/`.
+(TinyMUSH 4.0 alpha, TinyMUX 2.14.0.7, RhostMUSH, PennMUSH 1.8.8p0)
+and the comparative survey documents in `./surveys/`.
 
 ---
 
@@ -14,6 +14,14 @@ survey documents in `./surveys/`.
   content of the preceding file. Affected 2-18, 2-21, 2-25 in this
   session. Workaround: process files one at a time. Root cause needs
   investigation in `mdfix.rl`.
+
+- [ ] **Repository evidence framing in `ISSUES.md` drifted from the
+  actual `./src` tree.** This file still described the bundled MUX tree
+  as "TinyMUX 2.13", but `src/mux2.14/include/_build.h` identifies it as
+  `2.14.0.7` with release date `2026-APR-03`. PennMUSH is also present in
+  `src/pennmush/` with `Patchlevel` identifying `1.8.8p0`. Future review
+  notes should anchor claims to the versions actually vendored in this
+  repository, not older survey assumptions.
 
 ---
 
@@ -46,6 +54,44 @@ reference implementations.
   has `restrict_building` and `Builder(x)`. Fixed in both 2-01
   (hedged to "subject to permissions") and the architectural framing
   issue. [Codex, Surveys]
+
+- [ ] **Modernization Opportunity: Standardize MUX 2.14 features.** MUX
+  2.14 has implemented many features (JSON, WebSockets, SQL cursors,
+  printf, mailsend, @cron, letq) that are essential for modern MU*
+  development. The standard should move these from "Optional" or
+  "Future" to "Level 2" or provide a "Modern MUSH" conformance level.
+  Source-backed examples now exist in the bundled help and code:
+  `src/mux2.14/game/text/help.txt` has topics for `@cron`,
+  `gmcp()`, `json()`, `json_query()`, `json_mod()`, `letq()`,
+  `mailsend()`, and `printf()`, while `src/mux2.14/src/websocket.cpp`
+  and `src/mux2.14/src/telnet.cpp` implement WebSocket and GMCP support.
+  [Gemini, refreshed against current src]
+
+- [ ] **Help system architecture is more implementation-defined than
+  the books currently signal.** Volume 1 Chapter 19 says help "reads
+  from text files maintained by the server administrator", which is true
+  at a very high level but misses important structural divergence visible
+  in `./src`: PennMUSH composes help from source directories like
+  `game/txt/hlp` via `compose.sh` and configurable `help_command`
+  entries (`src/pennmush/game/txt/README`, `src/pennmush/game/mushcnf.dst`,
+  `src/pennmush/src/help.c`); TinyMUSH exposes configurable
+  `helpfile`/`raw_helpfile` local help in `src/tinymush/src/docs/plushelp.txt`;
+  RhostMUSH adds `/search`, `/query`, and `/syntax` help behaviors in
+  `src/rhostmush/Server/game/txt/help.txt`; TinyMUX ships separate
+  `help.txt`, `wizhelp.txt`, `plushelp.txt`, and `staffhelp.txt`.
+  This deserves either a matrix or an explicit "help subsystem is
+  implementation-defined" callout earlier in the books. [Codex]
+
+- [ ] **The bundled help corpus is not uniformly current across
+  implementations, which weakens it as direct evidence unless labeled.**
+  `src/tinymush/README.md` describes TinyMUSH 4 alpha, but
+  `src/tinymush/src/docs/help.txt` still opens with "This is the TinyMUSH 3
+  online help facility" and says the help is "currently under revision."
+  PennMUSH's repo snapshot includes the help composition machinery and the
+  connect-screen text files, but not a generated `game/txt/help.txt`.
+  The book project should distinguish "current code behavior", "bundled
+  shipped help", and "historical help text" when citing implementation
+  evidence. [Codex]
 
 - [ ] **Powers catalog (1-08) is PennMUSH vocabulary, not neutral
   standard.** Book uses PennMUSH C macro names (CAN_BUILD, PEMIT_ALL,
@@ -94,10 +140,9 @@ reference implementations.
   divergence. [Surveys]
 
 - [ ] **Clarify target MUX version.** The `src/` directory contains
-  TinyMUX 2.13.0.10, but `./surveys/` reference MUX 2.14 features
-  (JSON, WebSockets, AST-based evaluator). The standard should
-  explicitly state it targets 2.13 behavior; 2.14 features belong in
-  future directions. [Gemini]
+  TinyMUX 2.14.0.7 (confirmed via `include/_build.h`), but
+  `./surveys/` and previous notes reference MUX 2.13 features. The
+  standard should target 2.14 behavior as the current reference. [Gemini]
 
 ---
 
@@ -322,12 +367,37 @@ reference implementations.
 - [x] **1-33: Exits field in database table says "rooms only."** Exits
   can be attached to things and players too. [Claude]
 
+### Help System / Admin Model (Ch 19)
+
+- [ ] **1-19: Help system description is too generic to guide
+  implementors.** The current text treats help as a plain text-file
+  subsystem, but the implementations in `./src` expose materially
+  different admin models: PennMUSH has configurable `help_command` and
+  `ahelp_command` entries plus build-time composition from source
+  fragments; TinyMUSH documents `helpfile` and `raw_helpfile`; RhostMUSH
+  supports `/search`, `/query`, and `/syntax`; TinyMUX ships multiple
+  parallel help namespaces (`help`, `wizhelp`, `plushelp`, `staffhelp`).
+  The chapter should either standardize only minimal semantics
+  ("topic-based reference system") or explicitly classify file layout,
+  indexing, and search capabilities as implementation-defined. [Codex]
+
+- [ ] **1-19: `wizhelp` as a universal wizard-help command is too
+  strong without a configurability note.** MUX, TinyMUSH, and RhostMUSH
+  all ship `wizhelp`, but PennMUSH models help commands through config
+  (`help_command` / `ahelp_command`) rather than a fixed two-command
+  architecture. The current prose risks implying a more uniform command
+  surface than the Penn sources support. [Codex]
+
 ---
 
 ## Volume 1: Low-Impact Issues
 
 - [x] **1-04: `#-4` NOPERM described as TinyMUX-only but also exists
   in RhostMUSH.** (`db.h:146`) [Claude]
+
+- [ ] **1-37: Unicode support listed as "Future Direction" but is fully
+  implemented in MUX 2.14.** Move to "Optional Features" or "Level 2"
+  and specify UTF-8 requirements. [Gemini]
 
 - [x] **1-05: TYPE_ZONE (type code 4) reserved by RhostMUSH.** Book
   already has a compatibility note covering this. No change needed.
@@ -447,6 +517,30 @@ reference implementations.
 - [ ] **No coverage of @force command.** Mentioned in security warnings
   (Ch 23) but never formally documented. [Claude]
 
+- [ ] **No dedicated explanation of how help systems differ across
+  servers.** Volume 2 tells users to type `help`, which is reasonable,
+  but it never explains that "extra help" is server-specific:
+  TinyMUX ships `plushelp` and `staffhelp`; TinyMUSH documents local
+  `+help` via configured helpfiles; RhostMUSH supports wildcard help
+  search/query and `/syntax`; PennMUSH lets administrators add arbitrary
+  help-style commands with `help_command`. A short chapter or appendix on
+  "Using the Help System on Real Servers" would make the manual more
+  accurate and more useful. [Codex]
+
+- [ ] **Opportunity: Add a "Modern Features" chapter to Volume 2.** This
+  should cover JSON manipulation, SQL queries (using the MUX cursor
+  API as a model), and WebSockets/GMCP for modern client integration.
+  The current repository provides concrete examples for this chapter:
+  TinyMUX 2.14 help includes `@cron`, `gmcp()`, `json()`, `json_query()`,
+  `json_mod()`, `letq()`, `mailsend()`, and `printf()`, and the source
+  contains WebSocket support. Right now Volume 1 often treats these as
+  optional or future-facing while Volume 2 barely mentions them. [Gemini,
+  refreshed against current src]
+
+- [ ] **Opportunity: Add a "Scheduled Tasks" chapter to Volume 2.**
+  Introduce the `@cron` command system for automated maintenance and
+  game-world events. [Gemini]
+
 ---
 
 ## Survey-Revealed Issues
@@ -479,3 +573,337 @@ documents against the book and existing issues.
   documented.** The @function section now says the exact mechanism is
   "implementation-defined" after listing per-engine requirements.
   [Surveys]
+
+---
+
+## 2026-04-12 Review Pass — New Findings
+
+Fresh source-cross-reference pass against `./src/` (MUX 2.14.0.7,
+PennMUSH 1.8.8p0, TinyMUSH 4 alpha, RhostMUSH). These are NEW items
+not already tracked above.
+
+### Volume 1: Foundational / Framing
+
+- [ ] **1-00, 1-01: Over-claims cross-engine consensus in the
+  introduction.** The intro asserts the engines "agree far more often
+  than they disagree." Survey data (PennMUSH has 246 functions MUX
+  lacks; RhostMUSH has 310 MUX lacks; MUX has ~110 each of the others
+  lack) contradicts that framing. Should be hedged or scoped to "core
+  object and evaluation mechanics."
+
+- [ ] **1-01: Still cites "TinyMUX (version 2.13)."** Vendored source
+  is 2.14.0.7 (`src/mux2.14/include/_build.h`). ISSUES.md infra note
+  was marked resolved but the chapter text was not updated.
+
+- [ ] **1-02: Terminology chapter conflates master room with start
+  room.** Line ~113 defines "master room" as `#0` and also "the
+  starting location for newly created players." Same issue that was
+  fixed in Ch 4 (marked `[x]` above) — the correction did not
+  propagate to the Terminology chapter.
+
+- [ ] **1-14: `iter()` appears twice in the Function Categories
+  table.** Listed under both "List functions (Ch 22)" and
+  "Miscellaneous (Ch 26)." One should be removed.
+
+### Volume 1: Percent Codes (Ch 13)
+
+- [ ] **1-13: `%c` is a color code in MUX 2.14, not "last command."**
+  The standard calls `%c` "last command executed, implementation-
+  defined." MUX 2.14 `ast.cpp:1189-1193` dispatches `%c`/`%C` as
+  foreground/background ANSI color; `%m` is the last-command code
+  (`ast.cpp:1049-1053`). PennMUSH `parse.c:2499` uses `%c` for the
+  command line. TinyMUSH `eval.c:1005-1012` makes `%c` configurable.
+  "Implementation-defined" is too soft — softcode using `%c` for
+  last-command will produce color escapes on MUX 2.14.
+
+- [ ] **1-13: `%?` return format diverges.** Standard says `%?`
+  returns a single depth number. PennMUSH `parse.c:2443-2450` returns
+  TWO space-separated integers (invocations and recursions). MUX 2.14
+  `ast.cpp` has no `case '?'` handler in `ast_eval_subst` — appears
+  unimplemented or pass-through.
+
+- [ ] **1-13: `%=<N>` works as positional-arg reference in MUX.** The
+  standard documents `%=<attr>` only as attribute-value lookup. MUX
+  2.14 `ast.cpp:1139-1165` also handles `%=<0>`…`%=<999>` as positional
+  args. Syntax extension undocumented.
+
+### Volume 1: Action Lists / Queue (Ch 11)
+
+- [ ] **1-11: Power names are PennMUSH flag names, not MUX powers.**
+  Chapter references `HUGE_QUEUE`, `HALT_ANYTHING`, `PS_ALL`. These
+  are PennMUSH object flags (`pennmush/hdrs/flags.h:237-239`). MUX
+  equivalents are `halt` (POW_HALT) and `see_queue` (POW_SEE_QUEUE,
+  `powers.cpp:99`); MUX has no `@allhalt` at all.
+
+- [ ] **1-11: `@wait/until <epoch>` switch omitted.** MUX 2.14 has
+  `@wait/until` for absolute-time scheduling
+  (`command.cpp:611`, `cque.cpp:1364`). Only the relative form is
+  documented.
+
+- [ ] **1-11: Semaphore-plus-timeout `@wait` syntax description is
+  misleading.** Given as `@wait <object>/<timeout>`; actual MUX syntax
+  is `@wait <object>/<value>` where `<value>` is interpreted as a
+  number (timeout) OR an attribute name (alternate semaphore attr) —
+  mutually exclusive, not combinable (`cque.cpp:1400-1437`).
+
+### Volume 1: String Functions (Ch 20)
+
+- [ ] **1-20: `escape()` prefixes with `\`, not `%`.** Standard says
+  `escape()` "prefixes special characters with `%`." MUX
+  `help.txt:7770` and PennMUSH `funstr.c:1244` use backslash and also
+  prepend `\` to the whole string.
+
+- [ ] **1-20: `secure()` replaces characters with spaces, does not
+  remove them.** Standard says "removes." Actual behavior preserves
+  string length (MUX `help.txt:14643`; PennMUSH `funstr.c:1233`).
+
+- [ ] **1-20: `lpos()` returns all match positions 0-based, not "last
+  occurrence."** Entirely wrong description. MUX `help.txt:11092`,
+  TinyMUSH `funstring.c:2393`, PennMUSH `function.c:565`. Also
+  incorrectly marked Level 2 — exists in all four engines.
+
+- [ ] **1-20: `regedit()` accepts multiple regex/replacement pairs.**
+  MUX `help.txt:13827`: `regedit(<str>, <re1>, <rep1> [, …, <reN>,
+  <repN>])`. Also supports `$0`–`$99` and named groups, not just
+  `$0`–`$9`.
+
+- [ ] **1-20: `speak()` has 2–7 arguments.** Standard shows only
+  `speak(<speaker>, <string>)`. PennMUSH `function.c:755` and TinyMUSH
+  `functions.c:887` accept transform fn, null fn, open/close
+  delimiters, fragment index.
+
+- [ ] **1-20/1-24: `comp()` accepts optional type argument.** MUX
+  `help.txt:6473`: `comp(<s1>, <s2>[, <type>])` with types `u`/`c`/`a`.
+  PennMUSH `funstr.c:453` accepts types `A`/`I`/`N`/`F`. Default in
+  MUX is Unicode collation, not "case-insensitive" as stated.
+
+### Volume 1: Math / Logic Functions (Ch 21)
+
+- [ ] **1-21: `mod()` semantics inverted.** Standard says `mod()`
+  follows dividend sign. MUX `help.txt:12017` defines `mod()` with
+  floor semantics (result takes divisor sign) and `remainder()` as the
+  dividend-sign variant. PennMUSH `funmath.c:369` has the same split.
+
+- [ ] **1-21: `rand()` argument order reversed and range is
+  inclusive.** Standard: `rand(<upper>[, <lower>])`. MUX
+  `help.txt:13520` and PennMUSH `funmisc.c:812`:
+  `rand(<lower>, <upper>)` with inclusive range on both ends. TinyMUSH
+  `functions.c:827` accepts only 1 arg.
+
+### Volume 1: List Functions (Ch 22)
+
+- [ ] **1-22: `sort()` type `i` is case-insensitive alphabetic, not
+  integer.** TinyMUSH `funlist.c:167`; MUX `help.txt:15056`. Numeric
+  sort is type `n`. Direct factual error in the table.
+
+- [ ] **1-22: `sort()` missing MUX-only types.** MUX adds `u`
+  (Unicode collation, default), `c` (case-insensitive UCA), `a`
+  (legacy ASCII byte-order), `?` (auto-detect). Standard lists only 5
+  types (`a`, `i`, `f`, `d`, `n`).
+
+- [ ] **1-22: `index()` 4th arg is field count, not end position.**
+  MUX `help.txt:9365`: "returns `<length>` items starting from the
+  `<first>` position." PennMUSH `funlist.c:1658-1701` matches.
+
+- [ ] **1-22: `foreach()` takes begin/end delimiter args in MUX, not
+  a list delimiter.** MUX `help.txt:8325`:
+  `foreach([obj/]attr, string[, begin, end])`. Begin/end mark
+  tokenizing boundaries for selective char processing.
+
+- [ ] **1-22: `before()` and `after()` are not Level 2.** Marked
+  Level 2 but exist in all four engines (MUX `help.txt:4748, 5409`;
+  PennMUSH `function.c:354, 376`; TinyMUSH `functions.c:508, 529`;
+  RhostMUSH `functions.c:30931`).
+
+- [ ] **1-22: `map()` supports pass-through arguments in MUX.**
+  Additional args beyond the list pass as `%1`, `%2`, … to the mapped
+  attribute (MUX `help.txt:11748`). Enables parameterized mapping
+  without globals.
+
+### Volume 1: Object / DB Functions (Ch 23)
+
+- [ ] **1-23: `hasattr()` does NOT include inherited attributes;
+  `hasattrp()` does.** MUX `help.txt:8911` is explicit. Standard
+  omits `hasattrp()` entirely.
+
+- [ ] **1-23: `nattr()` is `attrcnt()` in MUX and RhostMUSH.** Naming
+  divergence not mentioned (MUX `help.txt:5169`; RhostMUSH
+  `functions.c:42124`).
+
+- [ ] **1-23: `lastcreate()` first argument optional in MUX.** MUX
+  `help.txt:10095`: `lastcreate([<object>[, <type>]])`, defaults to
+  executor. Standard shows `<player>` as required.
+
+### Volume 1: Side-Effect Functions (Ch 25)
+
+- [ ] **1-25: `lock()` returns the lock expression, not 1/0.** With
+  one arg it returns the current lock; with two args it sets and
+  returns the resulting lock string. MUX `help.txt:10861`; PennMUSH
+  `function.c:556`.
+
+### Volume 1: Communication System (Ch 30)
+
+- [ ] **1-30: MUX channel commands use `@c*` prefix, not
+  `@channel/<switch>`.** Actual MUX commands: `@ccreate`, `@cdestroy`,
+  `@cwho`, `@clist`, `@cemit`, `@cset`, `@cboot`, `@cchown`,
+  `@coflags`, `@cpflags`, `@ccharge`
+  (`src/mux2.14/modules/engine/command.cpp:764-768, 842-851`). The
+  chapter presents the PennMUSH `@channel/<switch>` form as an
+  alternative/equivalent.
+
+- [ ] **1-30: `@channel/on` / `@channel/off` do not exist in MUX.**
+  Joining/leaving uses `addcom <alias>=<channel>` and `delcom <alias>`
+  (`command.cpp:903`).
+
+- [ ] **1-30: `@clock` is PennMUSH-only for channels.** MUX has no
+  `@clock` command; channel access is via `@cset`/`@coflags`/`@cpflags`
+  and the channel-object lock.
+
+### Volume 1: Mail System (Ch 31)
+
+- [ ] **1-31: `@malias/destroy` is wrong; MUX uses `/delete`.** Switch
+  constant `MALIAS_DELETE` (`command.cpp:390`, `mail.cpp:5357`).
+
+- [ ] **1-31: `@mailsignature` is a PennMUSH attribute name.** MUX
+  uses `SIGNATURE` (`attrs.h:182`, A_SIGNATURE=203). Not interchangeable.
+
+- [ ] **1-31: `@lock/mail` name is wrong for both engines.** MUX:
+  `@lock/maillock` (`command.cpp:326`, A_LMAIL). PennMUSH:
+  `@lock/Mail` (capital M, `lock.c:73`).
+
+- [ ] **1-31: `MAILFORWARDLIST` and MailForward lock are
+  PennMUSH-only.** Presented generically in the chapter
+  (`extmail.c:1483`, `lock.c:82`). MUX has no auto-forward mechanism.
+
+- [ ] **1-31: `@mailquota <player> = <limit>` wizard command does
+  not exist.** PennMUSH reads `MAILQUOTA` as an attribute on the
+  player (`extmail.c:1539`). MUX has no mail quota at all.
+
+- [ ] **1-31: `/nosig` switch to `@mail/send` not in MUX.** MUX
+  switch table (`command.cpp:346-383`) has `/safe` and `/unsafe` but
+  no `/nosig`. Likely PennMUSH-only, not labeled as such.
+
+### Volume 1: Networking / DB (Ch 32-33)
+
+- [ ] **1-33: `@dump/paranoid` is PennMUSH-only.** MUX 2.14 switches
+  are `/flatfile`, `/structure`, `/text` (`command.cpp:164-170`).
+
+- [ ] **1-33: Global ACONNECT/ADISCONNECT come from `master_room`,
+  not `#0`.** MUX reads `mudconf.master_room`, configurable
+  (`engine_com.cpp:4287, 4450`). Same root cause as the `#0` conflation
+  issue but in a different chapter.
+
+### Volume 1: Conformance (Ch 34-37)
+
+- [ ] **1-34: Level 1 attribute flags list uses `AF_LOCKED`.** Should
+  be `AF_LOCK` (fix applied to Ch 1-06 did not propagate here). MUX
+  `attrs.h:16`; `look.cpp:795`.
+
+- [ ] **1-34: `@switch`/`@if`/`@dolist` bundled as a single Level 2
+  bullet.** `@switch` and `@dolist` exist in TinyMUSH
+  (`nametabs.c:647, 710`); `@if` does not exist in TinyMUSH or
+  RhostMUSH. Should be split — otherwise a Level 2 implementor must
+  ship all three as a unit, which no single existing engine does.
+
+- [ ] **1-34: MISTRUST listed in Level 2 Extended Permissions.**
+  MISTRUST/TRUST are PennMUSH-only (already established in Ch 1-28).
+  Cannot be a Level 2 requirement if only one of four engines has it.
+
+- [ ] **1-35: `push()`/`pop()`/`peek()` stack ops unattributed.**
+  Chapter says "some implementations." MUX 2.14 `functions.cpp` does
+  not register these. Likely TinyMUSH module features — needs
+  per-engine attribution.
+
+- [ ] **1-37: `@log` and `@mail` listed as "reserved for future
+  standardization" but implemented in MUX 2.14.**
+  `src/mux2.14/modules/engine/command.cpp:871-872` registers both.
+  Contradicts the intro's claim that the standard codifies shared
+  behavior.
+
+- [ ] **1-37: `mod*()` function-name reservation is ambiguous.** The
+  carve-out "(excluding `mod()` for modulo)" does not clarify whether
+  the reservation applies to MUSH softcode names or to implementation
+  internals. Also intersects Lua's `modf()` in MUX's bundled
+  `lua54/lmathlib.c:738`.
+
+### Volume 2: Technical Accuracy
+
+- [ ] **2-11: `@set me/SCORE = value` attribute-value syntax is
+  wrong.** `@set obj/attr = value` sets an attribute FLAG in all four
+  engines. To set a value: `@set me = SCORE:<value>` or
+  `&SCORE me = <value>`. Example would silently attempt to set a flag
+  whose name is the computed value.
+
+- [ ] **2-11: Register scope description is subtly wrong.** Chapter
+  says registers clear "when the action list finishes." MUX help for
+  `setq` says registers are cleared at the start of each interactive
+  command but persist across queued actions. Distinction matters for
+  `@trigger`/`@dolist` chains.
+
+- [ ] **2-13, 2-24: Uppercase ANSI codes described as "bright."**
+  Uppercase codes (`R`, `G`, `Y`, `B`, `M`, `C`, `W`, `X`) are
+  BACKGROUND colors in MUX (`help ANSI CODES`, lines 4934-4960).
+  Brightness is `h`. Error appears in Ch 2-13 and the Quick Reference
+  Card (Ch 2-24).
+
+- [ ] **2-14: `filter()` requires exact `1`, not truthy.** MUX
+  `help filter`, line 8048. `2` or `yes` would fail. Should either
+  clarify or steer readers to `filterbool()` (PennMUSH).
+
+- [ ] **2-17: `@channel/emit` does not exist in any engine.** MUX:
+  `@cemit[/noheader] <channel>=<message>`. PennMUSH:
+  `@cemit[/noisy|/silent] <channel>=<message>`. The command as used
+  in the chapter is invented.
+
+- [ ] **2-17: `@channel/mute` vs `@channel/gag` conflated.** Both are
+  PennMUSH-only. `@channel/gag` suppresses messages; `@channel/mute`
+  suppresses connect/disconnect notices. The chapter attributes gag
+  behavior to the mute command. MUX uses `<alias> off` / `<alias> on`.
+
+- [ ] **2-17: `@channel/add`, `@clock/join`, `@clock/speak`,
+  `@channel/priv` are all PennMUSH-specific syntax.** Presented as
+  generic. MUX equivalents use `@ccreate`, `@cset`, `@coflags`,
+  `@cpflags` (`pennchat.hlp` 185, 371, 383 vs `help @ccreate`,
+  `@cset`, `@cpflags`).
+
+- [ ] **2-18: MUX mail aliases require `*` prefix when used.**
+  Chapter shows `@mail staff = ...` after `@malias staff = ...`. Must
+  be `@mail *staff = ...` in MUX (`help @malias`, line 2734). Without
+  `*`, MUX resolves to a player name.
+
+- [ ] **2-18: `@mail/forward` is spelled `/fwd`.** Both MUX and
+  PennMUSH use the short form (`help mail-sending2`, line 11490). No
+  `/forward` switch exists.
+
+- [ ] **2-18: `@mail/status` does not exist.** Not in MUX help, not
+  in PennMUSH help. Likely confused with PennMUSH `mailstats()`
+  function or third-party softcode.
+
+- [ ] **2-18: Multi-line mail composition terminator is `--`, not
+  `.`.** Chapter uses `.` to send; MUX uses `--`
+  (`help mail-sending`, line 11455). A lone `.` is not recognized.
+
+- [ ] **2-19: BBS chapter's command set is Myrddin's BBS, not
+  standard.** `+bblist`, `+bbread`, `+bbpost`, etc. are Myrddin's
+  specific command names — not universal MUSH behavior. Anomaly Jobs
+  and RhostMUSH native `+bb` use different syntaxes. No attribution
+  is given; readers will assume standard.
+
+- [ ] **2-20: Binary name `netmush` with config `mush.conf` is a
+  cross-engine jumble.** MUX uses `netmux -c netmux.conf`
+  (`Startmux:49`, `game/netmux.conf`). PennMUSH uses `netmush`. The
+  example combines PennMUSH's binary name with an arbitrary config
+  filename. Should note per-engine binary and config conventions.
+
+- [ ] **2-20: `fork_dump yes` description is outdated for MUX 2.14.**
+  Chapter says it avoids player lag during DB saves. MUX 2.14 uses
+  WAL checkpoints for periodic saves, which never fork regardless of
+  this setting (`src/mux2.14/game/text/wizhelp.txt:2704`;
+  `src/mux2.14/UPGRADING.md:143`). `fork_dump` now only affects
+  `@dump/flatfile` exports.
+
+- [ ] **2-22: `@find =THING` is not valid syntax.** `@find` takes a
+  name substring: `@find <name>[,<low>[,<high>]]` (`help @find`, line
+  1835). Finding objects by type requires
+  `@search type=THING owner=me`. The example on the same line works;
+  the `@find` form does not.
