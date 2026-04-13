@@ -130,8 +130,13 @@ Returns only elements that pass a test:
 elephant hippopotamus
 ```
 
-The filter function is called with each element as `%0` and should return
-true or false.
+The filter function is called with each element as `%0`. It must
+return **exactly `1`** to keep the element and **exactly `0`** to drop
+it. Unlike most boolean contexts in MUSHcode, `filter()` does not
+accept arbitrary truthy values — returning `2` or `yes` will skip the
+element. If your predicate produces truthy values other than `1`, wrap
+it in `t(...)` to normalize, or (on PennMUSH) use `filterbool()`
+which accepts any truthy return.
 
 ### map()
 

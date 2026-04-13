@@ -27,38 +27,54 @@ Each channel has the following properties:
 
 ## Channel Commands
 
+The channel command surface diverges substantially between engines.
+Two distinct families exist:
+
+- **The `@channel/<switch>` family** (PennMUSH, RhostMUSH with its own
+  switches) groups all channel operations under a single `@channel`
+  command with switches selecting the operation.
+- **The `@c*` family** (TinyMUX) exposes each operation as a separate
+  top-level command: `@ccreate`, `@cdestroy`, `@cwho`, `@clist`,
+  `@cemit`, `@cset`, `@cboot`, `@cchown`, `@coflags`, `@cpflags`,
+  `@ccharge`.
+
+TinyMUSH provides comsys as a loadable module with a minimal command
+set. The examples below use the `@channel/<switch>` form for
+readability; implementations that use the `@c*` form expose equivalent
+semantics through the parallel commands. Portable softcode should
+probe for the command form at configuration time.
+
 ### Creating and Deleting Channels
 
 ```
-@channel/add <name> [= <privileges>]
-@channel/delete <name>
+@channel/add <name> [= <privileges>]         (PennMUSH)
+@channel/create <name> [= <privileges>]      (some PennMUSH builds)
+@ccreate <name>                              (TinyMUX)
+@channel/delete <name>                       (PennMUSH)
+@cdestroy <name>                             (TinyMUX)
 ```
 
-The `/add` switch creates a new channel with the specified name and optional
-privilege flags. PennMUSH uses `@channel/add`; TinyMUX uses
-`@channel/create`. The `/delete` switch removes a channel. Only the channel
+Creates a new channel with the specified name (and, where supported,
+privilege flags) or removes an existing channel. Only the channel
 owner or a wizard may delete a channel.
 
 ### Joining and Leaving
 
 ```
-@channel/on <channel>
-@channel/off <channel>
+@channel/on <channel>                        (PennMUSH)
+@channel/off <channel>                       (PennMUSH)
+addcom <alias> = <channel>                   (TinyMUX, also PennMUSH)
+delcom <alias>                               (TinyMUX, also PennMUSH)
 ```
 
-The `/on` switch adds the player to the channel. The `/off` switch removes
-the player from the channel. Joining a channel requires passing the
-channel's join lock.
-
-Some implementations support aliases for MUX compatibility:
-
-```
-addcom <alias> = <channel>
-delcom <alias>
-```
-
-These create a short alias that can be used as a prefix for speaking on the
-channel.
+PennMUSH's `/on` and `/off` switches add or remove the player from the
+channel. TinyMUX has no equivalent switches — channel membership is
+entirely managed through aliases: `addcom <alias> = <channel>` joins
+a channel (creating a speaking alias at the same time) and
+`delcom <alias>` leaves it. PennMUSH accepts the `addcom`/`delcom`
+forms as well and treats them as the preferred way to establish a
+speaking alias. Joining a channel requires passing the channel's
+join lock.
 
 ### Speaking on Channels
 
@@ -103,12 +119,21 @@ access:
 | Hide | Who may hide their presence on the channel. |
 | Mod | Who may modify channel settings. |
 
-Locks are set using the `@clock` command:
+In PennMUSH, locks are set using the `@clock` command:
 
 ```
 @clock/join <channel> = <key-expression>
 @clock/speak <channel> = <key-expression>
 ```
+
+TinyMUX has no `@clock` command. Channel-level access is managed
+through `@cset/<option>` (global channel settings), `@coflags` and
+`@cpflags` (per-object-class flags), and the channel object's own
+`@lock` (the enter lock on the channel's zone master object). RhostMUSH
+and TinyMUSH use their own command sets. The abstract model — joined
+vs. speaking access gates — is the same across engines, but the
+command surface differs and portable softcode should dispatch
+accordingly.
 
 Lock key expressions use the same grammar as object locks (Chapter 27).
 

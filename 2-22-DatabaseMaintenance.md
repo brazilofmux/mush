@@ -53,14 +53,22 @@ Always do a manual dump before:
 
 ### Forked Dumps
 
-Most servers fork a child process to write the database, so players do
-not experience lag during the save. If your server supports forked dumps,
-ensure your system has enough memory for both the parent and child
-processes. The configuration option is usually:
+Older MUSH servers (and PennMUSH, TinyMUSH, RhostMUSH today) fork a
+child process to write the database, so players do not experience lag
+during the save. If your server supports forked dumps, ensure the
+system has enough memory for both parent and child processes; the
+configuration option is usually:
 
 ```
 fork_dump yes
 ```
+
+TinyMUX 2.14 replaces the fork-for-save approach with Write-Ahead
+Logging (WAL) checkpoints, which stream changes to disk continuously
+and therefore never fork the process for a periodic save. On
+TinyMUX 2.14 the `fork_dump` option only affects `@dump/flatfile`
+exports; periodic saves proceed transparently regardless of the
+setting.
 
 ## Backups
 
@@ -105,8 +113,13 @@ Look for objects with no obvious purpose:
 
 ```
 > @search type=THING owner=me
-> @find =THING
+> @find whatever                    (search by name substring)
 ```
+
+`@find` takes a name substring, not a type keyword: use `@search` for
+filtering by type or owner. `@find =THING` does not work in any major
+engine — it treats the empty string as the name pattern and then
+fails or returns nothing.
 
 Objects left by departed players, abandoned builds, and test objects
 all contribute to bloat.

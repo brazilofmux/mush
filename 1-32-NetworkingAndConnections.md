@@ -130,9 +130,14 @@ ADISCONNECT, the following substitutions are available
 
 ## Global Connection Attributes
 
-The master room (object #0) may have ACONNECT and ADISCONNECT attributes
-that are triggered for all player connections and disconnections. These
-global attributes enable server-wide login/logout processing.
+The master room (see Chapter 2 for the definition — its dbref is
+implementation-defined, typically configurable via a
+`master_room` parameter) may have ACONNECT and ADISCONNECT attributes
+that are triggered for all player connections and disconnections.
+These global attributes enable server-wide login/logout processing.
+Implementations read the master room's dbref from configuration at
+trigger time, so administrators who relocate the master room do not
+lose global connect processing.
 
 ## Site Access Control
 

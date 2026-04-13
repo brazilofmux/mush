@@ -110,9 +110,16 @@ standard, provided that:
 - **God** -- The player object `#1`. God has unrestricted access to all server
   functions and cannot be destroyed or stripped of privilege.
 
-- **master room** -- The room object `#0`. The master room serves as the root
-  of the location hierarchy and the starting location for newly created players.
-  Objects in the master room may provide global commands and exits.
+- **master room** -- A designated room whose contents may provide global
+  commands and exits available to every player, regardless of location. The
+  master room's dbref is implementation-defined (frequently but not
+  universally `#0`) and is typically a configurable parameter.
+
+- **start room** -- The default location into which newly created players
+  are placed. Implementations may use the master room for this purpose or
+  configure a separate room (e.g., TinyMUX's `player_starting_room`). The
+  master room and the start room are distinct concepts even when one
+  implementation happens to use the same object for both.
 
 - **NOTHING** -- The special value `#-1`, representing the absence of an object.
   Used for unset references (e.g., an unlinked exit, an empty contents list).

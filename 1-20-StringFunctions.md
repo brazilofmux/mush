@@ -126,11 +126,14 @@ case-sensitive.
 ### lpos()
 
 ```
-lpos(<substring>, <string>)
+lpos(<string>, <character>)
 ```
 
-Returns the 1-based position of the last occurrence of \<substring\> in
-\<string\>. Returns `#-1` if not found. Level 2.
+Returns a space-separated list of the 0-based positions at which
+\<character\> occurs in \<string\>. Returns an empty string if the
+character does not occur. Note the argument order (string first, then
+the character being searched for) and the 0-based indexing, which
+differ from `pos()`.
 
 ### strmatch()
 
@@ -166,12 +169,16 @@ Case-insensitive version of `regmatch()`.
 ### regedit()
 
 ```
-regedit(<string>, <regexp>, <replacement>)
+regedit(<string>, <regexp>, <replacement> [, <regexp2>, <replacement2>, ...])
 ```
 
-Replaces the first occurrence of \<regexp\> in \<string\> with \<replacement\>.
-Case-sensitive. In the replacement string, `$0` refers to the entire match and
-`$1` through `$9` refer to captured subgroups.
+Replaces the first occurrence of \<regexp\> in \<string\> with
+\<replacement\>. Case-sensitive. In the replacement string, `$0` refers
+to the entire match. Captured subgroups are referenced by number;
+implementations typically support at least `$1` through `$9`, and some
+(notably TinyMUX) extend this to `$1` through `$99` and named groups.
+Multiple regexp/replacement pairs may be supplied and are applied in
+order; each pair operates on the result of the previous pair.
 
 ### regeditall()
 
@@ -321,8 +328,11 @@ and trailing instances of the character are also removed.
 escape(<string>)
 ```
 
-Prefixes the special characters `%`, `[`, `]`, `{`, `}`, `,`, `;`, `\`,
-and `(` with `%` to prevent the evaluator from interpreting them.
+Prefixes the special characters `%`, `[`, `]`, `{`, `}`, `,`, `;`,
+`\`, and `(` with a backslash (`\`) so the evaluator treats them as
+literals. An additional leading backslash is prepended to the entire
+result so the string as a whole is also protected from parser
+interpretation.
 
 ### secure()
 
@@ -330,9 +340,11 @@ and `(` with `%` to prevent the evaluator from interpreting them.
 secure(<string>)
 ```
 
-Removes the characters `%`, `[`, `]`, `{`, `}`, `,`, `;`, `\`, and `(`
-from \<string\>. This is more aggressive than `escape()` and is used when
-untrusted input must be embedded in expressions.
+Replaces the characters `%`, `[`, `]`, `{`, `}`, `,`, `;`, `\`, and
+`(` in \<string\> with spaces. The result has the same length as the
+input; the dangerous characters are neutralized, not removed. This is
+typically used when untrusted input must be embedded in expressions
+and preserving the character positions is preferable to `escape()`.
 
 ### lit()
 
@@ -457,11 +469,22 @@ Returns the appropriate English indefinite article (`a` or `an`) for \<word\>.
 ### speak()
 
 ```
-speak(<speaker>, <string>)
+speak(<speaker>, <string>
+      [, <say-string>
+      [, <transform>
+      [, <open>
+      [, <close>
+      [, <null-transform>]]]]])
 ```
 
 Formats \<string\> as speech from \<speaker\>, applying the say/pose
-formatting conventions.
+formatting conventions. The minimum signature takes two arguments; the
+optional arguments customize the verb used for quoted speech
+(\<say-string\>), the attribute invoked to transform spoken fragments
+(\<transform\>), the characters that delimit quoted fragments
+(\<open\>/\<close\>), and the attribute invoked on non-speech text
+(\<null-transform\>). The full argument set is implementation-defined;
+not all engines support every optional argument.
 
 ### valid()
 
@@ -476,12 +499,18 @@ otherwise. Common categories include `name` (object name), `attrname`
 ### comp()
 
 ```
-comp(<string1>, <string2>)
+comp(<string1>, <string2> [, <type>])
 ```
 
-Performs lexicographic comparison of two strings. Returns -1 if \<string1\>
-sorts before \<string2\>, 0 if they are equal, or 1 if \<string1\> sorts after
-\<string2\>. The comparison is case-insensitive.
+Performs lexicographic comparison of two strings. Returns -1 if
+\<string1\> sorts before \<string2\>, 0 if they are equal, or 1 if
+\<string1\> sorts after \<string2\>. The optional \<type\> argument
+selects the comparison algorithm; the default and the set of accepted
+type codes are implementation-defined. TinyMUX accepts `u` (Unicode
+collation, default), `c` (case-insensitive collation), and `a` (ASCII
+byte order); PennMUSH accepts `A` (case-sensitive), `I`
+(case-insensitive), `N` (numeric), and `F` (floating-point). The
+default case-sensitivity therefore depends on the implementation.
 
 ### before()
 
@@ -490,8 +519,8 @@ before(<string>, <delimiter>)
 ```
 
 Returns the portion of \<string\> before the first occurrence of
-\<delimiter\>. If \<delimiter\> is not found, returns the entire string.
-Level 2.
+\<delimiter\>. If \<delimiter\> is not found, returns the entire
+string.
 
 ### after()
 
@@ -500,8 +529,8 @@ after(<string>, <delimiter>)
 ```
 
 Returns the portion of \<string\> after the first occurrence of
-\<delimiter\>. If \<delimiter\> is not found, returns an empty string.
-Level 2.
+\<delimiter\>. If \<delimiter\> is not found, returns an empty
+string.
 
 ## Implementation Notes
 

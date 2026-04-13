@@ -30,12 +30,21 @@ Switches that modify send behavior:
 |--------|-------------|
 | `/urgent` | Marks the message as urgent. |
 | `/silent` | Suppresses the "You have new mail" notification. |
-| `/nosig` | Does not append the sender's mail signature. |
+| `/nosig` | PennMUSH-specific: do not append the sender's mail signature on this message. |
+
+The exact switch set is implementation-defined. TinyMUX, for example,
+ships `/safe` and `/unsafe` to control purge protection but does not
+implement `/nosig`. Portable softcode should probe for switch
+availability.
 
 ### Mail Signature
 
-If the sender has a `@mailsignature` attribute set, its evaluated value
-is appended to outgoing messages (unless `/nosig` is specified).
+If the sender has a mail-signature attribute set, its evaluated value
+is appended to outgoing messages. The attribute name is
+implementation-defined: PennMUSH uses `MAILSIGNATURE`; TinyMUX uses
+`SIGNATURE` (attribute index `A_SIGNATURE`). TinyMUSH and RhostMUSH
+use their own names. Portable softcode must select the correct
+attribute name for the target engine.
 
 ## Reading Mail
 
@@ -186,30 +195,49 @@ Mail aliases allow sending to named groups of recipients:
 @malias <alias> = <player-list>
 @malias/add <alias> = <player>
 @malias/remove <alias> = <player>
-@malias/destroy <alias>
+@malias/delete <alias>
 ```
 
-Aliases are referenced with a `+` prefix in recipient lists (e.g.,
-`@mail +staff = Message`).
+The delete switch spelling is implementation-defined:
+PennMUSH accepts `/destroy`; TinyMUX uses `/delete`.
+
+Aliases are referenced with an engine-specific prefix in recipient
+lists. TinyMUX uses `*` (`@mail *staff = Message`); PennMUSH
+uses `+` (`@mail +staff = Message`). Using the wrong prefix causes
+the engine to resolve the name as a literal player, which typically
+fails with "no such player." Portable code should avoid embedding the
+prefix character in literals and should dispatch on engine.
 
 ## Mail Quotas
 
+Per-player mail quotas are an optional, PennMUSH-specific feature.
+PennMUSH reads a `MAILQUOTA` attribute set directly on the player
+object; when the quota is reached, new incoming messages are rejected.
+There is no dedicated `@mailquota` wizard command — quotas are managed
+by setting the attribute:
+
 ```
-@mailquota <player> = <limit>
+&MAILQUOTA <player> = <limit>
 ```
 
-Sets the maximum number of messages a player may have in their mailbox.
-When the quota is reached, new incoming messages are rejected. Requires
-wizard privileges.
+TinyMUX, TinyMUSH, and RhostMUSH do not implement per-player mail
+quotas. A portable softcode quota enforcement would have to be built
+on top of the `@lock/mail` mechanism or equivalent.
 
 ## Mail Permissions
 
-The `@lock/mail` lock on a player controls who may send mail to that player.
-If the lock fails, the sender receives an error message and the mail is
-not delivered.
+A lock on the player object controls who may send mail to that player.
+The lock's name is implementation-defined: TinyMUX uses
+`@lock/maillock` (attribute `A_LMAIL`), PennMUSH uses `@lock/Mail`
+(capital M). If the lock fails, the sender receives an error message
+and the mail is not delivered.
 
-The `@mailforwardlist` attribute specifies dbrefs to which incoming mail is
-automatically forwarded.
+Automatic forwarding of incoming mail is a PennMUSH-specific feature.
+PennMUSH reads the `MAILFORWARDLIST` attribute on the recipient and,
+if present and combined with a passing `MailForward` lock, forwards
+the incoming message to the listed dbrefs. TinyMUX, TinyMUSH, and
+RhostMUSH provide no equivalent auto-forwarding facility in the core
+mail subsystem.
 
 ## Mail Functions
 

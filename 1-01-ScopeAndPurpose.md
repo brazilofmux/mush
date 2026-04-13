@@ -11,7 +11,7 @@ This standard is derived from the common behavior of four major MUSH
 implementations:
 
 - TinyMUSH (version 4.0)
-- TinyMUX (version 2.13)
+- TinyMUX (version 2.14)
 - RhostMUSH
 - PennMUSH
 

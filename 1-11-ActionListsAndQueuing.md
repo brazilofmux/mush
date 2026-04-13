@@ -97,8 +97,9 @@ limits on the command queue:
 
 - **Per-object limit:** Each object has a maximum number of queue entries.
   The default limit is implementation-defined but should be at least 100. The
-  QUEUEMAX attribute on an object overrides the default. Objects with the
-  HUGE_QUEUE power have a substantially higher limit.
+  QUEUEMAX attribute on an object overrides the default. Objects with an
+  appropriate high-queue power (e.g., PennMUSH's `HUGE_QUEUE` flag, or the
+  equivalent in other engines) have a substantially higher limit.
 
 - **Global limit:** The server may impose a global maximum on the total number
   of queue entries across all objects.
@@ -181,12 +182,32 @@ semaphore is notified.
 ### @wait with Semaphore and Timeout
 
 ```
-@wait <object>/<timeout> = <command-list>
+@wait <object>/<value> = <command-list>
 ```
 
-When both an object and a timeout are specified, the command is placed on the
-semaphore queue but will also execute if the timeout expires before the
-semaphore is notified. This prevents commands from waiting indefinitely.
+The slashed form is overloaded: \<value\> is interpreted as a numeric
+timeout if it parses as a number, and as an alternate semaphore
+attribute name otherwise. The two uses are mutually exclusive — a
+single `@wait` cannot specify both a custom semaphore attribute and a
+timeout. In its numeric (timeout) form the command is placed on the
+default semaphore queue but will also execute if the timeout expires
+before the semaphore is notified; this prevents commands from waiting
+indefinitely.
+
+### @wait/until
+
+Some implementations provide an `/until` switch that interprets the
+time argument as an absolute epoch timestamp rather than a relative
+delay:
+
+```
+@wait/until <epoch-seconds> = <command-list>
+```
+
+The command executes once the wall-clock time reaches
+\<epoch-seconds\>. This form is convenient for scheduling at a known
+calendar time without having to compute the delta from "now."
+Availability of `/until` is implementation-defined.
 
 ### @notify
 
@@ -275,18 +296,23 @@ This immediately cancels all delayed and semaphore-waiting commands for the
 specified object. The object's semaphore counters are reset to zero.
 
 A player can `@halt` objects they own. Wizards can `@halt` any object.
-Objects with the HALT_ANYTHING power can `@halt` any object and use
-`@allhalt` to clear the entire queue.
+Objects granted a general halt capability (e.g., PennMUSH's
+`HALT_ANYTHING` flag, TinyMUX's `halt` power) can `@halt` any object.
+Clearing the entire queue is performed by the wizard-level command
+described below.
 
-### @allhalt
+### @halt/all and @allhalt
 
 ```
+@halt/all
 @allhalt
 ```
 
-Clears all entries from the command queue for all objects. This is a wizard-
-or HALT_ANYTHING-only command used in emergencies (e.g., runaway softcode
-loops).
+Clears all entries from the command queue for all objects. This is a
+wizard-level command used in emergencies (e.g., runaway softcode
+loops). TinyMUSH and TinyMUX spell it `@halt/all`; PennMUSH ships a
+dedicated `@allhalt` command. Implementations should provide at
+least one of these forms.
 
 ## Queue Inspection: @ps
 
@@ -299,7 +325,9 @@ The `@ps` command displays the contents of the command queue:
 
 Without an argument, `@ps` shows the player's own queue entries. With an
 argument, it shows queue entries for the specified object (subject to
-permission checks). The PS_ALL power permits viewing any object's queue.
+permission checks). An implementation-defined power (PennMUSH's
+`PS_ALL` flag, TinyMUX's `see_queue` power, etc.) permits viewing any
+object's queue.
 
 The display shall include:
 

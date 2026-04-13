@@ -13,16 +13,21 @@ out-of-character (OOC) channel or a trade channel.
 
 ## Joining and Leaving Channels
 
-The exact syntax varies by server, but the most common commands are:
+Commands diverge between PennMUSH and TinyMUX. Use whichever set your
+server accepts — `help @channel` or `help addcom` will tell you.
+
+On PennMUSH:
 
 ```
-> @channel/join Public
+> @channel/on Public
 You have joined channel Public.
-> @channel/leave Public
+> @channel/off Public
 You have left channel Public.
 ```
 
-Some servers use `addcom` and `delcom` instead:
+On TinyMUX, membership is managed through aliases: creating an alias
+joins you, removing the alias removes you. PennMUSH accepts the
+alias commands too and usually treats them as the preferred form:
 
 ```
 > addcom pub = Public
@@ -31,8 +36,8 @@ Channel alias 'pub' set to channel Public.
 Channel alias 'pub' removed.
 ```
 
-The alias lets you talk on the channel with a short prefix instead of
-typing the full name every time.
+The alias also lets you talk on the channel with a short prefix
+instead of typing the full name every time.
 
 ## Talking on a Channel
 
@@ -50,11 +55,15 @@ You can also pose on a channel:
 <Public> Sparrow waves.
 ```
 
-Without an alias, use the full command:
+Without an alias, use `@cemit` (both engines):
 
 ```
-> @channel/emit Public = Hello everyone!
+> @cemit Public = Hello everyone!
 ```
+
+`@cemit` broadcasts a plain message to the channel without speaker
+attribution and typically requires that you be a member of the
+channel (or have wizard privileges).
 
 ## Listing Channels
 
@@ -87,54 +96,74 @@ Players on channel Public:
   temporarily muting busy channels so you do not flood your scroll
   when you return.
 
-## Muting and Gagging
+## Muting and Silencing
 
-If a channel is too busy, you can mute it without leaving:
+If a channel is too busy, you can silence it without leaving. On
+TinyMUX, toggle your alias off and on:
 
 ```
-> @channel/mute Public
-You have muted channel Public.
+> pub off
+Alias 'pub' is now quiet.
+> pub on
+Alias 'pub' is active again.
+```
+
+On PennMUSH, two distinct switches control two different things:
+
+```
+> @channel/gag Public         (suppress all channel messages)
+> @channel/mute Public        (suppress connect/disconnect notices)
+> @channel/ungag Public
 > @channel/unmute Public
-You have unmuted channel Public.
 ```
 
-When muted, messages still go to the channel but you do not see them.
-You remain a member and can unmute at any time.
+"Gag" is the one you want for "too busy, stop showing me messages."
+"Mute" only silences the join/leave/connect/disconnect spam. When
+silenced by any of these mechanisms, messages still go to the channel
+but you do not see them; you remain a member and can re-enable at
+any time.
 
 ## Creating Your Own Channel
 
 If you have permission (usually builders or staff), you can create
-channels:
+channels. Syntax depends on engine:
 
 ```
-> @channel/add Trading
-Channel Trading created.
-> @channel/desc Trading = Buy, sell, and trade items.
+> @channel/add Trading           (PennMUSH)
+> @ccreate Trading               (TinyMUX)
 ```
+
+Set a description with `@channel/describe Trading = ...` (PennMUSH)
+or by assigning an appropriate attribute / using `@cset` on TinyMUX.
+Consult the server's help for its exact administration verb.
 
 ### Channel Locks
 
-Control who can join, speak, or see a channel:
+Control who can join, speak, or see a channel. PennMUSH uses the
+`@clock` command:
 
 ```
 > @clock/join Trading = FLAG^APPROVED
 > @clock/speak Trading = FLAG^APPROVED
 ```
 
-This restricts the Trading channel to approved players only. Lock syntax
-follows the same patterns described in the Locks and Security chapter.
+TinyMUX has no `@clock`; access is set via `@cset/<option>` and
+`@coflags`/`@cpflags`, plus the lock on the channel's underlying
+object. Lock key expressions themselves follow the same patterns as
+the object locks described in the Locks and Security chapter.
 
 ### Channel Settings
 
-Common configuration options:
+Common configuration options vary:
 
 ```
-> @channel/priv Trading = no_titles
-> @channel/priv Trading = quiet
+> @channel/privs Trading = notitles    (PennMUSH: suppress player titles)
+> @channel/privs Trading = quiet       (PennMUSH: suppress join/leave notices)
+> @cset quiet Trading                  (TinyMUX: equivalent quiet option)
 ```
 
-`no_titles` suppresses player titles in channel output. `quiet` hides
-join and leave messages.
+Portable admin code should consult the target engine's help for the
+exact command surface.
 
 ## Practical Example: Setting Up Communication
 

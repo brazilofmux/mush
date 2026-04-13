@@ -361,8 +361,19 @@ Calls \<attribute\> as a user function (like `u()`), or evaluates
 hasattr(<object>, <attribute>)
 ```
 
-Returns 1 if \<attribute\> exists on \<object\> (even if empty), and 0
-otherwise.
+Returns 1 if \<attribute\> is set directly on \<object\> (even if
+empty), and 0 otherwise. This function does *not* consult the parent
+chain; use `hasattrp()` to include inherited attributes.
+
+### hasattrp()
+
+```
+hasattrp(<object>, <attribute>)
+```
+
+Returns 1 if \<attribute\> is set on \<object\> or on any object in
+its parent chain, and 0 otherwise. This is the parent-inheriting
+counterpart to `hasattr()`.
 
 ### hasattrval()
 
@@ -370,8 +381,10 @@ otherwise.
 hasattrval(<object>, <attribute>)
 ```
 
-Returns 1 if \<attribute\> exists on \<object\> and has a non-empty value,
-and 0 otherwise.
+Returns 1 if \<attribute\> exists on \<object\> and has a non-empty
+value, and 0 otherwise. Like `hasattr()`, this does not consult the
+parent chain; implementations that also provide `hasattrpval()` use
+that name for the inheriting variant.
 
 ### lattr()
 
@@ -383,13 +396,17 @@ Returns a space-separated list of attribute names on \<object\>. If
 \<pattern\> is specified (using wildcards), only matching attribute names are
 returned.
 
-### nattr()
+### nattr() / attrcnt()
 
 ```
 nattr(<object>)
+attrcnt(<object>)
 ```
 
-Returns the number of attributes set on \<object\>.
+Returns the number of attributes set on \<object\>. PennMUSH and
+TinyMUSH name this function `nattr()`; TinyMUX and RhostMUSH name it
+`attrcnt()`. Code intended to run on multiple engines must select the
+correct name for the target.
 
 ### lattrp()
 
@@ -524,12 +541,14 @@ Returns the currency balance of \<object\>.
 ### lastcreate()
 
 ```
-lastcreate(<player> [, <type>])
+lastcreate([<player> [, <type>]])
 ```
 
 Returns the dbref of the most recent object created by \<player\>. If
-\<type\> is specified (`R`, `T`, `E`, or `P`), returns the most recent
-object of that type.
+\<player\> is omitted, the executor is used. If \<type\> is specified
+(`R`, `T`, `E`, or `P`), returns the most recent object of that type.
+Some implementations require \<player\> to be present; portable code
+should pass it explicitly.
 
 ## WHO Functions
 

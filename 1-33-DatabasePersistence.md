@@ -36,12 +36,19 @@ The database stores the following information for each object:
 ### The @dump Command
 
 ```
-@dump [/paranoid]
+@dump [/switch]
 ```
 
-The `@dump` command forces an immediate database save. This creates a
-checkpoint of the current database state. The `/paranoid` switch performs
-additional consistency checks during the dump. Requires wizard privileges.
+The `@dump` command forces an immediate database save, creating a
+checkpoint of the current database state. Requires wizard privileges.
+
+The set of available switches is implementation-defined. TinyMUX 2.14
+provides `/flatfile` (export to portable flat-file form),
+`/structure` (dump only the structural/object tree), and `/text`
+(dump only text attributes). PennMUSH provides `/paranoid` for
+additional consistency checks and `/debug` for diagnostic output.
+TinyMUSH and RhostMUSH each define their own switch sets. Portable
+admin softcode should not hard-code switch names.
 
 ### Automatic Dumps
 

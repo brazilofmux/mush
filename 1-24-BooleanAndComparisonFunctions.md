@@ -183,12 +183,18 @@ otherwise.
 ### comp()
 
 ```
-comp(<string1>, <string2>)
+comp(<string1>, <string2> [, <type>])
 ```
 
-Performs lexicographic comparison of two strings. Returns -1 if \<string1\>
-sorts before \<string2\>, 0 if they are equal, or 1 if \<string1\> sorts
-after \<string2\>. The comparison is case-insensitive.
+Performs lexicographic comparison of two strings. Returns -1 if
+\<string1\> sorts before \<string2\>, 0 if they are equal, or 1 if
+\<string1\> sorts after \<string2\>. The optional \<type\> argument
+selects the comparison algorithm; both the default and the set of
+accepted type codes are implementation-defined (see Chapter 20 for
+per-engine codes). Default case-sensitivity therefore varies across
+implementations: TinyMUX defaults to Unicode collation
+(case-sensitive at the tertiary weight level), while PennMUSH defaults
+to a case-sensitive byte-order comparison.
 
 ### streq()
 

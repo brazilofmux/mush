@@ -120,16 +120,23 @@ input as `%0`, `%1`, etc.
 
 | Code | Color |
 |------|-------|
-| `r` | Red |
-| `g` | Green |
-| `y` | Yellow |
-| `b` | Blue |
-| `m` | Magenta |
-| `c` | Cyan |
-| `w` | White |
-| `h` | Highlight (bold) |
+| `x` / `X` | Black foreground / black background |
+| `r` / `R` | Red foreground / red background |
+| `g` / `G` | Green foreground / green background |
+| `y` / `Y` | Yellow foreground / yellow background |
+| `b` / `B` | Blue foreground / blue background |
+| `m` / `M` | Magenta foreground / magenta background |
+| `c` / `C` | Cyan foreground / cyan background |
+| `w` / `W` | White foreground / white background |
+| `h` | Highlight (bold/bright) |
+| `u` | Underline |
+| `i` | Inverse |
+| `f` | Flash |
+| `n` | Reset to normal |
 
-Use with `ansi()`: `ansi(hr, text)` produces bold red text.
+Lowercase sets foreground, **uppercase sets background** (not bright).
+For bright foreground, add `h`. Example: `ansi(hr, text)` is
+bright-red text; `ansi(R, text)` is normal text on a red background.
 
 ## Mail
 
@@ -143,13 +150,16 @@ Use with `ansi()`: `ansi(hr, text)` produces bold red text.
 
 ## Channels
 
-| Command | Action |
-|---------|--------|
-| `@channel/list` | List channels. |
-| `@channel/join <chan>` | Join a channel. |
-| `@channel/leave <chan>` | Leave a channel. |
-| `addcom <alias> = <chan>` | Add channel alias. |
-| `<alias> <message>` | Talk on channel. |
+Command names diverge between engines. Use the form appropriate for
+your server (PennMUSH / TinyMUX shown).
+
+| Action | PennMUSH | TinyMUX |
+|--------|----------|---------|
+| List channels | `@channel/list` | `@clist` |
+| Join a channel | `@channel/on <chan>` | `addcom <alias>=<chan>` |
+| Leave a channel | `@channel/off <chan>` | `delcom <alias>` |
+| Add speaking alias | `addcom <alias>=<chan>` | `addcom <alias>=<chan>` |
+| Talk on channel | `<alias> <message>` | `<alias> <message>` |
 
 ## Debugging
 

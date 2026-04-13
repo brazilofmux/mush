@@ -201,8 +201,14 @@ Carol               220
 The `h` means highlight (bold), `r` means red. The result is "Warning!" in
 bright red followed by normal text.
 
-Common color codes: `r` red, `g` green, `y` yellow, `b` blue, `m` magenta,
-`c` cyan, `w` white. Uppercase for bright, lowercase for dim.
+Common color codes: `r` red, `g` green, `y` yellow, `b` blue, `m`
+magenta, `c` cyan, `w` white, `x` black. These lowercase letters set
+the **foreground** color. The **uppercase** equivalents (`R`, `G`,
+`Y`, `B`, `M`, `C`, `W`, `X`) select the same color as a **background**
+— not a brighter foreground. To get a bold/bright foreground, add the
+separate `h` (highlight) code. For example, `ansi(hr, Warning!)` is
+bright red text; `ansi(R, Warning!)` is normal text on a red
+background.
 
 ## Escaping and Security
 

@@ -8,6 +8,7 @@ surveys/
 mdfix
 mdfix.c
 book_output/
+glossary_candidates.yaml
 
 # Editor/OS
 *.swp

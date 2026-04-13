@@ -60,8 +60,10 @@ Division by zero returns an error.
 mod(<number1>, <number2>)
 ```
 
-Returns the remainder of \<number1\> divided by \<number2\>. The sign of the
-result follows the sign of the dividend. Division by zero returns an error.
+Returns \<number1\> modulo \<number2\> using floored division: the
+result has the same sign as the divisor (\<number2\>). For example,
+`mod(-7, 3)` returns `2`, not `-1`. Division by zero returns an
+error.
 
 ### remainder()
 
@@ -69,8 +71,10 @@ result follows the sign of the dividend. Division by zero returns an error.
 remainder(<number1>, <number2>)
 ```
 
-Returns the remainder of integer division. Differs from `mod()` in handling
-of negative numbers: the result has the same sign as the dividend. Level 2.
+Returns the remainder of truncated integer division: the result has
+the same sign as the dividend (\<number1\>). For example,
+`remainder(-7, 3)` returns `-1`. This is the C `%` operator's
+semantics. Division by zero returns an error. Level 2.
 
 ## Rounding
 
@@ -309,11 +313,16 @@ Returns the 3D Euclidean distance between two points.
 ### rand()
 
 ```
-rand(<upper> [, <lower>])
+rand([<lower>,] <upper>)
 ```
 
-Returns a random integer. With one argument, returns a value from 0 to
-\<upper\>-1. With two arguments, returns a value from \<lower\> to \<upper\>-1.
+Returns a random integer. With one argument, returns a value in the
+half-open range [0, \<upper\>) — that is, 0 through \<upper\>-1
+inclusive. With two arguments, returns a value in the closed range
+[\<lower\>, \<upper\>] — both endpoints inclusive. The two-argument
+range semantics differ from the one-argument form; the two endpoints
+and their inclusivity are implementation-defined and should be
+verified against the target engine.
 
 ### die()
 

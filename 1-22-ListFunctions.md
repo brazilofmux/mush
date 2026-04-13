@@ -51,11 +51,15 @@ Returns \<length\> elements from \<list\> beginning at position \<start\>
 ### index()
 
 ```
-index(<string>, <delimiter>, <start>, <end>)
+index(<string>, <delimiter>, <start>, <count>)
 ```
 
-Returns the substring between field positions \<start\> and \<end\>, where
-fields are separated by \<delimiter\>.
+Returns \<count\> consecutive elements from \<string\> beginning at
+1-based position \<start\>, where elements are separated by
+\<delimiter\>. Note that the fourth argument is a field count, not an
+end position. If \<start\> is beyond the end of the list, returns an
+empty string; if \<count\> extends beyond the end, returns elements
+through the end of the list.
 
 ### elements()
 
@@ -173,16 +177,24 @@ Returns \<list\> with its elements in reverse order.
 sort(<list> [, <sort-type> [, <idelim> [, <odelim>]]])
 ```
 
-Returns \<list\> sorted in ascending order. The \<sort-type\> parameter
-controls how elements are compared:
+Returns \<list\> sorted in ascending order. The \<sort-type\>
+parameter controls how elements are compared:
 
 | Type | Description |
 |------|-------------|
-| `a`  | Alphabetic (case-insensitive, default) |
-| `i`  | Integer (numeric) |
+| `a`  | Alphabetic (implementation-defined default collation) |
+| `i`  | Case-insensitive alphabetic |
+| `n`  | Numeric (integer) |
 | `f`  | Floating-point |
-| `d`  | Dbref |
-| `n`  | Name (sort by object name) |
+| `d`  | Dbref (sort by dbref number) |
+
+The default \<sort-type\> and the set of supported types are
+implementation-defined. TinyMUX additionally accepts `u` (Unicode
+collation, the default on that engine), `c` (case-insensitive UCA),
+`a` (legacy ASCII byte-order), and `?` (auto-detect). Code targeting
+portability across engines should always specify \<sort-type\>
+explicitly and use `n` for numeric sorts — `i` is *not* a numeric
+sort type.
 
 ### sortby()
 
@@ -280,11 +292,17 @@ Returns the current nesting level of `iter()` calls (0 for the outermost).
 ### map()
 
 ```
-map(<function>, <list> [, <idelim> [, <odelim>]])
+map(<function>, <list> [, <idelim> [, <odelim>]] [, <arg1>, <arg2>, ...])
 ```
 
-Applies \<function\> (an \<object\>/\<attribute\> reference) to each element of
-\<list\>. The current element is passed as `%0`. Returns the list of results.
+Applies \<function\> (an \<object\>/\<attribute\> reference) to each
+element of \<list\>. The current element is passed as `%0`. Returns
+the list of results.
+
+Some implementations (notably TinyMUX) accept additional pass-through
+arguments that are forwarded to the called attribute as `%1`, `%2`,
+and so on for every element. This enables parameterized mapping
+without the use of q-registers.
 
 ### filter()
 

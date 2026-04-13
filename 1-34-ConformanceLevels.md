@@ -26,7 +26,7 @@ A Level 1 conforming implementation shall support the following:
 - User-defined attributes via the `&` command and `@set`.
 - Standard message attributes (DESC, SUCC, OSUCC, ASUCC, FAIL, OFAIL,
   AFAIL, DROP, ODROP, ADROP).
-- Attribute flags: at minimum AF_WIZARD, AF_LOCKED, AF_VISUAL.
+- Attribute flags: at minimum AF_WIZARD, AF_LOCK, AF_VISUAL.
 - Attribute inheritance via the parent chain.
 - \$-commands and ^-listeners.
 
@@ -116,7 +116,12 @@ plus the following:
 ### Extended Commands
 
 - All commands marked Level 2 in Chapters 15-19.
-- The `@switch`, `@if`, `@dolist` control flow commands.
+- The `@switch` and `@dolist` control flow commands. (The `@if` /
+  `@ifelse` family is engine-specific — `@if` is present in TinyMUX,
+  `@ifelse` in PennMUSH, and neither is universally available — so
+  the standard does not require either as a Level 2 feature.
+  Portable control flow should use the `switch()`/`ifelse()` function
+  forms.)
 - Queue management: `@wait` (timed and semaphore), `@notify`, `@drain`.
 
 ### Extended Functions
@@ -142,8 +147,11 @@ plus the following:
 
 - The ROYALTY privilege level.
 - The INHERIT flag and inheritance semantics.
-- The MISTRUST flag.
 - Control locks (`@lock/control`).
+
+The MISTRUST / TRUST flag pair (PennMUSH-specific; TRUST is an alias
+for INHERIT) is not a Level 2 requirement. Implementations that
+provide it shall document it as an optional feature.
 
 ## Conformance Claims
 

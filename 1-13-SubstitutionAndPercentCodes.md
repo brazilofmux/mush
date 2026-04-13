@@ -70,15 +70,15 @@ These codes provide information about the execution context:
 | `%!`    | dbref | The dbref of the executor -- the object whose attribute is being evaluated. |
 | `%@`    | dbref | The dbref of the caller -- the object that directly invoked the current function or trigger. In a chain of `u()` calls, this is the object containing the calling `u()`. |
 | `%l`    | dbref | The dbref of the enactor's location. |
-| `%?`    | number | The current function invocation depth. |
+| `%?`    | number | Current function invocation metrics. Format is implementation-defined: PennMUSH returns two space-separated integers (invocations recursions); TinyMUSH and RhostMUSH return a single invocation count; TinyMUX does not substitute `%?`. Level 2. |
 | `%+`    | number | The number of positional arguments passed to the current function. Level 2. |
-| `%c`    | text  | The last command executed. Implementation-defined. |
-| `%m`    | text  | The last command executed. Implementation-defined. |
+| `%c`    | text  | Implementation-defined. **Caution:** TinyMUX repurposes `%c` (and `%C`) as an ANSI color-code substitution rather than a last-command reference. PennMUSH and RhostMUSH use `%c` for the previous command typed by the enactor; TinyMUSH's behavior is configurable. Portable code should prefer `%m` for last-command. Level 2. |
+| `%m`    | text  | The last command executed by the enactor. Implementation-defined. |
 | `%:`    | objid | The enactor's object identifier (dbref:creation-time). Level 2. |
 | `%k`    | text  | The enactor's moniker (ANSI-colored name). Level 2. |
 | `%K`    | text  | The enactor's moniker, capitalized. Level 2. |
 | `%\|`   | text  | The output of the previous command in a piped command list. Level 2. |
-| `%=<attr>` | text | The value of \<attr\> on the executor, equivalent to `v(<attr>)`. Level 2. |
+| `%=<attr>` | text | The value of \<attr\> on the executor, equivalent to `v(<attr>)`. In TinyMUX, `%=<N>` where \<N\> is a non-negative integer is additionally interpreted as a positional-argument reference (equivalent to `%<N>` extended beyond the single-digit limit). Level 2. |
 
 ### Understanding %!, %#, and %@
 

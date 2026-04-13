@@ -54,11 +54,15 @@ spatial computation in games with coordinate systems:
 
 ## Stack Operations
 
-Some implementations provide a per-object stack data structure:
+TinyMUSH provides a per-object stack data structure (via a loadable
+module) with the following softcode interface:
 
 - `push()`, `pop()`, `peek()` for stack manipulation.
 - `lstack()` for listing stack contents.
 - `empty()` for testing stack emptiness.
+
+TinyMUX, PennMUSH, and RhostMUSH do not implement this API. Softcode
+that relies on these functions is not portable across implementations.
 
 ## Extended ANSI and Color
 

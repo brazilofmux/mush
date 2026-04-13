@@ -282,4 +282,4 @@ following categories, each covered in a separate chapter:
 | Object/database   | 23      | `name()`, `loc()`, `owner()`, `get()`, `type()` |
 | Boolean/comparison | 24     | `and()`, `or()`, `not()`, `eq()`, `match()` |
 | Side-effect       | 25      | `set()`, `create()`, `tel()`, `pemit()`, `trigger()` |
-| Miscellaneous     | 26      | `time()`, `rand()`, `switch()`, `iter()`, `u()` |
+| Miscellaneous     | 26      | `time()`, `switch()`, `case()`, `null()`, `u()` |

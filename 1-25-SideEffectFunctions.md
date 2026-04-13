@@ -259,12 +259,20 @@ Sets the zone of \<object\> to \<zone\>. Returns an empty string. Level 2.
 ### lock()
 
 ```
+lock(<object>)
+lock(<object>/<lock-type>)
 lock(<object>, <key-expression>)
 lock(<object>/<lock-type>, <key-expression>)
 ```
 
-Sets a lock on \<object\>. Without a lock type, sets the default lock.
-Returns 1 on success, 0 on failure. Level 2.
+Queries or sets a lock on \<object\>. With one argument, returns the
+current lock expression in the same human-readable form displayed by
+`@lock/list` and `examine`. With two arguments, sets the lock to
+\<key-expression\> and returns the resulting lock expression (or an
+error string on failure). Without a lock type, the default lock is
+used. This function is not a boolean; code that tests its return
+value for success should compare against an empty string or use
+`strlen()` rather than treating the result as 0/1. Level 2.
 
 ### unlock()
 

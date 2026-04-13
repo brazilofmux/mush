@@ -50,8 +50,11 @@ standard development libraries.
 
 ## Configuration Files
 
-Every server has a configuration file (usually `mush.conf` or
-`netmush.conf`) that controls its behavior. Key settings include:
+Every server has a configuration file that controls its behavior. The
+default name depends on the engine: TinyMUX ships `netmux.conf`,
+PennMUSH ships `mush.cnf` (from the `mushcnf.dst` distribution
+template), TinyMUSH uses `netmush.conf`, and RhostMUSH uses
+`netrhost.conf`. Key settings include:
 
 ```
 # Network settings
@@ -80,13 +83,17 @@ any network-specific options.
 Start the server:
 
 ```
-$ ./startmush
+$ ./Startmush          # TinyMUSH / PennMUSH-style wrapper
+$ ./Startmux           # TinyMUX wrapper
 ```
 
-Or manually:
+Or manually, invoking the server binary directly (binary and config
+names are engine-specific):
 
 ```
-$ ./netmush -c mush.conf &
+$ ./netmush -c mush.cnf &          # PennMUSH
+$ ./netmux -c netmux.conf &        # TinyMUX
+$ ./netmush -c netmush.conf &      # TinyMUSH
 ```
 
 The first time you start, the server creates a minimal database with

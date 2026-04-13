@@ -9,20 +9,30 @@ features to prevent conflicts with future versions of the standard.
 
 ## Reserved Command Names
 
-The following command names are reserved for future standardization:
+The following command names are reserved for future standardization.
+Several of them are already implemented by one or more reference
+engines; they are listed here to signal that a future revision may
+codify their behavior normatively, and those implementations may need
+to adjust if the standardized semantics differ from what they ship
+today.
 
-- `@channel` and all `@channel/*` switches.
-- `@mail` and all `@mail/*` switches.
-- `@sql` for database integration.
-- `@json` for JSON operations.
+- `@channel` and all `@channel/*` switches. (Implemented in PennMUSH;
+  TinyMUX uses parallel `@c*` commands — see Chapter 30.)
+- `@mail` and all `@mail/*` switches. (Implemented in all four
+  reference engines with divergent switch sets — see Chapter 31.)
+- `@sql` for database integration. (Implemented in TinyMUX and
+  PennMUSH.)
+- `@json` for JSON operations. (Implemented in TinyMUX.)
 - `@http` for HTTP client operations.
 - `@event` for event-driven programming.
 - `@module` for module management.
 - `@config` for runtime configuration.
-- `@log` for logging operations.
+- `@log` for logging operations. (Implemented in TinyMUX and
+  RhostMUSH.)
 
-Implementations may use these names for their own features but should be
-prepared to adjust if a future version of this standard defines them.
+Implementations may use these names for their own features but should
+be prepared to adjust if a future version of this standard defines
+them.
 
 ## Reserved Function Names
 
@@ -32,7 +42,11 @@ The following function name prefixes are reserved:
 - `sql*()` for SQL query functions.
 - `http*()` for HTTP client functions.
 - `event*()` for event system functions.
-- `mod*()` for module system functions (excluding `mod()` for modulo).
+- `mod*()` for module system functions. This reservation applies to
+  MUSHcode softcode function names only; it does not constrain the
+  internal C, Lua, or other implementation-language symbol names used
+  by an engine. The existing softcode function `mod()` (the modulo
+  operator, Chapter 21) is grandfathered and remains standardized.
 
 ## Reserved Attribute Names
 

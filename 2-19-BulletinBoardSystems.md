@@ -9,9 +9,16 @@ is private), bulletin boards are public archives that anyone can read at
 their leisure.
 
 Most MUSHes use a softcoded bulletin board system -- a set of commands
-built in MUSHcode rather than compiled into the server. The two most
-common systems are Myrddin's BBS and Anomaly Jobs, though many games
-write their own.
+built in MUSHcode rather than compiled into the server. There is no
+universal BBS command set, and command names vary wildly. The most
+widely deployed packages on PennMUSH and TinyMUX are Myrddin's BBS
+(the `+bb*` commands used as examples below) and Anomaly Jobs (which
+uses its own `+jobs` / `+bbs` verbs). RhostMUSH includes a hardcoded
+bulletin board with its own `+bb` syntax. Many games write or fork
+their own system. **The examples in this chapter use Myrddin's BBS
+command names; if your server runs a different package, the concepts
+below carry over but you will need to check local help (`+bbhelp`,
+`help +bb`, or similar) for the exact verbs.**
 
 ## Reading Boards
 

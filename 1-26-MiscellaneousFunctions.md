@@ -182,11 +182,17 @@ Level 2.
 ### foreach()
 
 ```
-foreach(<function>, <string> [, <delimiter>])
+foreach(<function>, <string> [, <begin>, <end>])
 ```
 
-Applies \<function\> to each character of \<string\> (or to each delimited
-element if \<delimiter\> is specified). Level 2.
+Applies \<function\> to each character of \<string\> in turn. The
+current character is passed to \<function\> as `%0`. The optional
+\<begin\> and \<end\> arguments are single characters that mark the
+boundaries of a region within \<string\> for selective processing:
+characters outside a matching \<begin\>/\<end\> pair are passed
+through unchanged. The third and fourth arguments are *not* list
+delimiters — `foreach()` operates on characters, not on delimited
+list elements. Level 2.
 
 ## Null and Utility
 

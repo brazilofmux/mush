@@ -47,20 +47,22 @@ To send a message:
 The format is `@mail <recipients> = <subject>/<body>`. The slash
 separates the subject line from the message body.
 
-For longer messages, some servers support a multi-line composition mode:
+For longer messages, TinyMUX supports a multi-line composition mode
+(PennMUSH uses a different editor interface; check its `help @mail`):
 
 ```
-> @mail Morgan
-Subject: Weekend event
-> -
-I wanted to let you know about the event this weekend.
-It starts Saturday at 8pm.
-Hope to see you there!
-> .
+> @mail/send Morgan = Weekend event
+> - I wanted to let you know about the event this weekend.
+> - It starts Saturday at 8pm.
+> - Hope to see you there!
+> --
 Message sent.
 ```
 
-The `-` starts the message body and the `.` sends it.
+Each `-<text>` line appends to the body, and `--` (two dashes on a
+line by themselves) finishes and sends the message. A lone `.` does
+**not** send the message in TinyMUX — it is just treated as a normal
+command.
 
 ### Multiple Recipients
 
@@ -84,8 +86,11 @@ prefixes the subject with "Re:".
 Forward a message to someone else:
 
 ```
-> @mail/forward 2 = Sparrow
+> @mail/fwd 2 = Sparrow
 ```
+
+Both TinyMUX and PennMUSH use the abbreviated switch `/fwd`.
+`/forward` is not recognized.
 
 ## Managing Your Mailbox
 
@@ -132,21 +137,15 @@ Create shortcuts for groups of recipients you mail frequently:
 
 ```
 > @malias staff = Morgan River Ash
-> @mail staff = Update/New policy starting Monday.
+> @mail *staff = Update/New policy starting Monday.      (TinyMUX)
+> @mail +staff = Update/New policy starting Monday.      (PennMUSH)
 ```
 
-This sends the message to all three players.
-
-## Checking Mail Status
-
-See whether a player has unread mail from you:
-
-```
-> @mail/status Morgan
-Morgan has read your last message.
-```
-
-This is useful to know if someone has seen your note before following up.
+This sends the message to all three players. Note the prefix: when
+referencing a mailing-list alias in a recipient list, TinyMUX expects
+a leading `*` and PennMUSH expects a leading `+`. Using the wrong
+prefix (or omitting it entirely) makes the server look for a player
+literally named "staff" and fail with "no such player."
 
 ## Practical Example: Coordinating an Event
 

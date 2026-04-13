@@ -55,11 +55,15 @@ This is useful when you need to both display and store a computed value.
 
 ### Register Scope
 
-Registers are scoped to the current action list. When the action list
-finishes, all registers are cleared. If you call a user function with
-`u()`, the called function **shares** your registers. If you call with
-`ulocal()`, the called function gets its own copy -- changes it makes do
-not affect your registers.
+Registers are scoped to a single interactive command invocation.
+They are cleared at the start of each command you type, but they
+**persist** across queued continuations of that command — so a
+`@trigger` or `@dolist` launched from the same command sees the
+registers you set, and later `@wait`-delayed steps continue to share
+them until the command's queue entries drain. If you call a user
+function with `u()`, the called function **shares** your registers.
+If you call with `ulocal()`, the called function gets its own copy --
+changes it makes do not affect your registers.
 
 ## Attributes: Persistent Storage
 
@@ -79,12 +83,19 @@ To change it from code, use the `set()` side-effect function:
 Score is now 10
 ```
 
-Or use the `@set` command in an action list:
+Or use the `&` attribute-set shorthand in an action list:
 
 ```
-> &CMD_ADDSCORE me = $+score:@set me/SCORE =
+> &CMD_ADDSCORE me = $+score:&SCORE me=
   [add(v(SCORE), 1)]; @pemit %# = Score: [v(SCORE)]
 ```
+
+> **Watch out:** `@set <obj>/<attr> = <value>` does **not** write the
+> attribute's value — in every major engine, that form sets an
+> attribute *flag* whose name is `<value>`. To update an attribute's
+> value you want either `&<attr> <obj> = <new-value>` (as shown above)
+> or the attribute-value form of `@set`, `@set <obj> = <attr>:<value>`.
+> If your code is silently doing nothing, check which form you used.
 
 ## Numeric Operations
 
