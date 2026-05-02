@@ -795,3 +795,496 @@ not already tracked above.
 
 - [x] **2-22: `@find =THING` is not valid syntax.** Example replaced
   with a name-substring usage and a note explaining the correct form.
+
+---
+
+## 2026-05-02 Review Pass — New Findings
+
+Third-pass review focusing on cross-volume consistency, conformance
+definitions, and remaining technical edge cases.
+
+### Infrastructure
+
+- [ ] **mdfix batch processing bug.** Still open from previous sessions.
+
+### Structural / Framing Issues
+
+- [ ] **Level 2 Conformance definitions in 1-34 are inconsistent with per-chapter tags.**
+  - `map()`, `filter()`, `fold()` are listed as Level 2 in 1-34 but
+    not marked in 1-22.
+  - Regular expression functions (`regmatch`, `regedit`, etc.) are
+    listed as Level 2 in 1-34 but not marked in 1-20.
+  - Side-effect functions are listed as a bullet in 1-34 but are
+    already piecewise marked in 1-25.
+  - *Recommendation*: Systematically sync 1-34 with the `Level 2`
+    tags in the technical chapters.
+
+- [ ] **Level 2 "Standard" requirement includes engine-specific command names.**
+  - 1-34 lists `@undestroy` (PennMUSH-only) as a Level 2 requirement.
+  - *Recommendation*: Reframe as a capability: "Ability to cancel
+    pending destruction (via `@undestroy` or `@set !GOING` as
+    appropriate)."
+
+- [ ] **Clarify Channel and Mail System conformance status.**
+  - 1-34 lists them as Level 2 requirements, but 1-30 calls channels
+    an "optional subsystem."
+  - *Recommendation*: In 1-34, mark them as "Level 2 (if provided)"
+    or move them to a new Level 3 / Optional tier.
+
+### Volume 1: Technical Errors
+
+- [ ] **1-07: Flag character conflict for `z`.**
+  - Both `CONTROL_OK` and `OPEN_OK` are listed as using `z`.
+  - In TinyMUX, `OPEN_OK` is `z` (word 2). `CONTROL_OK` does not
+    exist in TinyMUX.
+  - *Recommendation*: Remove `CONTROL_OK` from the mandatory
+    Level 2 list (it's TinyMUSH-only) or assign it a distinct character
+    for the standard's purposes.
+
+- [ ] **1-07: `CONTROL_OK` listed in "Standard Flags" table despite
+  being TinyMUSH-only.**
+  - The chapter claims the table contains "mandatory" flags, then
+    marks one as "TinyMUSH only."
+  - *Recommendation*: Move to "Implementation-Defined" or "Optional"
+    section to preserve the integrity of the mandatory list.
+
+- [ ] **1-27: TinyMUX `Control` lock availability is incorrect.**
+  - Matrix shows `✓` for TinyMUX, but TinyMUX does not expose a
+    user-facing control lock: `lock_sw[]` lacks a `control` /
+    `controllock` switch and no `CONTROL_OK` flag is registered.
+    `A_LCONTROL` exists as a compatibility attribute constant, but is
+    not wired into the lock switch table.
+  - *Recommendation*: Update matrix to `—` for TinyMUX.
+
+- [ ] **1-06: `LCONTROL` listed as a "standard" lock attribute.**
+  - TinyMUX does not expose it as a user-facing standard lock
+    attribute, so it is not a cross-engine standard in practice.
+  - *Recommendation*: Add a note similar to `LTELOUT` marking it as
+    engine-specific.
+
+### Volume 2: Consistency and Clarity
+
+- [ ] **2-24: Quick Reference Card only lists `if()`.**
+  - `if()` is not universal (PennMUSH/TinyMUX only); `ifelse()` is the
+    portable form defined in 1-21 and 2-12.
+  - *Recommendation*: Add `ifelse()` to the card and note `if()`
+    availability.
+
+- [ ] **2-12: `@if` example is not portable to PennMUSH.**
+  - The example uses `@if`, but 1-19 states PennMUSH only provides
+    `@ifelse`.
+  - *Recommendation*: Update the example to note the name difference
+    or provide both forms.
+
+- [ ] **2-21: `@doing/header` mentioned for PennMUSH.**
+  - 1-19 says PennMUSH does not have `@doing`.
+  - *Recommendation*: Clarify that `@doing/header` is TinyMUX/TinyMUSH
+    specific and PennMUSH uses `SESSION`.
+
+---
+
+## 2026-05-02 Codex Follow-up Pass — Additional Findings
+
+This pass used the current book workspace plus the local TinyMUX tree at
+`~/tinymux`. TinyMUSH, PennMUSH, and RhostMUSH source trees are not
+present on this machine, so cross-engine claims below are either
+cross-chapter consistency findings or TinyMUX-backed findings.
+
+### Infrastructure / Evidence
+
+- [ ] **Repository evidence paths in review notes are stale for this
+  workspace.**
+  - `ISSUES.md` still says the review evidence lives in `./src/` and
+    `./surveys/`, and `CLAUDE.md` points to `/tmp/tinymush`,
+    `/tmp/pennmush`, and `/tmp/rhostmush`.
+  - None of those paths exist in the current workspace; only
+    `~/tinymux` is present.
+  - *Recommendation*: Either add a bootstrap/source-fetch script or
+    update the evidence framing so future claims name the actual source
+    tree used.
+
+- [ ] **Book assembler inserts a page break before every `##` heading.**
+  - `book_assembler.py` rewrites every H1 to `\cleardoublepage` and
+    every H2 to `\newpage`.
+  - That is likely too aggressive for EPUB and may create choppy PDF
+    pagination, especially in reference chapters with many subsections.
+  - *Recommendation*: Make section page breaks profile-specific, or
+    restrict hard page breaks to chapter-level H1 headings.
+
+### Structural / Conformance Issues
+
+- [ ] **1-07: Flag storage requirement contradicts PennMUSH-compatible
+  framing.**
+  - The chapter says a conforming implementation shall store flags as
+    32-bit bitfields and support at least three flag words.
+  - The compatibility note immediately says PennMUSH uses a dynamic flag
+    system with no fixed limit and that all approaches conform.
+  - *Recommendation*: Replace the storage mandate with a behavioral
+    capacity requirement and leave representation implementation-defined.
+
+- [ ] **1-08: Powers are described as mandatory despite 1-34 making
+  powers Level 2.**
+  - 1-08 says "A conforming implementation shall support a power-like
+    fine-grained permission system."
+  - 1-34 lists the power system and standard power set under Level 2,
+    not Level 1.
+  - *Recommendation*: Qualify the 1-08 requirement as "A Level 2
+    conforming implementation..." or define the Level 1 minimum
+    explicitly.
+
+- [ ] **1-36: Implementation-defined behavior inventory is no longer
+  synced with the chapters.**
+  - Many chapters now mark additional behavior as implementation-defined:
+    command search order, space compression, help command surfaces,
+    channel/mail command families, zone locking mechanisms, function
+    collation/type codes, and master/start-room configuration.
+  - 1-36 still has the older shorter inventory.
+  - *Recommendation*: Do a mechanical pass over every
+    `implementation-defined` occurrence and add the missing items to
+    1-36.
+
+- [ ] **Zone framing still depends on `ZONE_MASTER` even after Ch 7
+  removed it as a standard flag.**
+  - 1-17, 1-29, and 1-34 still refer to `ZONE_MASTER`.
+  - 1-07 now says `ZONE_MASTER`, `ZONE_CONTENTS`, and `ZONE_PARENT` do
+    not exist with those names as cross-engine standard flags.
+  - *Recommendation*: Use "zone master object" as the abstract concept
+    and make each engine's flag/field mechanism explicit.
+
+### Volume 1: Technical Errors / Drift
+
+- [ ] **1-33: `@shutdown/abort` regression remains in Database
+  Persistence.**
+  - Earlier passes fixed 1-19 to explain that TinyMUSH `/abort` means
+    termination with core dump, not canceling a pending shutdown.
+  - 1-33 still says `@shutdown/abort` cancels a pending shutdown.
+  - *Recommendation*: Remove the sentence or mark delayed-shutdown
+    cancellation as implementation-defined with real per-engine names.
+
+- [ ] **1-17 and 1-19 present `@zone` as equivalent to `@chzone`.**
+  - TinyMUX registers `@chzone` but not `@zone`
+    (`mux/modules/engine/command.cpp`).
+  - 1-29 already uses `@chzone` as the primary command.
+  - *Recommendation*: Use `@chzone` consistently, and mention `@zone`
+    only as an engine-specific alias if verified.
+
+- [ ] **1-29: TinyMUX zone lock description still says the ZMO must have
+  a `ZONE` flag.**
+  - TinyMUX does not register a user-facing `ZONE` flag; zone membership
+    is the object zone field.
+  - TinyMUX `check_zone_handler()` checks that the zone object has an
+    `EnterLock` and that the player passes it.
+  - *Recommendation*: For TinyMUX, state "room or thing zone object with
+    an enter lock"; do not require a `ZONE` flag.
+
+- [ ] **1-29: `@chzone /preserve` is unattributed and not TinyMUX
+  syntax.**
+  - TinyMUX registers `@chzone` with no switch table, and `do_chzone`
+    always strips configured privileged flags and clears powers on
+    non-player objects.
+  - *Recommendation*: Attribute `/preserve` to the engines that actually
+    provide it, or describe the flag-stripping behavior as
+    implementation-defined.
+
+- [ ] **1-28: Control lock remains in the universal control predicate.**
+  - CONTROL_OK/control-lock behavior is not a cross-engine control
+    predicate step; TinyMUX has no registered `CONTROL_OK` flag or
+    `@lock/control` switch.
+  - *Recommendation*: Move this out of the core ordered predicate and
+    into implementation-specific extensions.
+
+- [ ] **1-07: `OPEN_OK` flag-setting permission is wrong for TinyMUX.**
+  - The table marks `OPEN_OK` as settable by "Any".
+  - TinyMUX registers `OPEN_OK` with `fh_wiz`, so only wizards can set
+    it there.
+  - *Recommendation*: Make the permission column implementation-defined
+    or note TinyMUX's wizard-only setting requirement.
+
+- [ ] **1-07: `CHOWN_OK` description says "Any wizard" even though
+  wizards do not need the flag.**
+  - TinyMUX uses `CHOWN_OK` to allow non-wizard transfer/take flows under
+    additional conditions, especially target/self-control checks.
+  - *Recommendation*: Reword as "permits otherwise unauthorized chown
+    under implementation-defined conditions" and point to 1-18 for the
+    command rules.
+
+- [ ] **1-07: `DESTROY_OK` description is too narrow.**
+  - The table says a player who controls the object may destroy it
+    without the SAFE check.
+  - TinyMUX already lets controllers destroy controlled objects; the
+    extra `DESTROY_OK` behavior is that eligible things in inventory can
+    be destroyed by non-controllers and bypass SAFE.
+  - *Recommendation*: Reword the semantic description around
+    non-owner destruction of eligible things and SAFE interaction.
+
+- [ ] **1-24 / 1-26: `if()` / `ifelse()` portability is inconsistent.**
+  - 1-24 says `ifelse()` is a synonym for `if()` and "Both are accepted."
+  - 2-12 says `ifelse()` is the portable form and `if()` is missing from
+    TinyMUSH/RhostMUSH.
+  - *Recommendation*: Make `ifelse()` the normative portable function
+    and describe `if()` as an optional alias where available.
+
+- [ ] **1-26: `while()` availability and signature are stale for TinyMUX
+  2.14.**
+  - 1-26 says TinyMUX does not provide `while()`.
+  - Current TinyMUX registers `WHILE` in
+    `mux/modules/engine/functions.cpp`; its implementation comment
+    documents `while(eval-attr, cond-attr, list, compval[, isep, osep])`,
+    not the book's condition/body/initial-value/limit signature.
+  - *Recommendation*: Reopen the older closed `while()` issue and
+    document per-engine signatures rather than a single abstract one.
+
+### Volume 2: Consistency / User Guidance
+
+- [ ] **2-06 and 2-22 still present `@undestroy` as generic user
+  guidance.**
+  - 1-18 correctly says PennMUSH uses `@undestroy`, while TinyMUX,
+    TinyMUSH, and RhostMUSH clear `GOING` with `@set <object> = !GOING`.
+  - Volume 2 still tells users to recover with `@undestroy`.
+  - *Recommendation*: Show both recovery forms and tell users to check
+    local help.
+
+- [ ] **Volume 2 examples still default to `if()` after recommending
+  `ifelse()` for portability.**
+  - 2-12 recommends `ifelse()` for maximum portability, but later
+    examples in 2-12, 2-14, 2-15, and 2-25 use `if()`.
+  - *Recommendation*: Either switch tutorial examples to `ifelse()` or
+    add a note that those examples target PennMUSH/TinyMUX-style
+    function aliases.
+
+- [ ] **2-22 and 2-23 still frame the runtime database as a flat file.**
+  - 2-22 opens with "A MUSH database is a flat file" and recommends
+    direct flat-file editing for corruption recovery.
+  - TinyMUX 2.14 is now SQLite-backed, with flat file as export/import
+    or recovery format; 1-33 already treats storage backend as
+    implementation-defined.
+  - *Recommendation*: Distinguish the live storage backend from portable
+    flat-file dump/export formats, and make direct editing a last resort
+    only for engines that actually use text dumps as the authoritative
+    database.
+
+---
+
+## 2026-05-02 Claude Pass — Additional Findings
+
+Independent pass cross-referencing the workspace against the local
+TinyMUX 2.14 tree at `~/tinymux/mux/`. TinyMUSH, PennMUSH, and
+RhostMUSH source trees are not present, so cross-engine claims below
+are either workspace-internal (cross-chapter consistency) or
+TinyMUX-backed.
+
+### Volume 2: Foundational Regressions (High-Impact)
+
+- [ ] **2-08: Attribute-setting tutorial uses the flag-setting form of
+  `@set`.**
+  - Lines 28–34 introduce the `@set` form as
+    `@set me/COLOR_FAVORITE = blue`, presenting it as an alternative
+    to `&COLOR_FAVORITE me = blue`.
+  - TinyMUX `do_set` (`mux/modules/engine/set.cpp:1202–1331`) parses
+    `<obj>/<attr> = <flag>` as setting an *attribute flag*; only the
+    colon form `@set <obj> = <attr>:<value>` sets an attribute value
+    (handled in the same function around `set_attr_internal`).
+  - The 2-11 fix (ISSUES.md line 740) acknowledged this for that
+    chapter but the tutorial in 2-08 — where users first learn
+    attributes — still teaches the wrong syntax. This is a regression.
+  - *Recommendation*: Drop the `@set obj/attr=value` example from 2-08
+    and either present only `&attr obj=value` or also show the
+    `@set obj=attr:value` colon form, with the same warning 2-11
+    carries about the flag-setting overload.
+
+- [ ] **2-16, 2-16a still use `@set obj/attr=value` in code examples.**
+  - 2-16 lines 153, 177–178 and 2-16a line 194 use this form to write
+    attribute values inside larger examples.
+  - Same defect as the 2-08 issue above; in these chapters users will
+    silently fail to update HP/BALANCE/MANA because TinyMUX parses
+    `[add(...)]` as an attempted attribute-flag name.
+  - *Recommendation*: Replace all in-code `@set me/X = value` writes
+    with `&X me=value` (or the colon form) wherever they intend to
+    write a value.
+
+### Volume 2: Modern Features Chapter (2-16a)
+
+- [ ] **2-16a Cursor SQL section presents `rsopen()`/`rsrecnext()`/
+  `rsclose()` as standard TinyMUX functions.**
+  - These functions are wired up in `functions.cpp:15189–15197`
+    inside an `#if defined(STUB_SLAVE)` block; the matching
+    `FUNCTION(fun_rsopen|fun_rsrec|fun_rsrecnext|fun_rsrecprev)`
+    bodies (functions.cpp:10720–11019) are also `STUB_SLAVE`-gated.
+  - `STUB_SLAVE` is a non-default compile-time option for the
+    distributed/stub-slave architecture; the standard `./configure
+    --enable-realitylvls --enable-wodrealms` build documented in
+    `~/tinymux/CLAUDE.md` does not enable it.
+  - *Recommendation*: Either remove the cursor section, or label it
+    "Optional (TinyMUX STUB_SLAVE builds only)" and explain that
+    portable softcode should treat `sql()` as the baseline.
+
+- [ ] **2-16a: `gmcp()` examples use a `*name` player prefix.**
+  - Lines 170–171 show `gmcp(*Sparrow, Char.Vitals, ...)`.
+  - `fun_gmcp` (`functions.cpp:13216–13240`) calls
+    `lookup_player(executor, fargs[0], true)`, which accepts a bare
+    player name or dbref but does not strip a `*` prefix. The asterisk
+    causes lookup to fail with `#-1 PLAYER NOT FOUND`.
+  - Line 191 in the same chapter already omits the asterisk
+    (`gmcp(%0, Char.Vitals, ...)`), so the error is local to the two
+    explanatory examples.
+  - *Recommendation*: Drop the asterisks in lines 170–171.
+
+### Volume 2: Scheduled Tasks Chapter (2-16b)
+
+- [ ] **2-16b: `@startup #500` is shown as a manual command after
+  defining the STARTUP attribute.**
+  - Lines 89–95 define `&STARTUP #500 = ...` and then line 94 shows
+    `> @startup #500`; line 131 repeats this in the weather example.
+  - There is no `@startup` command registered in TinyMUX
+    (`grep -n '"@startup"' mux/modules/engine/command.cpp` returns
+    nothing). `A_STARTUP` (`include/attrs.h:60`,
+    `mux/modules/engine/db.cpp:312`) is an attribute the server
+    invokes automatically at boot via `did_it(..., A_STARTUP, ...)`
+    in `engine.cpp:2197`.
+  - *Recommendation*: Remove the `@startup #500` line; replace with
+    prose explaining the STARTUP attribute fires automatically when
+    the server starts (subject to `run_startup` configuration).
+
+- [ ] **2-16b: `@cron` success message text doesn't match TinyMUX.**
+  - Book line 26 shows: `Cron entry scheduled: #500/AWEATHER fires
+    every hour on the hour.`
+  - TinyMUX `do_cron` (`cron.cpp:755`) emits the literal string
+    `Cron entry added.` on success.
+  - *Recommendation*: Update the example output to match the actual
+    server response, or drop the response line.
+
+### Volume 1: Stale / Unfixed Items Confirmed
+
+- [ ] **1-26 `while()` is still wrong for TinyMUX 2.14.** (Reopened from
+  Codex's prior pass at line 1027.) Confirmed: `WHILE` is registered
+  at `mux/modules/engine/functions.cpp:15317` (4 to 6 args) and
+  implemented in `mux/modules/engine/funceval.cpp:3998–4006` with
+  signature `while(eval-attr, cond-attr, list, compval[, isep, osep])`
+  — fundamentally different from the book's
+  `while(<condition-function>, <body-function>, <initial-value>
+  [, <limit>])`. The chapter still says TinyMUX does not provide it.
+  - *Recommendation*: Treat this as the canonical example of "engines
+    use the same name for incompatible signatures" and document each
+    per-engine form rather than picking one.
+
+### Volume 2: `if()` vs `ifelse()` Portability (Specific Cases)
+
+Codex's pass flagged this pattern in general terms; here are the
+specific call-sites that still use `if()` after 2-12 recommends
+`ifelse()` for portability. They overlap with but are more
+fine-grained than the existing tracking item.
+
+- [ ] **2-12 line 181**: `&FN_COUNTDOWN me = [if(gt(%0, 0), ...)]`
+  in the Recursion-with-`u()` example.
+- [ ] **2-12 line 211 (Quick Reference table)**: only lists
+  `if(cond, true, false)`; should also list `ifelse()` and note that
+  `if()` is engine-specific.
+- [ ] **2-14 lines 114, 209**: `iter(... if(check, ##))` filtering
+  examples.
+- [ ] **2-15 line 158**: dice-roller `[if(regmatch(...), ...)]`
+  example — first practical end-to-end example users build, so worth
+  prioritizing.
+- [ ] **2-25 line 71**: troubleshooting hint
+  `iter(list, if(check, ##))`.
+  - *Recommendation*: Mechanically convert these `if()` call-sites to
+    `ifelse(...)` with an explicit empty third arm where appropriate.
+    Do not just leave a note — the examples are the guidance.
+
+### Volume 1: Notation and Cross-Chapter Consistency
+
+- [ ] **1-03 introduces `=>` notation but its own example uses
+  prefix-`>` only.**
+  - Lines 151–157 say "the notation `=>` indicates the result of
+    evaluating an expression" and then show the example
+    `> think add(2, 3)` followed by `5` on its own line — without any
+    `=>`. The example is consistent with the earlier "input is
+    `>`-prefixed, server output is unprefixed" convention but
+    contradicts the just-introduced `=>` rule.
+  - *Recommendation*: Either drop the `=>` notation paragraph (the
+    book actually uses prefix-`>` for input throughout) or add an
+    illustrative example that does use `=>`.
+
+- [ ] **1-10 Exit Matching cites `#0` as the global-exits source
+  instead of the configurable master room.**
+  - Line 140: "Exits attached to objects in the master room (`#0`),
+    providing global exits."
+  - 1-04 lines 220–226 already established master room dbref is
+    implementation-defined and configurable via `master_room`.
+  - *Recommendation*: Drop the `(#0)` parenthetical; the chapter
+    already says "master room" elsewhere.
+
+- [ ] **1-10 lacks the per-engine framing the recent reviews
+  introduced for divergent chapters.**
+  - Search procedure, exit-vs-built-in priority, and pronoun
+    resolution all carry implementation-defined notes inline, but
+    there is no opening callout that command-matching scope and
+    priority vary across engines (a topic 1-09 now leads with).
+  - *Recommendation*: Add a short "Implementation Variation" intro
+    before "Match Tokens" pointing at 1-09 and noting that the rules
+    in this chapter describe the common model.
+
+### Volume 1: Implementation-Defined Behavior Inventory (1-36)
+
+Codex flagged this generally (line 935). Auditing every
+`implementation-defined` occurrence in V1 against 1-36's 47-item
+list, the following are documented in chapters but missing from
+the inventory:
+
+- [ ] **1-36 missing: master room dbref location** (1-02:115).
+- [ ] **1-36 missing: player starting room** (1-02 / 1-04 / 1-15).
+- [ ] **1-36 missing: default home location** (1-15:122).
+- [ ] **1-36 missing: order of objects in contents list** (1-04:202).
+- [ ] **1-36 missing: stored password format** (1-06:482).
+- [ ] **1-36 missing: `type()` return for destroyed/invalid objects**
+  (1-05:390).
+- [ ] **1-36 missing: multi-exit-match resolution policy** (1-10:144).
+- [ ] **1-36 missing: built-in vs `$`-command priority** (1-09:92).
+- [ ] **1-36 missing: `$`-command search order** (1-09:176).
+- [ ] **1-36 missing: attribute search order within an object**
+  (1-09:191).
+- [ ] **1-36 missing: no-match message text** (1-09:213).
+- [ ] **1-36 missing: `home`/built-in command position in matching
+  order** (1-09:276).
+- [ ] **1-36 missing: help command surface and switches** (1-19:340,
+  1-19:372).
+- [ ] **1-36 missing: help file layout** (1-19:392).
+- [ ] **1-36 missing: WHO visibility for privileged players**
+  (1-19:419).
+- [ ] **1-36 missing: `@search` match algorithm** (1-19:365).
+- [ ] **1-36 missing: `%?` function-metrics format** (1-13:73).
+- [ ] **1-36 missing: ANSI / color-depth support** (1-13:278).
+- [ ] **1-36 missing: sort default collation and accepted type codes**
+  (1-22:185, 1-22:192, 1-20:509).
+- [ ] **1-36 missing: `comp()` accepted type codes** (1-24:193).
+- [ ] **1-36 missing: `encrypt()` argument set** (1-20:486).
+- [ ] **1-36 missing: `crypt()` categories** (1-26:137).
+- [ ] **1-36 missing: time-string format** (1-26:18).
+- [ ] **1-36 missing: lock internal representation** (1-27:266).
+- [ ] **1-36 missing: `@chzone` flag-stripping behavior** (1-29:257).
+- [ ] **1-36 missing: automatic zone assignment policy** (1-29:103).
+- [ ] **1-36 missing: idle-sweep timing** (1-32:98).
+- [ ] **1-36 missing: post-disconnect socket reuse** (1-32:68).
+- [ ] **1-36 missing: SSL/TLS port indicators** (1-32:124).
+- [ ] **1-36 missing: mail switch sets, signature attribute name,
+  delete switch spelling, lock name, storage format** (1-31:35,
+  1-31:44, 1-31:201, 1-31:230, 1-31:322).
+- [ ] **1-36 missing: channel privilege flags and formatting
+  customization** (1-30:173, 1-30:201).
+  - *Recommendation*: Rather than itemize each entry as a separate
+    fix, do a single mechanical pass: `grep -n 'implementation-
+    defined' 1-*.md`, dedupe, and append to 1-36 in the appropriate
+    section.
+
+### Cross-Volume Notes (Lower Priority)
+
+- [ ] **1-29 line 225 still teaches `@set Building Zone =
+  ZONE_MASTER`.**
+  - Already covered by Codex's "zone framing still depends on
+    ZONE_MASTER" item at line 947, but flagging the specific design-
+    pattern step in case the rewrite missed it.
+
+- [ ] **2-21 line 78 hedges `SESSION` vs `@doing/header` correctly,
+  but line 74 unconditionally shows `> @doing/header`.**
+  - Already noted in Codex's earlier pass (line 879) at the prose
+    level; the worked example on line 74 is the concrete artifact
+    that needs adjustment.
