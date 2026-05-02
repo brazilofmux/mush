@@ -88,7 +88,8 @@
 | `eq(a, b)` | Equal? |
 | `gt(a, b)` | Greater than? |
 | `lt(a, b)` | Less than? |
-| `if(cond, true, false)` | Conditional. |
+| `ifelse(cond, true, false)` | Conditional (portable). |
+| `if(cond, true, false)` | Same; PennMUSH/TinyMUX only. |
 | `switch(val, pat, res, ...)` | Multi-way branch. |
 | `iter(list, pattern)` | Iterate over a list. |
 | `cat(a, b, ...)` | Join with spaces. |

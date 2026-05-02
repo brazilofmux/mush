@@ -247,24 +247,28 @@ more arguments.
 
 ## Conditional Functions
 
-### if()
-
-```
-if(<condition>, <true-value> [, <false-value>])
-```
-
-If \<condition\> is true, evaluates and returns \<true-value\>. Otherwise,
-evaluates and returns \<false-value\> (or an empty string if \<false-value\>
-is not provided). Only the selected branch is evaluated.
-
 ### ifelse()
 
 ```
 ifelse(<condition>, <true-value>, <false-value>)
 ```
 
-Synonym for `if()` with three arguments. Both are accepted; `ifelse()` makes
-the two-branch intent explicit.
+If \<condition\> is true, evaluates and returns \<true-value\>;
+otherwise evaluates and returns \<false-value\>. Only the selected
+branch is evaluated. `ifelse()` is the **portable** form, available
+in all four reference engines.
+
+### if()
+
+```
+if(<condition>, <true-value> [, <false-value>])
+```
+
+A shorter alias for `ifelse()`, with the third argument optional
+(defaulting to an empty string). Available in PennMUSH and TinyMUX
+only; **not** available in TinyMUSH or RhostMUSH. For maximum
+portability, use `ifelse()` and pass an empty third argument when no
+false branch is needed: `ifelse(<cond>, <true>,)`.
 
 ### switch()
 

@@ -39,7 +39,7 @@ The following lock types shall be supported by all conforming implementations:
 | Command   | `/command` | Using \$-commands on an object. |
 | Parent    | `/parent` | Parenting objects to this one. |
 | Link      | `/link` | Linking exits to this location. |
-| Control   | `/control` | Controlling this object (when CONTROL_OK is set). |
+| Control   | `/control` | Controlling this object (when CONTROL_OK is set). Implementation-defined: TinyMUSH, PennMUSH, and RhostMUSH expose a `/control` switch; TinyMUX does not register one. |
 | Zone      | `/zone` | Zone membership access. |
 
 ### Extended Lock Types
@@ -89,7 +89,7 @@ the equivalent is provided through a different mechanism).
 | Command    | ✓       | ✓        | ✓        | ✓         |
 | Parent     | ✓       | ✓        | ✓        | ✓         |
 | Link       | ✓       | ✓        | ✓        | ✓         |
-| Control    | ✓       | ✓ (req. CONTROL_OK) | ✓ | ✓    |
+| Control    | —       | ✓ (req. CONTROL_OK) | ✓ | ✓    |
 | Zone       | (enter lock on ZMO) | (control lock + CONTROL_OK) | ✓ (`/zone`) | ✓ |
 | Destroy    | —       | —        | ✓        | —         |
 | Chown      | —       | —        | ✓        | —         |

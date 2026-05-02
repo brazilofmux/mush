@@ -188,8 +188,11 @@ When the server shuts down (via `@shutdown` or signal):
 6. Network ports are closed.
 7. The server process exits.
 
-The `@shutdown/abort` command cancels a pending shutdown if the
-implementation supports delayed shutdown.
+Switches to `@shutdown` are implementation-defined. Engines do not
+agree on a portable spelling for "cancel a pending shutdown" — and
+in particular `@shutdown/abort` does **not** cancel a shutdown on
+TinyMUSH (it terminates with a core dump). See the per-engine
+`@shutdown` switches discussed in Chapter 19.
 
 ## Implementation Notes
 

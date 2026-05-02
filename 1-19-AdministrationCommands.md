@@ -282,8 +282,9 @@ See Chapter 18 for the full specification.
 @chzone <object> = <zone>
 ```
 
-The `@chzone` command changes an object's zone assignment. Equivalent to
-`@zone`. See Chapter 29 for zone details.
+The `@chzone` command changes an object's zone assignment (see
+Chapter 29). PennMUSH also accepts the shorter `@zone` as an alias;
+TinyMUX, TinyMUSH, and RhostMUSH register `@chzone` only.
 
 ### @power
 

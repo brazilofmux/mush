@@ -199,16 +199,21 @@ Inheritance).
 
 Setting the parent to nothing (empty right side) clears the parent.
 
-### @zone
+### @chzone
 
 ```
-@zone <object> = <zone-master>
-@zone <object> =
+@chzone <object> = <zone-master>
+@chzone <object> =
 ```
 
-The `@zone` command assigns an object to a zone (see Chapter 29). The zone
-master must have the ZONE_MASTER flag set. Setting the zone to nothing clears
-the zone assignment.
+The `@chzone` command assigns an object to a zone (see Chapter 29).
+Designation of the zone master varies by engine — see Chapter 7's
+zone-flag discussion. Setting the zone to nothing clears the zone
+assignment.
+
+**Compatibility note:** TinyMUX, TinyMUSH, and RhostMUSH register
+this command as `@chzone`. PennMUSH accepts both `@chzone` and the
+shorter `@zone` as aliases. For portability, prefer `@chzone`.
 
 ## Attribute Commands
 

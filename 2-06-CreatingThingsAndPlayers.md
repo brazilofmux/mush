@@ -200,9 +200,17 @@ Objects go through a simple lifecycle:
 3. **Use** -- Players interact with the object.
 4. **Destruction** -- `@destroy` removes the object.
 
-Some servers use delayed destruction: the object gets a GOING flag and is
-actually removed on the next database cleanup. You can cancel destruction
-with `@undestroy` during this grace period.
+Some servers use delayed destruction: the object gets a GOING flag
+and is actually removed on the next database cleanup. You can cancel
+destruction during the grace period — the command differs by engine:
+
+```
+> @undestroy #42                   (PennMUSH)
+> @set #42 = !GOING                (TinyMUX, TinyMUSH, RhostMUSH)
+```
+
+Check your server's `help @undestroy` to confirm which form is
+available.
 
 ## Tips
 

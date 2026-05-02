@@ -12,12 +12,17 @@ them.
 
 ### Zone Master Object
 
-A **Zone Master Object** (ZMO) is any object designated as the administrative
-hub of a zone. The ZMO is typically a thing with the ZONE_MASTER flag set,
-though implementations may allow rooms or players to serve as zone masters.
+A **Zone Master Object** (ZMO) is any object designated as the
+administrative hub of a zone. The mechanism for designating a ZMO is
+implementation-defined: PennMUSH uses a dedicated zone-master flag,
+TinyMUX uses any thing referenced via the zone field with no flag
+required, and TinyMUSH/RhostMUSH use a combination of flag and lock
+mechanisms. See Chapter 7 for per-engine flag details.
 
-The ZMO has a zone lock (`@lock/zone`) that determines which players are
-zone controllers -- players authorized to modify objects within the zone.
+Each ZMO carries a lock (the **zone lock**) that determines which
+players are zone controllers — players authorized to modify objects
+within the zone. The lock attribute and command surface vary by
+engine; see "Zone Lock" below.
 
 ### Zone Membership
 
@@ -82,8 +87,11 @@ The zone lock determines who may act as a zone controller. The mechanism
 for setting this lock varies across implementations:
 
 - **PennMUSH:** Uses `@lock/zone <ZMO> = <key-expression>`.
-- **TinyMUX:** Uses the enter lock (`@lock <ZMO> = <key-expression>`) on
-  the ZMO. The ZMO must have the ZONE flag set.
+- **TinyMUX:** Uses the enter lock (`@lock <ZMO> = <key-expression>`)
+  on the ZMO. No dedicated `ZONE` flag exists or is required; zone
+  membership is determined entirely by an object's zone field
+  (`Zone(thing)`), and `check_zone_handler()` simply tests the enter
+  lock on whichever object is referenced.
 - **TinyMUSH:** Uses the control lock on the ZMO. The ZMO must have
   CONTROL_OK set to allow zone-based control delegation.
 
@@ -182,38 +190,45 @@ such as puzzle areas or restricted regions.
 
 ### Flag and Power Stripping
 
-When a non-player object is @chzoned, privileged flags and powers may be
-stripped to prevent privilege escalation through zone reassignment. The
-`/preserve` switch on `@chzone` retains the object's flags and powers,
-but its use is restricted to wizards.
+When a non-player object is @chzoned, privileged flags and powers may
+be stripped to prevent privilege escalation through zone reassignment.
+The exact set stripped is implementation-defined (Chapter 36). Some
+engines provide a `/preserve` switch on `@chzone` that retains the
+object's privileged flags and powers — PennMUSH and RhostMUSH expose
+this switch; TinyMUX has no `@chzone` switches and always strips the
+configured privileged-flags set on non-player objects.
 
 ## Commands
 
 ### @chzone
 
 ```
-@chzone [/preserve] <object> = <zone-master>
+@chzone <object> = <zone-master>
 @chzone <object> =
 ```
 
-Changes the zone of \<object\>. The executor must control \<object\> and
-either control the zone master or pass the zone master's chzone lock.
+Changes the zone of \<object\>. The executor must control \<object\>
+and either control the zone master or pass the zone master's chzone
+lock.
 
-The `/preserve` switch retains the object's privileged flags and powers.
-Without it, privileged settings may be stripped. The switch requires wizard
-privileges.
+Setting the zone to nothing (empty right side) removes the object
+from its zone.
 
-Setting the zone to nothing (empty right side) removes the object from its
-zone.
+**Switches (implementation-defined).** PennMUSH and RhostMUSH provide
+`@chzone/preserve <object> = <zone-master>` to retain the object's
+privileged flags and powers; the switch requires wizard privileges.
+TinyMUX registers no switches for `@chzone` and always strips the
+configured privileged-flag set on non-player objects.
 
 ### @chzoneall
 
 ```
-@chzoneall [/preserve] <player> = <zone-master>
+@chzoneall <player> = <zone-master>
 ```
 
 Changes the zone of all objects owned by \<player\> to \<zone-master\>.
-Requires wizard privileges. Level 2.
+Requires wizard privileges. Where supported, the `/preserve` switch
+behaves as for `@chzone`. Level 2.
 
 ## Design Patterns
 

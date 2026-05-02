@@ -7,13 +7,16 @@ state that modifies the object's behavior, indicates its status, or controls
 access permissions. Flags are the primary mechanism for configuring object
 behavior beyond what attributes provide.
 
-A conforming implementation shall store flags as bitfields. The number of flag
-words (32-bit integers used for storage) is implementation-defined, but a
-conforming implementation shall support at least three flag words (96 flags).
+A conforming implementation shall provide capacity for at least 96
+distinct flag values per object, of which the standard flags defined
+in this chapter shall be among the supported set. The internal
+storage representation (fixed-width bitfields, dynamic flag tables,
+or other) is implementation-defined.
 
-**Compatibility Note:** TinyMUSH and TinyMUX use three 32-bit flag words.
-RhostMUSH uses four flag words. PennMUSH uses a dynamic flag system with no
-fixed limit. All approaches are conforming.
+**Compatibility Note:** TinyMUSH and TinyMUX use three 32-bit flag
+words. RhostMUSH uses four. PennMUSH uses a dynamic flag table with
+no fixed limit. All approaches conform — what matters is the
+behavior, not the storage layout.
 
 ## Setting and Clearing Flags
 
@@ -116,10 +119,9 @@ organized by functional category.
 | WIZARD      | `W`  | Players     | God        | Grants full administrative privileges. See Chapter 28 for the complete list of wizard capabilities. |
 | ROYALTY     | `Z`  | Players     | Wizard     | Grants elevated read access and limited administrative capabilities. |
 | INHERIT     | `I`  | All         | Any        | The object inherits its owner's permission level when executing commands. Without this flag, objects execute at basic permission level regardless of their owner's privileges. |
-| CHOWN_OK    | `C`  | Things      | Any        | Any wizard may `@chown` this object without the owner's intervention. |
-| DESTROY_OK  | `d`  | All         | Any        | Any player who controls the object may destroy it without the SAFE flag check. |
-| SAFE        | `s`  | All         | Any        | The object cannot be destroyed by `@destroy` unless the `/override` switch is used. |
-| CONTROL_OK  | `z`  | All         | Any        | The object's LCONTROL lock determines who has control, in addition to the owner and wizards. TinyMUSH only. Level 2. |
+| CHOWN_OK    | `C`  | Things      | Any        | Permits an otherwise unauthorized player to take ownership of this object via `@chown` (subject to the implementation's chown rules — typically the new owner must hold the object). Wizards do not need this flag. |
+| DESTROY_OK  | `d`  | Things      | Any        | Permits non-owners holding the object to destroy it from their inventory and bypasses the SAFE check. (Controllers can already destroy regardless of this flag.) See Chapter 18. |
+| SAFE        | `s`  | All         | Any        | The object cannot be destroyed by `@destroy` unless the `/override` switch is used or the object also has DESTROY_OK. |
 | PARENT_OK   | `Y`  | All         | Any        | Any player may `@parent` other objects to this one. |
 
 ### Communication Flags
@@ -156,7 +158,7 @@ organized by functional category.
 
 | Flag        | Char | Types        | Permission | Description |
 |-------------|------|-------------|------------|-------------|
-| OPEN_OK     | `z`  | Rooms       | Any        | Any player may `@open` exits from this room, subject to the LOPEN lock. |
+| OPEN_OK     | `z`  | Rooms       | Wiz/Any    | Any player may `@open` exits from this room, subject to the LOPEN lock. The setting permission is implementation-defined — TinyMUX restricts setting to wizards (`fh_wiz`); other engines may permit any controller to set it. |
 
 ### Zone Flags
 
@@ -182,6 +184,7 @@ above. Common implementation-specific flags include:
 
 | Flag        | Implementations     | Description |
 |-------------|---------------------|-------------|
+| CONTROL_OK  | TinyMUSH            | The object's LCONTROL lock determines who has control, in addition to the owner and wizards. Not present in TinyMUX, PennMUSH, or RhostMUSH. |
 | ANSI        | TinyMUSH, RhostMUSH | Enables ANSI color code processing for the player. |
 | HTML        | TinyMUSH            | Enables HTML output for the player. |
 | GAGGED      | TinyMUSH, TinyMUX   | Prevents the player from speaking or posing. |

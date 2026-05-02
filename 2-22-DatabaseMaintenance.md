@@ -10,16 +10,25 @@ from problems.
 
 ## How the Database Works
 
-A MUSH database is a flat file containing a serialized representation of
-all objects. Each object entry includes:
+The MUSH database stores every object, attribute, flag, and piece of
+data in the game. Each object entry includes:
 
 - The dbref, name, and type.
 - Location, contents, exits, and owner.
 - All flags and powers.
 - All attributes and their values.
 
-The server loads the entire database into memory at startup and operates
-on it in memory during play. Periodically, it writes a snapshot back to
+The on-disk storage backend depends on the engine. Historically, all
+four engines used a single text **flat file** as the live database;
+TinyMUSH and PennMUSH still do, and TinyMUX did until 2.13. TinyMUX
+2.14 stores the live database in a SQLite-backed format and uses the
+flat file only as a portable export/import and recovery format. The
+flat file is therefore best thought of as the *interchange* format —
+authoritative for some engines, and a dump/restore artifact for
+others.
+
+The server loads the database into memory at startup and operates on
+it in memory during play. Periodically it writes a snapshot back to
 disk. This is called a **dump** or **database save**.
 
 ## Database Dumps
@@ -133,7 +142,9 @@ Remove unwanted objects:
 ```
 
 Most servers delay actual destruction until the next database save,
-giving you a chance to recover with `@undestroy` if you make a mistake.
+giving you a chance to recover during the grace period. Use
+`@undestroy <obj>` on PennMUSH; on TinyMUX, TinyMUSH, and RhostMUSH
+clear the GOING flag with `@set <obj> = !GOING`.
 
 ### @purge
 
@@ -160,9 +171,9 @@ player.
 
 ### Flat File Format
 
-If the database becomes corrupted, you may need to edit the flat file
-directly. The flat file is a text format that can be opened in any
-editor. Objects look something like:
+For engines whose live database **is** the flat file (TinyMUSH,
+PennMUSH, classic TinyMUX), severe corruption may force you to edit
+the file directly. Objects look something like:
 
 ```
 !42
@@ -171,8 +182,16 @@ location 5
 ...
 ```
 
-**Make a backup before editing the flat file.** Even experienced
-administrators can make things worse with a misplaced edit.
+For engines that use a structured backend (TinyMUX 2.14's SQLite
+storage, or any future LMDB/GDBM-backed engine), you should never
+edit the live database file by hand. Instead, dump it to flat form
+with the engine's export tool (`@dump/flatfile`, `db_unload`, or
+similar), edit the flat-file dump, and reimport it.
+
+**Make a backup before any direct editing.** Even experienced
+administrators can make things worse with a misplaced edit. For
+SQLite-backed engines, also use the engine's tools rather than the
+`sqlite3` command line; the schema is implementation-private.
 
 ### Common Problems
 
@@ -180,7 +199,7 @@ administrators can make things worse with a misplaced edit.
 |---------|----------|
 | Server will not start. | Check the log for error messages. Often a corrupted object at a specific dbref. |
 | Missing objects after crash. | Restore from the most recent backup. |
-| Circular containment. | An object is inside itself. Fix with flat file editing. |
+| Circular containment. | An object is inside itself. Fix by editing a flat-file export and reimporting (or, for flat-file engines, the live file). |
 | Orphaned exits. | Exits pointing to destroyed rooms. Use `@find` to locate and `@destroy` to clean up. |
 
 ### Recovery Process
@@ -188,7 +207,9 @@ administrators can make things worse with a misplaced edit.
 1. Stop the server.
 2. Copy the corrupted database aside (do not delete it).
 3. Try loading a recent backup.
-4. If no backup works, edit the flat file to fix the specific problem.
+4. If no backup works, dump the database to flat form (or, for
+   flat-file engines, work directly on a copy), edit it to fix the
+   specific problem, and reimport.
 5. Restart and verify.
 
 ## Monitoring Database Health

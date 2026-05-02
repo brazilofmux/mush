@@ -280,7 +280,7 @@ lock table. The following lock attributes are standard:
 | LTELOUT    | Teleport-out | Teleporting from the location. TinyMUX and TinyMUSH only. |
 | LLINK      | Link      | Linking exits to the object |
 | LPARENT    | Parent    | Parenting to the object |
-| LCONTROL   | Control   | Controlling the object |
+| LCONTROL   | Control   | Controlling the object. TinyMUSH, PennMUSH, and RhostMUSH only; TinyMUX does not register a user-facing control lock. |
 | LSPEECH    | Speech    | Speaking in the location |
 | LOPEN      | Open      | Opening exits from the location |
 

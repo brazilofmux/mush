@@ -89,7 +89,9 @@ plus the following:
 ### Extended Object Model
 
 - The `@clone` command with attribute copying.
-- The `@undestroy` command for delayed destruction.
+- The ability to cancel a pending destruction during the GOING delay
+  (via `@undestroy` on PennMUSH, or `@set <obj> = !GOING` on TinyMUX,
+  TinyMUSH, and RhostMUSH).
 - Object identifiers (`objid()`) for distinguishing recycled dbrefs.
 
 ### Extended Attributes
@@ -127,27 +129,41 @@ plus the following:
 ### Extended Functions
 
 - All functions marked Level 2 in Chapters 20-26.
-- Side-effect functions with appropriate gating.
-- Higher-order list functions: `map()`, `filter()`, `fold()`.
-- Regular expression functions.
+- Side-effect functions with appropriate gating (Chapter 25).
+- Higher-order list functions: `map()`, `filter()`, `fold()` (Chapter 22).
+- Regular expression functions: `regmatch()`, `regedit()`, and the
+  related family (Chapter 20).
+- The portable conditional `ifelse()`. The shorter alias `if()` is
+  available on PennMUSH and TinyMUX but not required (see
+  Chapter 24).
 
 ### Zones
 
 - The zone system (Chapter 29).
 - Zone-based control delegation.
-- The ZONE_MASTER flag and `@chzone` command.
+- The `@chzone` command and a per-engine mechanism for designating
+  zone-master objects (the specific flag or convention is
+  implementation-defined — see Chapter 7).
 
 ### Systems
 
-- The channel system (Chapter 30).
-- The mail system (Chapter 31).
+A Level 2 implementation that ships a channel or mail subsystem
+shall conform to the chapter for that subsystem:
+
+- The channel system (Chapter 30) **if provided**. Channels are not a
+  universal subsystem; some engines or builds omit them. A Level 2
+  implementation may omit channels and remain conforming.
+- The mail system (Chapter 31) **if provided**. Mail is similarly
+  optional.
 - SSL/TLS support is recommended but not required.
 
 ### Extended Permissions
 
 - The ROYALTY privilege level.
 - The INHERIT flag and inheritance semantics.
-- Control locks (`@lock/control`).
+- Control locks (`@lock/control`) where the engine provides them.
+  TinyMUX does not register a `/control` switch; an implementation
+  without one remains Level 2 conforming (see Chapter 27).
 
 The MISTRUST / TRUST flag pair (PennMUSH-specific; TRUST is an alias
 for INHERIT) is not a Level 2 requirement. Implementations that

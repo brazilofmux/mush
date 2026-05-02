@@ -20,8 +20,11 @@ Powers are distinct from flags in the following ways:
 3. **Scope:** Powers affect what an object *can do*, while flags primarily
    affect how an object *behaves* or *appears*.
 
-A conforming implementation shall support a power-like fine-grained
-permission system.
+A Level 2 conforming implementation shall support a power-like
+fine-grained permission system. Level 1 implementations may rely
+solely on the flag and lock model in Chapters 7 and 27 for
+permission control. (Powers are listed in the Level 2 feature set
+in Chapter 34.)
 
 ### Implementation Divergence
 

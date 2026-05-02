@@ -809,7 +809,7 @@ definitions, and remaining technical edge cases.
 
 ### Structural / Framing Issues
 
-- [ ] **Level 2 Conformance definitions in 1-34 are inconsistent with per-chapter tags.**
+- [x] **Level 2 Conformance definitions in 1-34 are inconsistent with per-chapter tags.**
   - `map()`, `filter()`, `fold()` are listed as Level 2 in 1-34 but
     not marked in 1-22.
   - Regular expression functions (`regmatch`, `regedit`, etc.) are
@@ -819,13 +819,13 @@ definitions, and remaining technical edge cases.
   - *Recommendation*: Systematically sync 1-34 with the `Level 2`
     tags in the technical chapters.
 
-- [ ] **Level 2 "Standard" requirement includes engine-specific command names.**
+- [x] **Level 2 "Standard" requirement includes engine-specific command names.**
   - 1-34 lists `@undestroy` (PennMUSH-only) as a Level 2 requirement.
   - *Recommendation*: Reframe as a capability: "Ability to cancel
     pending destruction (via `@undestroy` or `@set !GOING` as
     appropriate)."
 
-- [ ] **Clarify Channel and Mail System conformance status.**
+- [x] **Clarify Channel and Mail System conformance status.**
   - 1-34 lists them as Level 2 requirements, but 1-30 calls channels
     an "optional subsystem."
   - *Recommendation*: In 1-34, mark them as "Level 2 (if provided)"
@@ -833,7 +833,7 @@ definitions, and remaining technical edge cases.
 
 ### Volume 1: Technical Errors
 
-- [ ] **1-07: Flag character conflict for `z`.**
+- [x] **1-07: Flag character conflict for `z`.**
   - Both `CONTROL_OK` and `OPEN_OK` are listed as using `z`.
   - In TinyMUX, `OPEN_OK` is `z` (word 2). `CONTROL_OK` does not
     exist in TinyMUX.
@@ -841,14 +841,14 @@ definitions, and remaining technical edge cases.
     Level 2 list (it's TinyMUSH-only) or assign it a distinct character
     for the standard's purposes.
 
-- [ ] **1-07: `CONTROL_OK` listed in "Standard Flags" table despite
+- [x] **1-07: `CONTROL_OK` listed in "Standard Flags" table despite
   being TinyMUSH-only.**
   - The chapter claims the table contains "mandatory" flags, then
     marks one as "TinyMUSH only."
   - *Recommendation*: Move to "Implementation-Defined" or "Optional"
     section to preserve the integrity of the mandatory list.
 
-- [ ] **1-27: TinyMUX `Control` lock availability is incorrect.**
+- [x] **1-27: TinyMUX `Control` lock availability is incorrect.**
   - Matrix shows `✓` for TinyMUX, but TinyMUX does not expose a
     user-facing control lock: `lock_sw[]` lacks a `control` /
     `controllock` switch and no `CONTROL_OK` flag is registered.
@@ -856,7 +856,7 @@ definitions, and remaining technical edge cases.
     not wired into the lock switch table.
   - *Recommendation*: Update matrix to `—` for TinyMUX.
 
-- [ ] **1-06: `LCONTROL` listed as a "standard" lock attribute.**
+- [x] **1-06: `LCONTROL` listed as a "standard" lock attribute.**
   - TinyMUX does not expose it as a user-facing standard lock
     attribute, so it is not a cross-engine standard in practice.
   - *Recommendation*: Add a note similar to `LTELOUT` marking it as
@@ -864,19 +864,19 @@ definitions, and remaining technical edge cases.
 
 ### Volume 2: Consistency and Clarity
 
-- [ ] **2-24: Quick Reference Card only lists `if()`.**
+- [x] **2-24: Quick Reference Card only lists `if()`.**
   - `if()` is not universal (PennMUSH/TinyMUX only); `ifelse()` is the
     portable form defined in 1-21 and 2-12.
   - *Recommendation*: Add `ifelse()` to the card and note `if()`
     availability.
 
-- [ ] **2-12: `@if` example is not portable to PennMUSH.**
+- [x] **2-12: `@if` example is not portable to PennMUSH.**
   - The example uses `@if`, but 1-19 states PennMUSH only provides
     `@ifelse`.
   - *Recommendation*: Update the example to note the name difference
     or provide both forms.
 
-- [ ] **2-21: `@doing/header` mentioned for PennMUSH.**
+- [x] **2-21: `@doing/header` mentioned for PennMUSH.**
   - 1-19 says PennMUSH does not have `@doing`.
   - *Recommendation*: Clarify that `@doing/header` is TinyMUX/TinyMUSH
     specific and PennMUSH uses `SESSION`.
@@ -913,7 +913,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
 
 ### Structural / Conformance Issues
 
-- [ ] **1-07: Flag storage requirement contradicts PennMUSH-compatible
+- [x] **1-07: Flag storage requirement contradicts PennMUSH-compatible
   framing.**
   - The chapter says a conforming implementation shall store flags as
     32-bit bitfields and support at least three flag words.
@@ -922,7 +922,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
   - *Recommendation*: Replace the storage mandate with a behavioral
     capacity requirement and leave representation implementation-defined.
 
-- [ ] **1-08: Powers are described as mandatory despite 1-34 making
+- [x] **1-08: Powers are described as mandatory despite 1-34 making
   powers Level 2.**
   - 1-08 says "A conforming implementation shall support a power-like
     fine-grained permission system."
@@ -932,7 +932,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
     conforming implementation..." or define the Level 1 minimum
     explicitly.
 
-- [ ] **1-36: Implementation-defined behavior inventory is no longer
+- [x] **1-36: Implementation-defined behavior inventory is no longer
   synced with the chapters.**
   - Many chapters now mark additional behavior as implementation-defined:
     command search order, space compression, help command surfaces,
@@ -943,7 +943,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
     `implementation-defined` occurrence and add the missing items to
     1-36.
 
-- [ ] **Zone framing still depends on `ZONE_MASTER` even after Ch 7
+- [x] **Zone framing still depends on `ZONE_MASTER` even after Ch 7
   removed it as a standard flag.**
   - 1-17, 1-29, and 1-34 still refer to `ZONE_MASTER`.
   - 1-07 now says `ZONE_MASTER`, `ZONE_CONTENTS`, and `ZONE_PARENT` do
@@ -953,7 +953,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
 
 ### Volume 1: Technical Errors / Drift
 
-- [ ] **1-33: `@shutdown/abort` regression remains in Database
+- [x] **1-33: `@shutdown/abort` regression remains in Database
   Persistence.**
   - Earlier passes fixed 1-19 to explain that TinyMUSH `/abort` means
     termination with core dump, not canceling a pending shutdown.
@@ -961,14 +961,14 @@ cross-chapter consistency findings or TinyMUX-backed findings.
   - *Recommendation*: Remove the sentence or mark delayed-shutdown
     cancellation as implementation-defined with real per-engine names.
 
-- [ ] **1-17 and 1-19 present `@zone` as equivalent to `@chzone`.**
+- [x] **1-17 and 1-19 present `@zone` as equivalent to `@chzone`.**
   - TinyMUX registers `@chzone` but not `@zone`
     (`mux/modules/engine/command.cpp`).
   - 1-29 already uses `@chzone` as the primary command.
   - *Recommendation*: Use `@chzone` consistently, and mention `@zone`
     only as an engine-specific alias if verified.
 
-- [ ] **1-29: TinyMUX zone lock description still says the ZMO must have
+- [x] **1-29: TinyMUX zone lock description still says the ZMO must have
   a `ZONE` flag.**
   - TinyMUX does not register a user-facing `ZONE` flag; zone membership
     is the object zone field.
@@ -977,7 +977,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
   - *Recommendation*: For TinyMUX, state "room or thing zone object with
     an enter lock"; do not require a `ZONE` flag.
 
-- [ ] **1-29: `@chzone /preserve` is unattributed and not TinyMUX
+- [x] **1-29: `@chzone /preserve` is unattributed and not TinyMUX
   syntax.**
   - TinyMUX registers `@chzone` with no switch table, and `do_chzone`
     always strips configured privileged flags and clears powers on
@@ -986,21 +986,21 @@ cross-chapter consistency findings or TinyMUX-backed findings.
     provide it, or describe the flag-stripping behavior as
     implementation-defined.
 
-- [ ] **1-28: Control lock remains in the universal control predicate.**
+- [x] **1-28: Control lock remains in the universal control predicate.**
   - CONTROL_OK/control-lock behavior is not a cross-engine control
     predicate step; TinyMUX has no registered `CONTROL_OK` flag or
     `@lock/control` switch.
   - *Recommendation*: Move this out of the core ordered predicate and
     into implementation-specific extensions.
 
-- [ ] **1-07: `OPEN_OK` flag-setting permission is wrong for TinyMUX.**
+- [x] **1-07: `OPEN_OK` flag-setting permission is wrong for TinyMUX.**
   - The table marks `OPEN_OK` as settable by "Any".
   - TinyMUX registers `OPEN_OK` with `fh_wiz`, so only wizards can set
     it there.
   - *Recommendation*: Make the permission column implementation-defined
     or note TinyMUX's wizard-only setting requirement.
 
-- [ ] **1-07: `CHOWN_OK` description says "Any wizard" even though
+- [x] **1-07: `CHOWN_OK` description says "Any wizard" even though
   wizards do not need the flag.**
   - TinyMUX uses `CHOWN_OK` to allow non-wizard transfer/take flows under
     additional conditions, especially target/self-control checks.
@@ -1008,7 +1008,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
     under implementation-defined conditions" and point to 1-18 for the
     command rules.
 
-- [ ] **1-07: `DESTROY_OK` description is too narrow.**
+- [x] **1-07: `DESTROY_OK` description is too narrow.**
   - The table says a player who controls the object may destroy it
     without the SAFE check.
   - TinyMUX already lets controllers destroy controlled objects; the
@@ -1017,14 +1017,14 @@ cross-chapter consistency findings or TinyMUX-backed findings.
   - *Recommendation*: Reword the semantic description around
     non-owner destruction of eligible things and SAFE interaction.
 
-- [ ] **1-24 / 1-26: `if()` / `ifelse()` portability is inconsistent.**
+- [x] **1-24 / 1-26: `if()` / `ifelse()` portability is inconsistent.**
   - 1-24 says `ifelse()` is a synonym for `if()` and "Both are accepted."
   - 2-12 says `ifelse()` is the portable form and `if()` is missing from
     TinyMUSH/RhostMUSH.
   - *Recommendation*: Make `ifelse()` the normative portable function
     and describe `if()` as an optional alias where available.
 
-- [ ] **1-26: `while()` availability and signature are stale for TinyMUX
+- [x] **1-26: `while()` availability and signature are stale for TinyMUX
   2.14.**
   - 1-26 says TinyMUX does not provide `while()`.
   - Current TinyMUX registers `WHILE` in
@@ -1036,7 +1036,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
 
 ### Volume 2: Consistency / User Guidance
 
-- [ ] **2-06 and 2-22 still present `@undestroy` as generic user
+- [x] **2-06 and 2-22 still present `@undestroy` as generic user
   guidance.**
   - 1-18 correctly says PennMUSH uses `@undestroy`, while TinyMUX,
     TinyMUSH, and RhostMUSH clear `GOING` with `@set <object> = !GOING`.
@@ -1044,7 +1044,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
   - *Recommendation*: Show both recovery forms and tell users to check
     local help.
 
-- [ ] **Volume 2 examples still default to `if()` after recommending
+- [x] **Volume 2 examples still default to `if()` after recommending
   `ifelse()` for portability.**
   - 2-12 recommends `ifelse()` for maximum portability, but later
     examples in 2-12, 2-14, 2-15, and 2-25 use `if()`.
@@ -1052,7 +1052,7 @@ cross-chapter consistency findings or TinyMUX-backed findings.
     add a note that those examples target PennMUSH/TinyMUX-style
     function aliases.
 
-- [ ] **2-22 and 2-23 still frame the runtime database as a flat file.**
+- [x] **2-22 and 2-23 still frame the runtime database as a flat file.**
   - 2-22 opens with "A MUSH database is a flat file" and recommends
     direct flat-file editing for corruption recovery.
   - TinyMUX 2.14 is now SQLite-backed, with flat file as export/import

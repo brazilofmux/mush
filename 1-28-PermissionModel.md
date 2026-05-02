@@ -31,12 +31,16 @@ order:
 5. **Zone Control:** A player who passes the zone lock of an object's zone
    master may control that object. See Chapter 29.
 
-6. **Control Lock:** If an object has the CONTROL_OK flag set and a control
-   lock (`@lock/control`), any player who passes the control lock controls
-   the object.
-
 The first matching condition determines the result. If no condition grants
 control, the action is denied.
+
+**Implementation extension — control lock.** TinyMUSH, PennMUSH, and
+RhostMUSH provide an additional condition: if an object has the
+CONTROL_OK flag set and a control lock (`@lock/control`), any player
+who passes the control lock controls the object. TinyMUX does not
+register a `CONTROL_OK` flag or a `/control` lock switch, so this
+step is absent there. Where the control lock exists, it is evaluated
+after the conditions above.
 
 ### Inheritance and the INHERIT Flag
 

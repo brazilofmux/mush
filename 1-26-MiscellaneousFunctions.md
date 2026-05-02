@@ -157,14 +157,16 @@ case(<expression>, <value1>, <result1>, ... [, <default>])
 Like `switch()` but uses exact comparison instead of wildcard matching.
 Level 2.
 
-### if() / ifelse()
+### ifelse() / if()
 
 ```
-if(<condition>, <true-value> [, <false-value>])
+ifelse(<condition>, <true-value>, <false-value>)
 ```
 
-Evaluates and returns the appropriate branch based on the condition. See
-Chapter 24 for the full specification.
+Evaluates and returns the appropriate branch based on the condition.
+`ifelse()` is portable across all four engines; the shorter alias
+`if()` exists only in PennMUSH and TinyMUX. See Chapter 24 for the
+full specification.
 
 ### while()
 

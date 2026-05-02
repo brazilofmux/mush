@@ -180,11 +180,14 @@ Then notify the player to change it.
 
 ### Protect Database Files
 
-The database flat file contains everything -- including hashed passwords
-and private attributes. Restrict file permissions:
+The live database file (whether flat text or a structured backend
+like SQLite) contains everything — including hashed passwords and
+private attributes. Restrict file permissions on both the live
+database and any flat-file dumps:
 
 ```
 $ chmod 600 data/netmush.db
+$ chmod 600 data/*.flat
 $ chmod 700 data/
 ```
 
