@@ -148,8 +148,9 @@ You say, "Hello, world!"
 In this example, `> say Hello, world!` is user input and
 `You say, "Hello, world!"` is server output.
 
-When illustrating MUSHcode evaluation, the notation `=>` indicates the result
-of evaluating an expression:
+When illustrating MUSHcode evaluation, the same convention applies:
+the `> think <expression>` line is what the user typed, and the
+following line is the value the server printed back.
 
 ```
 > think add(2, 3)

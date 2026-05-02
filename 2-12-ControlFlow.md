@@ -178,7 +178,7 @@ Since MUSHcode has no traditional loops beyond `@dolist` and `iter()`, more
 complex iteration uses recursion -- a function that calls itself:
 
 ```
-> &FN_COUNTDOWN me = [if(gt(%0, 0),
+> &FN_COUNTDOWN me = [ifelse(gt(%0, 0),
   %0... [u(me/FN_COUNTDOWN, sub(%0, 1))],
   Go!)]
 > think u(me/FN_COUNTDOWN, 5)
@@ -208,9 +208,11 @@ Real MUSHcode often combines several control flow tools:
 
 | Tool | Use |
 |------|-----|
-| `if(cond, true, false)` | Inline conditional. |
+| `ifelse(cond, true, false)` | Inline conditional (portable across all engines). |
+| `if(cond, true [, false])` | Same as `ifelse()` but PennMUSH/TinyMUX only. |
 | `switch(val, pat, result, ...)` | Multi-way pattern match. |
-| `@if cond = {true}, {false}` | Command conditional. |
+| `@ifelse cond = {true}, {false}` | Command conditional (PennMUSH name). |
+| `@if cond = {true}, {false}` | Command conditional (TinyMUX name). |
 | `@switch val = pat, {action}, ...` | Command multi-way branch. |
 | `@dolist list = {action}` | Command iteration. |
 | `iter(list, pattern)` | Functional iteration. |

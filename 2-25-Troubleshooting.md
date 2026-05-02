@@ -68,7 +68,7 @@ or blank entries.
 **Causes and fixes:**
 
 - **Empty results.** `iter()` includes empty strings as elements. Use
-  a conditional to skip them: `iter(list, if(check, ##))`.
+  a conditional to skip them: `iter(list, ifelse(check, ##,))`.
 - **Whitespace in the pattern.** Newlines and spaces in your `iter()`
   pattern become part of the output. Keep the pattern on one line or
   use `trim()` on the result.

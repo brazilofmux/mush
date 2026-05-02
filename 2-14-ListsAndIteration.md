@@ -111,7 +111,7 @@ into a new list.
 ### Filtering with iter()
 
 ```
-> think iter(1 2 3 4 5 6, if(gt(##, 3), ##))
+> think iter(1 2 3 4 5 6, ifelse(gt(##, 3), ##,))
 4 5 6
 ```
 
@@ -206,8 +206,8 @@ defaults to the input delimiter unless specified separately.
 ```
 > think [setq(list,)]
   [iter(1 2 3 4 5,
-    if(gt(##, 2),
-      setq(list, cat(r(list), ##))))]
+    ifelse(gt(##, 2),
+      setq(list, cat(r(list), ##)),))]
   Result: [r(list)]
 Result: 3 4 5
 ```

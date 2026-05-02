@@ -150,7 +150,7 @@ same data simultaneously:
 
 ```
 > &CMD_DEPOSIT atm = $deposit *:@wait me = {
-  @set me/BALANCE = [add(v(BALANCE), %0)];
+  &BALANCE me = [add(v(BALANCE), %0)];
   @pemit %# = Deposited %0. Balance: [v(BALANCE)];
   @notify me
 }
@@ -174,8 +174,8 @@ Always validate player input:
   [not(isnum(%0))], {@pemit %# = Amount must be a number.},
   [lt(%0, 1)], {@pemit %# = Amount must be positive.},
   [gt(%0, v(MANA))], {@pemit %# = Not enough mana.},
-  {@set me/HEALTH = [min(add(v(HEALTH), %0), v(MAXHEALTH))];
-   @set me/MANA = [sub(v(MANA), %0)];
+  {&HEALTH me = [min(add(v(HEALTH), %0), v(MAXHEALTH))];
+   &MANA me = [sub(v(MANA), %0)];
    @pemit %# = Healed for %0. Health: [v(HEALTH)] Mana: [v(MANA)]}
 ```
 

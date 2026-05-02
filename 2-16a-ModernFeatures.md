@@ -114,9 +114,14 @@ delimiters. Note that commas within the query must be escaped with
 `\` so the MUSHcode parser does not treat them as argument
 separators.
 
-### Cursor-Based Queries (TinyMUX)
+### Cursor-Based Queries (TinyMUX, optional)
 
-For multi-row result sets, TinyMUX provides a cursor API:
+TinyMUX optionally exposes a cursor API for streaming large result
+sets. The functions are compiled in only when TinyMUX is built with
+the `STUB_SLAVE` distributed-architecture option, which is **not**
+enabled in the standard build. On a stock TinyMUX server these
+functions are absent — `sql()` is the portable baseline. Where the
+cursor API is available it looks like this:
 
 ```
 > think rsopen(SELECT name\, hp FROM characters WHERE faction='Red')
@@ -128,10 +133,10 @@ River 95
 > think rsclose(0)
 ```
 
-`rsopen()` returns a cursor ID. `rsrecnext()` advances to the next
-row and returns it. `rsclose()` releases the cursor. This lets
-softcode iterate over large result sets without buffering everything
-in memory.
+`rsopen()` returns a cursor ID, `rsrecnext()` advances to the next
+row and returns it, and `rsclose()` releases the cursor. Before
+relying on the cursor API, confirm with the server admin (or via
+`@list functions` / `help rsopen`) that this build has it.
 
 ### Security Warning
 
@@ -167,8 +172,8 @@ client out-of-band. The client can display them however it wishes: a
 health bar, a map, a sidebar, an inventory panel.
 
 ```
-> gmcp(*Sparrow, Char.Vitals, {"hp": 80, "maxhp": 100, "mp": 50})
-> gmcp(*Sparrow, Room.Info, {"id": 42, "name": "Town Square"})
+> gmcp(Sparrow, Char.Vitals, {"hp": 80, "maxhp": 100, "mp": 50})
+> gmcp(Sparrow, Room.Info, {"id": 42, "name": "Town Square"})
 ```
 
 Each call sends a single GMCP message. The first argument is the
@@ -191,7 +196,7 @@ A simple health-bar integration:
 > &FN_UPDATE_VITALS me = gmcp(%0, Char.Vitals,
   json(object, hp v(%0/HP) maxhp v(%0/MAXHP)))
 > &AHP_CHANGE me = $+hp *:
-  @set me/HP=%0;
+  &HP me = %0;
   u(FN_UPDATE_VITALS, %#)
 ```
 

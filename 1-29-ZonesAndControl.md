@@ -221,10 +221,15 @@ Requires wizard privileges. Level 2.
 
 A common zone pattern for collaborative building:
 
-1. Create a ZMO: `@create Building Zone`
-2. Set the ZONE_MASTER flag: `@set Building Zone = ZONE_MASTER`
+1. Create a zone master object: `@create Building Zone`
+2. Mark it as a zone master, if the engine has a flag for that
+   (PennMUSH `ZMP`/`Zone`; on TinyMUX/TinyMUSH any thing can serve as
+   the ZMO without a flag).
 3. Set the zone lock: `@lock/zone Building Zone = =Alice | =Bob | =Carol`
-4. Zone the build area: `@chzone <room> = Building Zone` (for each room)
+   (PennMUSH); or set the enter lock on the ZMO (TinyMUX); or set the
+   control lock and enable `CONTROL_OK` (TinyMUSH). See the per-engine
+   matrix in the Zone Control section above.
+4. Zone the build area: `@chzone <room> = Building Zone` (for each room).
 
 Alice, Bob, and Carol can now all modify rooms, exits, and objects in the
 zone.

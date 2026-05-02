@@ -1075,7 +1075,7 @@ TinyMUX-backed.
 
 ### Volume 2: Foundational Regressions (High-Impact)
 
-- [ ] **2-08: Attribute-setting tutorial uses the flag-setting form of
+- [x] **2-08: Attribute-setting tutorial uses the flag-setting form of
   `@set`.**
   - Lines 28–34 introduce the `@set` form as
     `@set me/COLOR_FAVORITE = blue`, presenting it as an alternative
@@ -1092,7 +1092,7 @@ TinyMUX-backed.
     `@set obj=attr:value` colon form, with the same warning 2-11
     carries about the flag-setting overload.
 
-- [ ] **2-16, 2-16a still use `@set obj/attr=value` in code examples.**
+- [x] **2-16, 2-16a still use `@set obj/attr=value` in code examples.**
   - 2-16 lines 153, 177–178 and 2-16a line 194 use this form to write
     attribute values inside larger examples.
   - Same defect as the 2-08 issue above; in these chapters users will
@@ -1104,7 +1104,7 @@ TinyMUX-backed.
 
 ### Volume 2: Modern Features Chapter (2-16a)
 
-- [ ] **2-16a Cursor SQL section presents `rsopen()`/`rsrecnext()`/
+- [x] **2-16a Cursor SQL section presents `rsopen()`/`rsrecnext()`/
   `rsclose()` as standard TinyMUX functions.**
   - These functions are wired up in `functions.cpp:15189–15197`
     inside an `#if defined(STUB_SLAVE)` block; the matching
@@ -1118,7 +1118,7 @@ TinyMUX-backed.
     "Optional (TinyMUX STUB_SLAVE builds only)" and explain that
     portable softcode should treat `sql()` as the baseline.
 
-- [ ] **2-16a: `gmcp()` examples use a `*name` player prefix.**
+- [x] **2-16a: `gmcp()` examples use a `*name` player prefix.**
   - Lines 170–171 show `gmcp(*Sparrow, Char.Vitals, ...)`.
   - `fun_gmcp` (`functions.cpp:13216–13240`) calls
     `lookup_player(executor, fargs[0], true)`, which accepts a bare
@@ -1131,7 +1131,7 @@ TinyMUX-backed.
 
 ### Volume 2: Scheduled Tasks Chapter (2-16b)
 
-- [ ] **2-16b: `@startup #500` is shown as a manual command after
+- [x] **2-16b: `@startup #500` is shown as a manual command after
   defining the STARTUP attribute.**
   - Lines 89–95 define `&STARTUP #500 = ...` and then line 94 shows
     `> @startup #500`; line 131 repeats this in the weather example.
@@ -1145,7 +1145,7 @@ TinyMUX-backed.
     prose explaining the STARTUP attribute fires automatically when
     the server starts (subject to `run_startup` configuration).
 
-- [ ] **2-16b: `@cron` success message text doesn't match TinyMUX.**
+- [x] **2-16b: `@cron` success message text doesn't match TinyMUX.**
   - Book line 26 shows: `Cron entry scheduled: #500/AWEATHER fires
     every hour on the hour.`
   - TinyMUX `do_cron` (`cron.cpp:755`) emits the literal string
@@ -1155,7 +1155,7 @@ TinyMUX-backed.
 
 ### Volume 1: Stale / Unfixed Items Confirmed
 
-- [ ] **1-26 `while()` is still wrong for TinyMUX 2.14.** (Reopened from
+- [x] **1-26 `while()` is still wrong for TinyMUX 2.14.** (Reopened from
   Codex's prior pass at line 1027.) Confirmed: `WHILE` is registered
   at `mux/modules/engine/functions.cpp:15317` (4 to 6 args) and
   implemented in `mux/modules/engine/funceval.cpp:3998–4006` with
@@ -1174,17 +1174,17 @@ specific call-sites that still use `if()` after 2-12 recommends
 `ifelse()` for portability. They overlap with but are more
 fine-grained than the existing tracking item.
 
-- [ ] **2-12 line 181**: `&FN_COUNTDOWN me = [if(gt(%0, 0), ...)]`
+- [x] **2-12 line 181**: `&FN_COUNTDOWN me = [if(gt(%0, 0), ...)]`
   in the Recursion-with-`u()` example.
-- [ ] **2-12 line 211 (Quick Reference table)**: only lists
+- [x] **2-12 line 211 (Quick Reference table)**: only lists
   `if(cond, true, false)`; should also list `ifelse()` and note that
   `if()` is engine-specific.
-- [ ] **2-14 lines 114, 209**: `iter(... if(check, ##))` filtering
+- [x] **2-14 lines 114, 209**: `iter(... if(check, ##))` filtering
   examples.
-- [ ] **2-15 line 158**: dice-roller `[if(regmatch(...), ...)]`
+- [x] **2-15 line 158**: dice-roller `[if(regmatch(...), ...)]`
   example — first practical end-to-end example users build, so worth
   prioritizing.
-- [ ] **2-25 line 71**: troubleshooting hint
+- [x] **2-25 line 71**: troubleshooting hint
   `iter(list, if(check, ##))`.
   - *Recommendation*: Mechanically convert these `if()` call-sites to
     `ifelse(...)` with an explicit empty third arm where appropriate.
@@ -1192,7 +1192,7 @@ fine-grained than the existing tracking item.
 
 ### Volume 1: Notation and Cross-Chapter Consistency
 
-- [ ] **1-03 introduces `=>` notation but its own example uses
+- [x] **1-03 introduces `=>` notation but its own example uses
   prefix-`>` only.**
   - Lines 151–157 say "the notation `=>` indicates the result of
     evaluating an expression" and then show the example
@@ -1204,7 +1204,7 @@ fine-grained than the existing tracking item.
     book actually uses prefix-`>` for input throughout) or add an
     illustrative example that does use `=>`.
 
-- [ ] **1-10 Exit Matching cites `#0` as the global-exits source
+- [x] **1-10 Exit Matching cites `#0` as the global-exits source
   instead of the configurable master room.**
   - Line 140: "Exits attached to objects in the master room (`#0`),
     providing global exits."
@@ -1213,7 +1213,7 @@ fine-grained than the existing tracking item.
   - *Recommendation*: Drop the `(#0)` parenthetical; the chapter
     already says "master room" elsewhere.
 
-- [ ] **1-10 lacks the per-engine framing the recent reviews
+- [x] **1-10 lacks the per-engine framing the recent reviews
   introduced for divergent chapters.**
   - Search procedure, exit-vs-built-in priority, and pronoun
     resolution all carry implementation-defined notes inline, but
@@ -1230,45 +1230,45 @@ Codex flagged this generally (line 935). Auditing every
 list, the following are documented in chapters but missing from
 the inventory:
 
-- [ ] **1-36 missing: master room dbref location** (1-02:115).
-- [ ] **1-36 missing: player starting room** (1-02 / 1-04 / 1-15).
-- [ ] **1-36 missing: default home location** (1-15:122).
-- [ ] **1-36 missing: order of objects in contents list** (1-04:202).
-- [ ] **1-36 missing: stored password format** (1-06:482).
-- [ ] **1-36 missing: `type()` return for destroyed/invalid objects**
+- [x] **1-36 missing: master room dbref location** (1-02:115).
+- [x] **1-36 missing: player starting room** (1-02 / 1-04 / 1-15).
+- [x] **1-36 missing: default home location** (1-15:122).
+- [x] **1-36 missing: order of objects in contents list** (1-04:202).
+- [x] **1-36 missing: stored password format** (1-06:482).
+- [x] **1-36 missing: `type()` return for destroyed/invalid objects**
   (1-05:390).
-- [ ] **1-36 missing: multi-exit-match resolution policy** (1-10:144).
-- [ ] **1-36 missing: built-in vs `$`-command priority** (1-09:92).
-- [ ] **1-36 missing: `$`-command search order** (1-09:176).
-- [ ] **1-36 missing: attribute search order within an object**
+- [x] **1-36 missing: multi-exit-match resolution policy** (1-10:144).
+- [x] **1-36 missing: built-in vs `$`-command priority** (1-09:92).
+- [x] **1-36 missing: `$`-command search order** (1-09:176).
+- [x] **1-36 missing: attribute search order within an object**
   (1-09:191).
-- [ ] **1-36 missing: no-match message text** (1-09:213).
-- [ ] **1-36 missing: `home`/built-in command position in matching
+- [x] **1-36 missing: no-match message text** (1-09:213).
+- [x] **1-36 missing: `home`/built-in command position in matching
   order** (1-09:276).
-- [ ] **1-36 missing: help command surface and switches** (1-19:340,
+- [x] **1-36 missing: help command surface and switches** (1-19:340,
   1-19:372).
-- [ ] **1-36 missing: help file layout** (1-19:392).
-- [ ] **1-36 missing: WHO visibility for privileged players**
+- [x] **1-36 missing: help file layout** (1-19:392).
+- [x] **1-36 missing: WHO visibility for privileged players**
   (1-19:419).
-- [ ] **1-36 missing: `@search` match algorithm** (1-19:365).
-- [ ] **1-36 missing: `%?` function-metrics format** (1-13:73).
-- [ ] **1-36 missing: ANSI / color-depth support** (1-13:278).
-- [ ] **1-36 missing: sort default collation and accepted type codes**
+- [x] **1-36 missing: `@search` match algorithm** (1-19:365).
+- [x] **1-36 missing: `%?` function-metrics format** (1-13:73).
+- [x] **1-36 missing: ANSI / color-depth support** (1-13:278).
+- [x] **1-36 missing: sort default collation and accepted type codes**
   (1-22:185, 1-22:192, 1-20:509).
-- [ ] **1-36 missing: `comp()` accepted type codes** (1-24:193).
-- [ ] **1-36 missing: `encrypt()` argument set** (1-20:486).
-- [ ] **1-36 missing: `crypt()` categories** (1-26:137).
-- [ ] **1-36 missing: time-string format** (1-26:18).
-- [ ] **1-36 missing: lock internal representation** (1-27:266).
-- [ ] **1-36 missing: `@chzone` flag-stripping behavior** (1-29:257).
-- [ ] **1-36 missing: automatic zone assignment policy** (1-29:103).
-- [ ] **1-36 missing: idle-sweep timing** (1-32:98).
-- [ ] **1-36 missing: post-disconnect socket reuse** (1-32:68).
-- [ ] **1-36 missing: SSL/TLS port indicators** (1-32:124).
-- [ ] **1-36 missing: mail switch sets, signature attribute name,
+- [x] **1-36 missing: `comp()` accepted type codes** (1-24:193).
+- [x] **1-36 missing: `encrypt()` argument set** (1-20:486).
+- [x] **1-36 missing: `crypt()` categories** (1-26:137).
+- [x] **1-36 missing: time-string format** (1-26:18).
+- [x] **1-36 missing: lock internal representation** (1-27:266).
+- [x] **1-36 missing: `@chzone` flag-stripping behavior** (1-29:257).
+- [x] **1-36 missing: automatic zone assignment policy** (1-29:103).
+- [x] **1-36 missing: idle-sweep timing** (1-32:98).
+- [x] **1-36 missing: post-disconnect socket reuse** (1-32:68).
+- [x] **1-36 missing: SSL/TLS port indicators** (1-32:124).
+- [x] **1-36 missing: mail switch sets, signature attribute name,
   delete switch spelling, lock name, storage format** (1-31:35,
   1-31:44, 1-31:201, 1-31:230, 1-31:322).
-- [ ] **1-36 missing: channel privilege flags and formatting
+- [x] **1-36 missing: channel privilege flags and formatting
   customization** (1-30:173, 1-30:201).
   - *Recommendation*: Rather than itemize each entry as a separate
     fix, do a single mechanical pass: `grep -n 'implementation-
@@ -1277,13 +1277,13 @@ the inventory:
 
 ### Cross-Volume Notes (Lower Priority)
 
-- [ ] **1-29 line 225 still teaches `@set Building Zone =
+- [x] **1-29 line 225 still teaches `@set Building Zone =
   ZONE_MASTER`.**
   - Already covered by Codex's "zone framing still depends on
     ZONE_MASTER" item at line 947, but flagging the specific design-
     pattern step in case the rewrite missed it.
 
-- [ ] **2-21 line 78 hedges `SESSION` vs `@doing/header` correctly,
+- [x] **2-21 line 78 hedges `SESSION` vs `@doing/header` correctly,
   but line 74 unconditionally shows `> @doing/header`.**
   - Already noted in Codex's earlier pass (line 879) at the prose
     level; the worked example on line 74 is the concrete artifact

@@ -68,15 +68,21 @@ River      5m    AFK
 Sparrow    0s
 ```
 
-The administrative version shows more detail:
+The administrative version shows more detail. The command differs by
+engine:
 
 ```
-> @doing/header
-> SESSION
+> SESSION                  (TinyMUX, TinyMUSH, PennMUSH)
+> @doing/header            (TinyMUX, TinyMUSH — also configures the
+                            DOING column header for WHO)
 ```
 
-`SESSION` (or `@doing/header` depending on the server) shows IP
-addresses, connection times, and other diagnostic information.
+`SESSION` shows IP addresses, connection times, and other diagnostic
+information for the WHO list. `@doing/header` is a separate command
+that sets the column header text shown above the DOING field; it
+exists on TinyMUX and TinyMUSH but not on PennMUSH (which configures
+the `poll` text via `@poll` instead). Use `help session` and
+`help @doing` on your server to confirm which subset is available.
 
 ### Watching for Problems
 

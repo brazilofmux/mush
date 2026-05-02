@@ -155,7 +155,7 @@ Let's build a complete dice roller object:
   [u(me/FN_PARSE_ROLL, %0)]
 
 > &FN_PARSE_ROLL Dice Roller =
-  [if(regmatch(%0, ^(\d+)d(\d+)$, 0 1 2),
+  [ifelse(regmatch(%0, ^(\d+)d(\d+)$, 0 1 2),
     u(me/FN_DO_ROLL, r(1), r(2)),
     Usage: +roll <count>d<sides>)]
 

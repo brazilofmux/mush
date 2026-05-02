@@ -13,7 +13,7 @@ custom data you assign.
 
 ## Setting Attributes
 
-There are two ways to set an attribute:
+There are two ways to set an attribute value:
 
 ### The & Command
 
@@ -22,16 +22,26 @@ There are two ways to set an attribute:
 ```
 
 This sets the attribute COLOR_FAVORITE on yourself to the value "blue."
-The `&` prefix is the most common way to set user-defined attributes.
+The `&` prefix is the most common way to set user-defined attributes,
+and the form most code uses.
 
-### The @set Command
+### The @set Command (Colon Form)
 
 ```
-> @set me/COLOR_FAVORITE = blue
+> @set me = COLOR_FAVORITE:blue
 ```
 
-This does the same thing. The `@set` form uses a slash between the object
-and attribute name.
+`@set <object> = <attr>:<value>` does the same thing. Note the
+**colon** between the attribute name and the value — that is what
+distinguishes value-setting from flag-setting.
+
+> **Watch out:** `@set <obj>/<attr> = <value>` does **not** write
+> the attribute's value. The `<obj>/<attr>` form sets an attribute
+> *flag* (such as `no_inherit` or `wizard`) whose name is `<value>`,
+> and will fail with "You can't set that!" if `<value>` is not a
+> recognized flag name. Use `&` or the colon form above to write
+> values; reserve `@set <obj>/<attr> = <flag>` for changing
+> attribute flags. (See Chapter 11 for more on this gotcha.)
 
 ### Clearing Attributes
 
@@ -39,12 +49,6 @@ Set an attribute to nothing to clear it:
 
 ```
 > &COLOR_FAVORITE me =
-```
-
-Or:
-
-```
-> @set me/COLOR_FAVORITE =
 ```
 
 ## Viewing Attributes

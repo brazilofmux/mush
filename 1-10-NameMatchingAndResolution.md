@@ -7,6 +7,14 @@ process of converting a text string into a specific object dbref is called
 **name matching** or **name resolution**. This chapter specifies the rules
 by which names are resolved to objects.
 
+**Implementation Variation.** The match-context model and the priority
+rules described here are common across the four reference engines, but
+the exact dispatch order — for instance, whether built-in commands or
+exits are tried first, and how `$`-commands interleave with both — is
+implementation-defined. See Chapter 9 for the configurable command
+dispatch order; this chapter describes only the *resolution* rules
+applied once a search has begun.
+
 ## Match Tokens
 
 Before attempting name-based matching, the server checks for special tokens
@@ -137,8 +145,9 @@ Exit matching uses the following search order:
 
 1. Exits attached to the player's current room.
 2. Exits on parent rooms of the current room (following the parent chain).
-3. Exits attached to objects in the master room (`#0`), providing global
-   exits.
+3. Exits attached to objects in the master room, providing global
+   exits. (The master room's dbref is implementation-defined; `#0` is
+   the conventional default. See Chapter 4.)
 
 If exactly one exit matches across all levels, the player traverses it. If
 multiple exits match at the same level, the behavior is implementation-defined

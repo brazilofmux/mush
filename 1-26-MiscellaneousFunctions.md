@@ -168,16 +168,38 @@ Chapter 24 for the full specification.
 
 ### while()
 
+`while()` exists in three of the four reference engines, but with
+**incompatible signatures**. There is no portable form; choose the
+form that matches your target engine.
+
+**TinyMUX 2.14:**
+
+```
+while(<eval-attr>, <cond-attr>, <list>, <compval> [, <isep> [, <osep>]])
+```
+
+Iterates over \<list\>. For each element, evaluates \<eval-attr\>
+with the element as `%0` and appends the result to the output. After
+each element it evaluates \<cond-attr\>; iteration stops when the
+result string-equals \<compval\>. The list is split by \<isep\>
+(default space) and the output joined with \<osep\>.
+
+**TinyMUSH / RhostMUSH:**
+
 ```
 while(<condition-function>, <body-function>, <initial-value> [, <limit>])
 ```
 
-Repeatedly evaluates \<body-function\> as long as \<condition-function\>
-returns true. The result of each iteration is passed to the next as `%0`.
-The optional \<limit\> caps the number of iterations (default is
-implementation-defined, typically 100-10000). Available in TinyMUSH and
-RhostMUSH only; TinyMUX and PennMUSH do not provide this function.
-Level 2.
+Repeatedly evaluates \<body-function\> as long as
+\<condition-function\> returns true; the result of each iteration is
+passed to the next as `%0`. The optional \<limit\> caps the number
+of iterations (default implementation-defined).
+
+**PennMUSH:** does not provide `while()`.
+
+In all engines the iteration cap and the function-invocation budget
+described in Chapter 12 still apply. For portable code, prefer
+`@dolist` or recursive `u()` over `while()`. Level 2.
 
 ### foreach()
 

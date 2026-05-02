@@ -23,7 +23,7 @@ and do not depend on chained `@wait`s.
 
 ```
 > @cron #500/AWEATHER = 0 * * * *
-Cron entry scheduled: #500/AWEATHER fires every hour on the hour.
+Cron entry added.
 ```
 
 The general form is `@cron <object>/<attribute> = <timestring>`. The
@@ -83,7 +83,7 @@ control it). Wizards with the `See_All` power can see all entries.
 ### Permanence Across Restarts
 
 Cron entries are **not** automatically preserved across a server
-restart. Put the `@cron` commands in an `@startup` attribute on a
+restart. Put the `@cron` commands in a `STARTUP` attribute on a
 stable object so they are re-registered at boot:
 
 ```
@@ -91,11 +91,13 @@ stable object so they are re-registered at boot:
     @cron me/AWEATHER = 0 * * * *;
     @cron me/ATICK    = */15 * * * *;
     @cron me/ADAILY   = 0 6 * * *
-> @startup #500
 ```
 
-The next restart will replay the startup attribute and recreate the
-schedule.
+The server fires the `STARTUP` attribute on every object that has one
+when the game boots (subject to the `run_startup` configuration
+option). There is no `@startup` command — the attribute is invoked
+automatically. Set it once and the next restart will replay it and
+recreate the schedule.
 
 ## Alternatives on Other Engines
 
@@ -127,8 +129,6 @@ major changes, and runs a daily reset at midnight:
 > &STARTUP #500 =
     @cron me/ATICK  = */15 * * * *;
     @cron me/ADAILY = 0 0 * * *
-
-> @startup #500
 ```
 
 After the next restart, the weather cron is live, running
